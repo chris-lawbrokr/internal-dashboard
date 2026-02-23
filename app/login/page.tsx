@@ -8,6 +8,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Input, PasswordInput } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function Login() {
   return (
@@ -40,6 +41,7 @@ export default function Login() {
               />
             </CardContent>
             <CardFooter>
+              <Checkbox id="remember" label="Remember me" />
               <Button className="w-full">Sign in</Button>
             </CardFooter>
           </CardCentered>
