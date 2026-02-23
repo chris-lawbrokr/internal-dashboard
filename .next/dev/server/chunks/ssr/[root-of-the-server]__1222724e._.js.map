@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 18, "column": 0}, "map": {"version":3,"sources":["file:///Users/chriskinsman/Documents/GitHub/internal-dashboard/app/page.tsx"],"sourcesContent":["import { Button } from \"@/components/ui/button/button\";\n\nexport default function Home() {\n  return (\n    <main className=\"h-screen w-screen flex items-center justify-center\">\n      Hello\n    </main>\n  );\n}\n"],"names":[],"mappings":";;;;;;AAEe,SAAS;IACtB,qBACE,8OAAC;QAAK,WAAU;kBAAqD;;;;;;AAIzE"}}]
-}
