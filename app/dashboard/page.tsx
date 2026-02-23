@@ -1,7 +1,45 @@
+"use client";
+
+import { useState } from "react";
+import { Sidebar } from "./ui/Sidebar";
+import { Header } from "./ui/Header";
+
+import { Card, CardContent } from "@/components/ui/card";
+
 export default function Dashboard() {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
   return (
-    <div className="min-h-screen w-screen border-4 border-rose-500">
-      Dashboard
+    <div className="h-screen w-screen flex flex-col">
+      <Header onMenuClick={() => setSidebarOpen((o) => !o)} />
+
+      <div className="h-full flex">
+        <Sidebar open={sidebarOpen} />
+
+        {/* Parent becomes the container */}
+        <div className="w-full p-4 overflow-auto @container">
+          {/* Children respond to the container width */}
+          <div className="flex flex-col gap-4 @md:flex-row">
+            <Card className="flex-1 p-4">
+              <CardContent>
+                <p>A simple card with only content.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="flex-1 p-4">
+              <CardContent>
+                <p>A simple card with only content.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="flex-1 p-4">
+              <CardContent>
+                <p>A simple card with only content.</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
