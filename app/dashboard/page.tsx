@@ -19,7 +19,7 @@ export default function Dashboard() {
         {/* Parent becomes the container */}
         <div className="w-full p-4 overflow-auto @container">
           {/* Children respond to the container width */}
-          <div className="min-w-[320px] flex flex-col gap-4 @md:flex-row">
+          <div className="min-w-[320px] flex flex-col gap-4 @xl:flex-row">
             <Card className="flex-1 p-4">
               <CardContent>CARD 1</CardContent>
             </Card>
