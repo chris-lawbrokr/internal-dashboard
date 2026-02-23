@@ -7,8 +7,8 @@ interface HeaderProps {
 
 export function Header({ onMenuClick }: HeaderProps) {
   return (
-    <div className="w-full p-4 bg-card border-b">
-      <div className="flex items-center gap-4">
+    <div className="w-full p-4 bg-card border-b shrink-0 overflow-x-auto">
+      <div className="flex items-center gap-4 whitespace-nowrap">
         <button type="button" onClick={onMenuClick} className="cursor-pointer">
           <Menu size={24} />
         </button>
