@@ -21,21 +21,15 @@ export default function Dashboard() {
           {/* Children respond to the container width */}
           <div className="flex flex-col gap-4 @md:flex-row">
             <Card className="flex-1 p-4">
-              <CardContent>
-                <p>A simple card with only content.</p>
-              </CardContent>
+              <CardContent>CARD 1</CardContent>
             </Card>
 
             <Card className="flex-1 p-4">
-              <CardContent>
-                <p>A simple card with only content.</p>
-              </CardContent>
+              <CardContent>CARD 2</CardContent>
             </Card>
 
             <Card className="flex-1 p-4">
-              <CardContent>
-                <p>A simple card with only content.</p>
-              </CardContent>
+              <CardContent>CARD 3</CardContent>
             </Card>
           </div>
         </div>
