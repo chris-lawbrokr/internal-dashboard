@@ -13,7 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 export default function Login() {
   return (
-    <div className="h-screen w-full p-12 sm:p-36 flex">
+    <div className="h-screen w-full p-12 md:p-24 xl:p-36 flex">
       <div className="flex-1 flex gap-24">
         <div className="w-full">
           <CardCentered className="w-full h-full">

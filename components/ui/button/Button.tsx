@@ -14,13 +14,14 @@ function cn(...values: Array<string | undefined | null | false>): string {
 }
 
 const baseStyles =
-  "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors " +
+  "flex items-center justify-center gap-1.5 self-stretch rounded-xl text-sm font-medium transition-colors " +
+  "shadow-[0_1px_0.5px_0.05px_rgba(29,41,61,0.02)] " +
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 " +
   "focus-visible:ring-ring focus-visible:ring-offset-background " +
   "disabled:opacity-50 disabled:pointer-events-none";
 
 const variantStyles: Record<ButtonVariant, string> = {
-  default: "bg-primary text-primary-foreground hover:bg-primary/90",
+  default: "bg-[#3B2559] text-primary-foreground hover:bg-[#3B2559]/90",
   outline:
     "border border-border bg-background hover:bg-accent hover:text-accent-foreground",
   ghost: "bg-transparent hover:bg-accent hover:text-accent-foreground",
@@ -31,9 +32,9 @@ const variantStyles: Record<ButtonVariant, string> = {
 
 const sizeStyles: Record<ButtonSize, string> = {
   sm: "h-8 px-3 text-xs",
-  md: "h-9 px-4 text-sm",
-  lg: "h-10 px-6 text-sm",
-  icon: "h-9 w-9",
+  md: "h-10 px-4 text-sm",
+  lg: "h-12 px-6 text-sm",
+  icon: "h-10 w-10",
 };
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
