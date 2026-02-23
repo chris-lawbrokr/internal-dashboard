@@ -56,7 +56,7 @@ export default function Login() {
             </CardFooter>
           </CardCentered>
         </div>
-        <div className="w-full flex items-center justify-center">
+        <div className="hidden lg:flex w-full items-center justify-center">
           <Image
             src="/images/graphics/login.svg"
             alt="Logo"
