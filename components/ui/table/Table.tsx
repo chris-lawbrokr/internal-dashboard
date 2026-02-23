@@ -68,17 +68,21 @@ export const Table = React.forwardRef<
       {onPageChange && totalPages != null && page != null && totalPages > 1 && (
         <div className="flex items-center px-4 pb-4">
           {totalItems != null && pageSize != null && (
-            <span className="text-sm text-muted-foreground px-2">
-              Showing {(page - 1) * pageSize + 1}-
-              {Math.min(page * pageSize, totalItems)} of {totalItems}
+            <span className="text-sm px-2">
+              Showing{" "}
+              <span className="font-bold">
+                {(page - 1) * pageSize + 1}-
+                {Math.min(page * pageSize, totalItems)}
+              </span>{" "}
+              of <span className="font-bold">{totalItems}</span>
             </span>
           )}
-          <div className="flex items-center gap-1 ml-auto">
+          <div className="flex items-center ml-auto border rounded-xl">
             <button
               type="button"
               disabled={page <= 1}
               onClick={() => onPageChange(page - 1)}
-              className="h-8 w-8 flex items-center justify-center rounded-md text-sm text-muted-foreground hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+              className="h-8 w-8 flex items-center justify-center text-sm text-muted-foreground hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer border-r"
             >
               <ChevronLeft size={16} />
             </button>
@@ -97,7 +101,7 @@ export const Table = React.forwardRef<
                 type="button"
                 onClick={() => onPageChange(p)}
                 className={cn(
-                  "h-8 w-8 flex items-center justify-center rounded-md text-sm cursor-pointer",
+                  "h-8 w-8 flex items-center justify-center text-sm cursor-pointer border-r",
                   p === page
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:bg-muted",
