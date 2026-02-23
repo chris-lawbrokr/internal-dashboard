@@ -1,10 +1,8 @@
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
-
 export default function Home() {
   return (
-    <main>
-      <Button>click</Button>
-    </main>
+    <div className="min-h-screen flex items-center justify-center">
+      <Button>Lawbrokr</Button>
+    </div>
   );
 }
