@@ -1,0 +1,168 @@
+[00:00:01.725] Server  LOG     ✓ Ready in 1644ms
+[00:00:11.097] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:11.202] Browser WARN    Image with src "http://localhost:3000/vercel.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:00:59.178] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:19:31.511] Server  LOG     ✓ Compiled in 10ms
+[00:19:31.876] Server  LOG     ✓ Compiled in 9ms
+[00:24:41.682] Server  LOG     ✓ Compiled in 12ms
+[00:29:02.917] Server  LOG     ✓ Compiled in 11ms
+[00:33:52.071] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:33:52.405] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:35:24.484] Server  LOG     ✓ Compiled in 9ms
+[00:35:44.200] Server  LOG     ✓ Compiled in 11ms
+[00:36:28.088] Server  LOG     ✓ Compiled in 13ms
+[00:37:01.668] Server  LOG     ✓ Compiled in 10ms
+[00:37:07.830] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:38:09.951] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:38:10.371] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:39:37.897] Server  ERROR   ⨯ ./app/login/page.tsx:2:1
+Module not found: Can't resolve '@/components/ui/Card/Card'
+  1 | import { Button } from "@/components/ui/button/button";
+> 2 | import { Card } from "@/components/ui/Card/Card";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | export default function login() {
+  5 |   return (
+
+Import map: aliased to relative './components/ui/Card/Card' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:39:37.897] Server  ERROR   ⨯ ./app/login/page.tsx:2:1
+Module not found: Can't resolve '@/components/ui/Card/Card'
+  1 | import { Button } from "@/components/ui/button/button";
+> 2 | import { Card } from "@/components/ui/Card/Card";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | export default function login() {
+  5 |   return (
+
+Import map: aliased to relative './components/ui/Card/Card' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:39:38.036] Browser ERROR   ./app/login/page.tsx:2:1
+Module not found: Can't resolve '@/components/ui/Card/Card'
+  1 | import { Button } from "@/components/ui/button/button";
+> 2 | import { Card } from "@/components/ui/Card/Card";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | export default function login() {
+  5 |   return (
+
+Import map: aliased to relative './components/ui/Card/Card' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found
+[00:39:38.177] Browser ERROR   ./app/login/page.tsx:2:1
+Module not found: Can't resolve '@/components/ui/Card/Card'
+  1 | import { Button } from "@/components/ui/button/button";
+> 2 | import { Card } from "@/components/ui/Card/Card";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | export default function login() {
+  5 |   return (
+
+Import map: aliased to relative './components/ui/Card/Card' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found
+[00:39:40.327] Server  ERROR   ⨯ ./app/login/page.tsx:2:1
+Module not found: Can't resolve '@/components/ui/Card/Card'
+  1 | import { Button } from "@/components/ui/button/button";
+> 2 | import { Card } from "@/components/ui/Card/Card";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | export default function login() {
+  5 |   return (
+
+Import map: aliased to relative './components/ui/Card/Card' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:39:40.455] Browser ERROR   ./app/login/page.tsx:2:1
+Module not found: Can't resolve '@/components/ui/Card/Card'
+  1 | import { Button } from "@/components/ui/button/button";
+> 2 | import { Card } from "@/components/ui/Card/Card";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | export default function login() {
+  5 |   return (
+
+Import map: aliased to relative './components/ui/Card/Card' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found
+[00:39:40.674] Browser ERROR   ./app/login/page.tsx:2:1
+Module not found: Can't resolve '@/components/ui/Card/Card'
+  1 | import { Button } from "@/components/ui/button/button";
+> 2 | import { Card } from "@/components/ui/Card/Card";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | export default function login() {
+  5 |   return (
+
+Import map: aliased to relative './components/ui/Card/Card' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found
+[00:39:40.738] Browser ERROR   uncaughtError: Error: ./app/login/page.tsx:2:1
+Module not found: Can't resolve '@/components/ui/Card/Card'
+  1 | import { Button } from "@/components/ui/button/button";
+> 2 | import { Card } from "@/components/ui/Card/Card";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | export default function login() {
+  5 |   return (
+
+Import map: aliased to relative './components/ui/Card/Card' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:39:40.887] Browser ERROR   ./app/login/page.tsx:2:1
+Module not found: Can't resolve '@/components/ui/Card/Card'
+  1 | import { Button } from "@/components/ui/button/button";
+> 2 | import { Card } from "@/components/ui/Card/Card";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | export default function login() {
+  5 |   return (
+
+Import map: aliased to relative './components/ui/Card/Card' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found
+[00:39:40.887] Browser ERROR   ./app/login/page.tsx:2:1
+Module not found: Can't resolve '@/components/ui/Card/Card'
+  1 | import { Button } from "@/components/ui/button/button";
+> 2 | import { Card } from "@/components/ui/Card/Card";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | export default function login() {
+  5 |   return (
+
+Import map: aliased to relative './components/ui/Card/Card' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found
+[00:40:32.341] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:43:01.057] Server  LOG     ✓ Compiled in 18ms
+[00:44:20.894] Server  LOG     ✓ Compiled in 14ms
+[00:45:08.225] Server  LOG     ✓ Compiled in 17ms
+[00:45:20.444] Server  LOG     ✓ Compiled in 16ms
+[00:45:55.230] Server  LOG     ✓ Compiled in 15ms
+[00:46:18.339] Server  LOG     ✓ Compiled in 15ms
+[00:49:09.942] Browser ERROR   An empty string ("") was passed to the %s attribute. This may cause the browser to download the whole page again over the network. To fix this, either do not render the element at all or pass null to %s instead of an empty string. src src
+[00:49:09.942] Browser ERROR   Image is missing required "src" property: <img>
+[00:49:09.942] Browser ERROR   Image is missing required "alt" property. Please add Alternative Text to describe the image for screen readers and search engines.
+[00:49:09.942] Browser ERROR   Image is missing required "src" property: <img>
+[00:49:09.942] Browser ERROR   Image is missing required "alt" property. Please add Alternative Text to describe the image for screen readers and search engines.
+[00:49:33.595] Browser ERROR   Received NaN for the `%s` attribute. If this is expected, cast the value to a string. width
+[00:49:33.595] Browser ERROR   Received NaN for the `%s` attribute. If this is expected, cast the value to a string. height
+[00:49:47.656] Server  ERROR   ⨯ "The requested resource isn't a valid image for" "/image/Logo" "received" null
+[00:50:02.618] Browser WARN    Image with src "http://localhost:3000/images/Logo.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:50:09.178] Browser ERROR   uncaughtError: Error: Image with src "/images/Logo.svg" has invalid "width" property. Expected a numeric value in pixels but received "auto".
+[00:50:12.095] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:50:12.095] Browser WARN    Image with src "http://localhost:3000/images/Logo.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.

@@ -1,0 +1,183 @@
+How to Create New Components
+============================
+
+This project uses a shadcn-style component structure with Tailwind CSS v4,
+TypeScript, and Storybook. Follow the steps below when adding a new component.
+
+
+1. Create the component folder
+-------------------------------
+
+Each component lives in its own folder under components/ui/:
+
+  components/ui/<component-name>/<component-name>.tsx
+
+Example for an Input component:
+
+  components/ui/input/input.tsx
+
+
+2. Write the component
+-----------------------
+
+Follow this pattern:
+
+  - Import React.
+  - Define variant/size types if applicable.
+  - Export a props interface that extends the relevant HTML element attributes.
+  - Use the cn() helper to join class names.
+  - Use React.forwardRef so consumers can attach refs.
+  - Set displayName on the component.
+
+Use token-aware Tailwind classes that map to our CSS variables:
+
+  bg-background, text-foreground
+  bg-primary, text-primary-foreground
+  bg-secondary, text-secondary-foreground
+  bg-muted, text-muted-foreground
+  bg-accent, text-accent-foreground
+  bg-destructive, text-destructive-foreground
+  border-border, ring-ring, bg-input
+  bg-card, text-card-foreground
+  bg-popover, text-popover-foreground
+
+For border radius, use: rounded-sm, rounded-md, rounded-lg, rounded-xl
+
+cn() helper (include in each component file):
+
+  function cn(...values: Array<string | undefined | null | false>): string {
+    return values.filter(Boolean).join(" ");
+  }
+
+Example skeleton:
+
+  import * as React from "react";
+
+  type InputSize = "sm" | "md" | "lg";
+
+  export interface InputProps
+    extends React.InputHTMLAttributes<HTMLInputElement> {
+    inputSize?: InputSize;
+  }
+
+  function cn(...values: Array<string | undefined | null | false>): string {
+    return values.filter(Boolean).join(" ");
+  }
+
+  const baseStyles = "...";
+  const sizeStyles: Record<InputSize, string> = { ... };
+
+  export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+    ({ inputSize = "md", className, ...props }, ref) => {
+      return (
+        <input
+          ref={ref}
+          className={cn(baseStyles, sizeStyles[inputSize], className)}
+          {...props}
+        />
+      );
+    }
+  );
+
+  Input.displayName = "Input";
+
+
+3. Create the Storybook story
+------------------------------
+
+Each component gets a story in its own folder under stories/:
+
+  stories/<component-name>/<component-name>.stories.tsx
+
+Import the component using the @/ path alias:
+
+  import { Input } from "@/components/ui/input/input";
+
+Story template:
+
+  import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+  import { Input } from "@/components/ui/input/input";
+
+  const meta: Meta<typeof Input> = {
+    title: "UI/Input",
+    component: Input,
+    argTypes: {
+      inputSize: {
+        control: "select",
+        options: ["sm", "md", "lg"],
+      },
+    },
+  };
+
+  export default meta;
+
+  type Story = StoryObj<typeof Input>;
+
+  export const Default: Story = {
+    args: {
+      placeholder: "Type something...",
+      inputSize: "md",
+    },
+  };
+
+
+4. Adding new design tokens
+----------------------------
+
+If your component needs a new color token:
+
+  a. Add the CSS variable to :root (light) and .dark in app/globals.css:
+
+       :root {
+         --my-token: oklch(...);
+       }
+       .dark {
+         --my-token: oklch(...);
+       }
+
+  b. Register it in the @theme inline block in app/globals.css:
+
+       @theme inline {
+         --color-my-token: var(--my-token);
+       }
+
+  c. You can now use bg-my-token, text-my-token, etc. in Tailwind classes.
+
+
+5. Project structure reference
+-------------------------------
+
+  components/
+    ui/
+      button/
+        button.tsx            <-- component source
+      input/
+        input.tsx
+      ...
+
+  stories/
+    button/
+      button.stories.tsx      <-- Storybook story for our UI Button
+    input/
+      input.stories.tsx
+    ...
+
+  app/
+    globals.css               <-- CSS variables + @theme inline (Tailwind v4)
+
+  .storybook/
+    main.ts                   <-- stories glob: ../stories/**/*.stories.@(ts|tsx)
+    preview.ts                <-- imports ../app/globals.css
+
+
+6. Checklist for new components
+--------------------------------
+
+  [ ] Component file created at components/ui/<name>/<name>.tsx
+  [ ] Uses forwardRef and sets displayName
+  [ ] Uses token-aware Tailwind classes (bg-primary, etc.)
+  [ ] Accepts className prop for consumer overrides
+  [ ] Story file created at stories/<name>/<name>.stories.tsx
+  [ ] Story title follows "UI/<ComponentName>" convention
+  [ ] Story has argTypes with controls for all variant/size props
+  [ ] Storybook renders correctly: npm run storybook
