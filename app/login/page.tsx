@@ -6,6 +6,7 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
+  CardLink,
 } from "@/components/ui/card";
 import { Input, PasswordInput } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -41,7 +42,10 @@ export default function Login() {
               />
             </CardContent>
             <CardFooter>
-              <Checkbox id="remember" label="Remember me" />
+              <div className="flex items-center justify-between">
+                <Checkbox id="remember" label="Remember me" />
+                <CardLink href="/login">Forgot password?</CardLink>
+              </div>
               <Button className="w-full">Sign in</Button>
             </CardFooter>
           </CardCentered>

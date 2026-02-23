@@ -86,3 +86,18 @@ export const CardFooter = React.forwardRef<
   <div ref={ref} className={cn("flex flex-col gap-8", className)} {...props} />
 ));
 CardFooter.displayName = "CardFooter";
+
+export const CardLink = React.forwardRef<
+  HTMLAnchorElement,
+  React.AnchorHTMLAttributes<HTMLAnchorElement>
+>(({ className, ...props }, ref) => (
+  <a
+    ref={ref}
+    className={cn(
+      "text-sm font-medium leading-[14px] text-[#250D53] text-right hover:underline",
+      className,
+    )}
+    {...props}
+  />
+));
+CardLink.displayName = "CardLink";
