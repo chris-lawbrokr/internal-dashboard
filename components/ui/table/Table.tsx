@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Search } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 
 function cn(...values: Array<string | undefined | null | false>): string {
   return values.filter(Boolean).join(" ");
@@ -10,6 +10,11 @@ interface TableToolbarProps {
   searchPlaceholder?: string;
   searchValue?: string;
   onSearchChange?: (value: string) => void;
+  page?: number;
+  pageSize?: number;
+  totalItems?: number;
+  totalPages?: number;
+  onPageChange?: (page: number) => void;
 }
 
 export const Table = React.forwardRef<
@@ -23,6 +28,11 @@ export const Table = React.forwardRef<
       searchPlaceholder = "Search...",
       searchValue,
       onSearchChange,
+      page,
+      pageSize,
+      totalItems,
+      totalPages,
+      onPageChange,
       ...props
     },
     ref,
@@ -55,6 +65,58 @@ export const Table = React.forwardRef<
           {...props}
         />
       </div>
+      {onPageChange && totalPages != null && page != null && totalPages > 1 && (
+        <div className="flex items-center px-4 pb-4">
+          {totalItems != null && pageSize != null && (
+            <span className="text-sm text-muted-foreground px-2">
+              Showing {(page - 1) * pageSize + 1}-
+              {Math.min(page * pageSize, totalItems)} of {totalItems}
+            </span>
+          )}
+          <div className="flex items-center gap-1 ml-auto">
+            <button
+              type="button"
+              disabled={page <= 1}
+              onClick={() => onPageChange(page - 1)}
+              className="h-8 w-8 flex items-center justify-center rounded-md text-sm text-muted-foreground hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+            >
+              <ChevronLeft size={16} />
+            </button>
+            {(() => {
+              const maxVisible = 10;
+              let start = Math.max(1, page - Math.floor(maxVisible / 2));
+              const end = Math.min(totalPages, start + maxVisible - 1);
+              start = Math.max(1, end - maxVisible + 1);
+              return Array.from(
+                { length: end - start + 1 },
+                (_, i) => start + i,
+              );
+            })().map((p) => (
+              <button
+                key={p}
+                type="button"
+                onClick={() => onPageChange(p)}
+                className={cn(
+                  "h-8 w-8 flex items-center justify-center rounded-md text-sm cursor-pointer",
+                  p === page
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:bg-muted",
+                )}
+              >
+                {p}
+              </button>
+            ))}
+            <button
+              type="button"
+              disabled={page >= totalPages}
+              onClick={() => onPageChange(page + 1)}
+              className="h-8 w-8 flex items-center justify-center rounded-md text-sm text-muted-foreground hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   ),
 );
