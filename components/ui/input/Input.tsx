@@ -25,7 +25,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           id={id}
           type={type}
           className={cn(
-            "h-9 w-full rounded-md border border-input bg-background px-3 text-sm",
+            "h-9 w-full rounded-md border border-input bg-background px-3 text-sm cursor-text",
             "placeholder:text-muted-foreground",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             "disabled:cursor-not-allowed disabled:opacity-50",
@@ -63,7 +63,7 @@ export const PasswordInput = React.forwardRef<
           id={id}
           type={visible ? "text" : "password"}
           className={cn(
-            "h-9 w-full rounded-md border border-input bg-background px-3 pr-9 text-sm",
+            "h-9 w-full rounded-md border border-input bg-background px-3 pr-9 text-sm cursor-text",
             "placeholder:text-muted-foreground",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             "disabled:cursor-not-allowed disabled:opacity-50",
@@ -74,7 +74,7 @@ export const PasswordInput = React.forwardRef<
         <button
           type="button"
           onClick={() => setVisible((v) => !v)}
-          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
           aria-label={visible ? "Hide password" : "Show password"}
         >
           {visible ? (

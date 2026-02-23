@@ -14,7 +14,7 @@ function cn(...values: Array<string | undefined | null | false>): string {
 }
 
 const baseStyles =
-  "flex items-center justify-center gap-1.5 self-stretch rounded-xl text-sm font-medium transition-colors " +
+  "flex items-center justify-center gap-1.5 self-stretch rounded-xl text-sm font-medium transition-colors cursor-pointer " +
   "shadow-[0_1px_0.5px_0.05px_rgba(29,41,61,0.02)] " +
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 " +
   "focus-visible:ring-ring focus-visible:ring-offset-background " +
