@@ -16,7 +16,7 @@ export function Header({ onMenuClick }: HeaderProps) {
         <div className="ml-auto flex items-center gap-4">
           <Bell size={20} className="cursor-pointer" />
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-medium">
-            JD
+            LB
           </span>
           <a
             href="/logout"
