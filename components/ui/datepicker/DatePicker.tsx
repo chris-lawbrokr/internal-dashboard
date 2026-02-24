@@ -396,7 +396,7 @@ export function DatePicker({
         <div
           ref={dropdownRef}
           className={cn(
-            "absolute z-50 mt-1 rounded-lg border border-border bg-popover p-3 shadow-lg",
+            "absolute z-50 mt-2 rounded-lg border border-border bg-popover p-3 shadow-lg",
             align === "right" ? "right-0" : "left-0",
           )}
         >
@@ -568,7 +568,7 @@ export function DateRangePicker({
         <div
           ref={dropdownRef}
           className={cn(
-            "absolute z-50 mt-1 rounded-lg border border-border bg-popover p-4 shadow-lg",
+            "absolute z-50 mt-2 rounded-lg border border-border bg-popover p-4 shadow-lg",
             align === "right" ? "right-0" : "left-0",
           )}
         >
