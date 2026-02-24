@@ -55,7 +55,20 @@ export default function Dashboard() {
             </Card>
 
             <Card className="flex-1 p-4">
-              <CardContent>
+              <CardContent className="flex">
+                <div className="flex flex-col gap-2">
+                  <p className="font-sans font-normal text-sm leading-[1.25] tracking-normal">
+                    Conversion Rate
+                  </p>
+                  <p className="font-sans font-normal text-2xl leading-8 tracking-normal">
+                    10%
+                  </p>
+                  <p className="font-sans font-normal text-sm leading-[1.25] tracking-normal">
+                    10% increase
+                    <br />
+                    last month
+                  </p>
+                </div>
                 <PieChart />
               </CardContent>
             </Card>

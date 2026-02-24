@@ -7,18 +7,37 @@ const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 export function PieChart() {
   const options: ApexCharts.ApexOptions = {
     chart: {
-      type: "pie",
+      type: "radialBar",
     },
-    labels: ["Direct", "Organic", "Referral", "Social"],
-    colors: ["#6366f1", "#8b5cf6", "#a78bfa", "#c4b5fd"],
-    legend: {
-      position: "bottom",
+    colors: ["#6366f1"],
+    plotOptions: {
+      radialBar: {
+        hollow: {
+          size: "55%",
+        },
+        track: {
+          background: "#e5e7eb",
+          strokeWidth: "100%",
+        },
+        dataLabels: {
+          name: {
+            show: false,
+          },
+          value: {
+            show: false,
+          },
+        },
+      },
     },
+    stroke: {
+      lineCap: "round",
+    },
+    labels: ["Conversion"],
   };
 
-  const series = [44, 25, 18, 13];
+  const series = [90];
 
   return (
-    <Chart options={options} series={series} type="pie" height="100%" />
+    <Chart options={options} series={series} type="radialBar" height="100%" />
   );
 }
