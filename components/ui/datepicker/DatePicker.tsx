@@ -79,6 +79,32 @@ function today(): Date {
   return new Date(d.getFullYear(), d.getMonth(), d.getDate());
 }
 
+// ── useDropdownAlign ────────────────────────────────────────────────
+
+function useDropdownAlign(
+  containerRef: React.RefObject<HTMLElement | null>,
+  dropdownRef: React.RefObject<HTMLElement | null>,
+  open: boolean,
+) {
+  const [align, setAlign] = React.useState<"left" | "right">("left");
+
+  React.useEffect(() => {
+    if (!open || !containerRef.current || !dropdownRef.current) return;
+    const container = containerRef.current.getBoundingClientRect();
+    const dropdown = dropdownRef.current.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+
+    // If dropdown overflows right edge, align to right
+    if (container.left + dropdown.width > viewportWidth - 8) {
+      setAlign("right");
+    } else {
+      setAlign("left");
+    }
+  }, [open, containerRef, dropdownRef]);
+
+  return align;
+}
+
 // ── DatePickerInput ─────────────────────────────────────────────────
 
 export interface DatePickerInputProps {
@@ -314,6 +340,8 @@ export function DatePicker({
 }: DatePickerProps) {
   const [open, setOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
+  const align = useDropdownAlign(containerRef, dropdownRef, open);
   const [viewMonth, setViewMonth] = React.useState(
     value ? value.getMonth() : new Date().getMonth(),
   );
@@ -365,7 +393,13 @@ export function DatePicker({
         disabled={disabled}
       />
       {open && (
-        <div className="absolute z-50 mt-1 rounded-lg border border-border bg-popover p-3 shadow-lg">
+        <div
+          ref={dropdownRef}
+          className={cn(
+            "absolute z-50 mt-1 rounded-lg border border-border bg-popover p-3 shadow-lg",
+            align === "right" ? "right-0" : "left-0",
+          )}
+        >
           <Calendar
             month={viewMonth}
             year={viewYear}
@@ -424,6 +458,8 @@ export function DateRangePicker({
 }: DateRangePickerProps) {
   const [open, setOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
+  const align = useDropdownAlign(containerRef, dropdownRef, open);
   const [selecting, setSelecting] = React.useState<"start" | "end">("start");
 
   const now = new Date();
@@ -529,7 +565,13 @@ export function DateRangePicker({
       </div>
 
       {open && (
-        <div className="absolute z-50 mt-1 rounded-lg border border-border bg-popover p-4 shadow-lg">
+        <div
+          ref={dropdownRef}
+          className={cn(
+            "absolute z-50 mt-1 rounded-lg border border-border bg-popover p-4 shadow-lg",
+            align === "right" ? "right-0" : "left-0",
+          )}
+        >
           <div className="flex gap-4">
             <Calendar
               month={leftMonth}

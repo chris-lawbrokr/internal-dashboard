@@ -24,7 +24,7 @@ export default function Dashboard() {
         <div className="w-full p-4 overflow-auto @container flex flex-col gap-4">
           <Card className="p-4">
             <CardContent className="flex gap-4 justify-between items-center">
-              <h1 className="text-xl font-normal leading-[1.25]">
+              <h1 className="text-xl font-bold leading-[1.25]">
                 Law Firm Name
               </h1>
               <div>
