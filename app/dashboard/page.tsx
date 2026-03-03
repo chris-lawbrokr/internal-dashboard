@@ -9,6 +9,13 @@ import { DateRangePicker } from "@/components/ui/datepicker";
 import { UsersTable } from "./ui/UsersTable";
 import { PieChart } from "./ui/PieChart";
 import { LineChart } from "./ui/LineChart";
+import { UsersMonthChart } from "./ui/UsersMonthChart";
+import { UsersWeekChart } from "./ui/UsersWeekChart";
+import { LeadsWeekChart } from "./ui/LeadsWeekChart";
+import { WebsiteStatsCard } from "./ui/WebsiteStatsCard";
+import { SalesMonthChart } from "./ui/SalesMonthChart";
+import { UsersByCountryChart } from "./ui/UsersByCountryChart";
+import { CountrySessionsChart } from "./ui/CountrySessionsChart";
 
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -41,6 +48,7 @@ export default function Dashboard() {
               </div>
             </CardContent>
           </Card>
+
           <div className="min-w-[320px] flex flex-col gap-4 @xl:flex-row">
             <div className="flex-1 min-w-0 flex flex-col gap-4">
               <Card className="flex-1 p-4">
@@ -97,6 +105,17 @@ export default function Dashboard() {
                 </div>
               </CardContent>
             </Card>
+          </div>
+
+          <div className="grid grid-cols-1 @md:grid-cols-2 @xl:grid-cols-3 @4xl:grid-cols-4 gap-4">
+            <UsersWeekChart />
+            <UsersWeekChart />
+            <LeadsWeekChart />
+            <WebsiteStatsCard />
+            <SalesMonthChart />
+            <UsersByCountryChart />
+            <UsersWeekChart />
+            <CountrySessionsChart />
           </div>
 
           <div className="min-w-[320px]">
