@@ -384,14 +384,32 @@ export function DatePicker({
 
   return (
     <div ref={containerRef} className="relative w-full">
-      <DatePickerInput
-        label={label}
-        required={required}
-        value={value}
-        placeholder={placeholder}
+      {/* Full input on md+ screens */}
+      <div className="hidden md:block">
+        <DatePickerInput
+          label={label}
+          required={required}
+          value={value}
+          placeholder={placeholder}
+          onClick={() => !disabled && setOpen((o) => !o)}
+          disabled={disabled}
+        />
+      </div>
+      {/* Icon-only toggle on small screens */}
+      <button
+        type="button"
         onClick={() => !disabled && setOpen((o) => !o)}
         disabled={disabled}
-      />
+        className={cn(
+          "md:hidden h-9 w-9 flex items-center justify-center rounded-md border border-input bg-background",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          "disabled:cursor-not-allowed disabled:opacity-50",
+          !disabled && "cursor-pointer",
+        )}
+        aria-label={open ? "Close date picker" : "Open date picker"}
+      >
+        <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+      </button>
       {open && (
         <div
           ref={dropdownRef}
@@ -532,7 +550,8 @@ export function DateRangePicker({
 
   return (
     <div ref={containerRef} className="relative">
-      <div className="flex items-end gap-3">
+      {/* Full inputs on md+ screens */}
+      <div className="hidden md:flex items-end gap-3">
         <div className="flex-1">
           <DatePickerInput
             label={labels.start}
@@ -563,6 +582,24 @@ export function DateRangePicker({
           />
         </div>
       </div>
+      {/* Icon-only toggle on small screens */}
+      <button
+        type="button"
+        onClick={() => {
+          if (disabled) return;
+          setOpen((o) => !o);
+        }}
+        disabled={disabled}
+        className={cn(
+          "md:hidden h-9 w-9 flex items-center justify-center rounded-md border border-input bg-background",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          "disabled:cursor-not-allowed disabled:opacity-50",
+          !disabled && "cursor-pointer",
+        )}
+        aria-label={open ? "Close date picker" : "Open date picker"}
+      >
+        <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+      </button>
 
       {open && (
         <div
@@ -572,7 +609,8 @@ export function DateRangePicker({
             align === "right" ? "right-0" : "left-0",
           )}
         >
-          <div className="flex gap-4">
+          {/* Dual calendar on md+ screens */}
+          <div className="hidden md:flex gap-4">
             <Calendar
               month={leftMonth}
               year={leftYear}
@@ -596,6 +634,23 @@ export function DateRangePicker({
               onDateSelect={handleDateSelect}
               onMonthChange={() => goLeftNext()}
               showNav="right"
+              startClassName={startClassName}
+              endClassName={endClassName}
+            />
+          </div>
+          {/* Single calendar on small screens */}
+          <div className="md:hidden">
+            <Calendar
+              month={leftMonth}
+              year={leftYear}
+              selectedStart={startDate}
+              selectedEnd={endDate}
+              onDateSelect={handleDateSelect}
+              onMonthChange={(m, y) => {
+                setLeftMonth(m);
+                setLeftYear(y);
+              }}
+              showNav="both"
               startClassName={startClassName}
               endClassName={endClassName}
             />
