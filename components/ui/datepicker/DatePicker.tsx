@@ -418,6 +418,10 @@ export function DatePicker({
             align === "right" ? "right-0" : "left-0",
           )}
         >
+          {/* Selected date summary on small screens */}
+          <div className="md:hidden mb-2 pb-2 border-b border-border text-sm text-center text-muted-foreground">
+            {value ? formatDate(value) : "No date selected"}
+          </div>
           <Calendar
             month={viewMonth}
             year={viewYear}
@@ -637,6 +641,10 @@ export function DateRangePicker({
               startClassName={startClassName}
               endClassName={endClassName}
             />
+          </div>
+          {/* Selected range summary on small screens */}
+          <div className="md:hidden mb-2 pb-2 border-b border-border text-sm text-center text-muted-foreground">
+            {startDate ? formatDate(startDate) : "Start"}{" — "}{endDate ? formatDate(endDate) : "End"}
           </div>
           {/* Single calendar on small screens */}
           <div className="md:hidden">
