@@ -1,70 +1,65 @@
 "use client";
 
-import dynamic from "next/dynamic";
+import { useEffect, useState, useMemo } from "react";
+import { geoEqualEarth, geoPath } from "d3-geo";
+import { feature } from "topojson-client";
+import type { Topology, GeometryCollection } from "topojson-specification";
+import type { FeatureCollection, Geometry } from "geojson";
 import { Card, CardContent } from "@/components/ui/card";
 
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+const GEO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/land-110m.json";
+
+const sessionData = [
+  { name: "United States", coordinates: [-100, 40] as [number, number], sessions: 3856 },
+  { name: "Canada", coordinates: [-100, 56] as [number, number], sessions: 2400 },
+  { name: "Brazil", coordinates: [-50, -10] as [number, number], sessions: 1200 },
+  { name: "United Kingdom", coordinates: [0, 52] as [number, number], sessions: 2800 },
+  { name: "France", coordinates: [2, 47] as [number, number], sessions: 3200 },
+  { name: "Germany", coordinates: [10, 51] as [number, number], sessions: 2600 },
+  { name: "Russia", coordinates: [40, 56] as [number, number], sessions: 1800 },
+  { name: "Saudi Arabia", coordinates: [45, 24] as [number, number], sessions: 1500 },
+  { name: "India", coordinates: [78, 22] as [number, number], sessions: 900 },
+  { name: "China", coordinates: [105, 35] as [number, number], sessions: 2100 },
+  { name: "South Korea", coordinates: [127, 36] as [number, number], sessions: 1400 },
+  { name: "Japan", coordinates: [138, 36] as [number, number], sessions: 1900 },
+  { name: "Australia", coordinates: [134, -25] as [number, number], sessions: 2400 },
+  { name: "Indonesia", coordinates: [115, -2] as [number, number], sessions: 1600 },
+  { name: "Nigeria", coordinates: [8, 10] as [number, number], sessions: 800 },
+  { name: "South Africa", coordinates: [25, -29] as [number, number], sessions: 700 },
+];
+
+const maxSessions = Math.max(...sessionData.map((d) => d.sessions));
+
+function markerSize(sessions: number) {
+  return 4 + (sessions / maxSessions) * 8;
+}
+
+const WIDTH = 500;
+const HEIGHT = 240;
+
+const projection = geoEqualEarth()
+  .scale(90)
+  .center([10, 10])
+  .translate([WIDTH / 2, HEIGHT / 2]);
+
+const pathGenerator = geoPath(projection);
 
 export function CountrySessionsChart() {
-  const options: ApexCharts.ApexOptions = {
-    chart: {
-      type: "scatter",
-      toolbar: { show: false },
-      zoom: { enabled: false },
-    },
-    colors: ["#312e81"],
-    xaxis: {
-      min: -180,
-      max: 180,
-      tickAmount: 6,
-      labels: { show: false },
-      axisBorder: { show: false },
-      axisTicks: { show: false },
-    },
-    yaxis: {
-      min: -60,
-      max: 80,
-      tickAmount: 4,
-      labels: { show: false },
-    },
-    grid: { show: false },
-    legend: { show: false },
-    dataLabels: { enabled: false },
-    tooltip: {
-      theme: "light",
-      custom({ seriesIndex, dataPointIndex, w }) {
-        const point = w.config.series[seriesIndex].data[dataPointIndex];
-        return `<div class="px-2 py-1 text-xs">${point.z?.toLocaleString() ?? ""} sessions</div>`;
-      },
-    },
-    markers: {
-      size: [6, 8, 5, 10, 7, 9, 4, 6, 8, 5, 7, 6, 5, 8, 4, 6],
-    },
-  };
+  const [mounted, setMounted] = useState(false);
+  const [landPaths, setLandPaths] = useState<string[]>([]);
 
-  const series = [
-    {
-      name: "Sessions",
-      data: [
-        { x: -100, y: 40, z: 3856 },
-        { x: -80, y: 35, z: 2400 },
-        { x: -60, y: -15, z: 1200 },
-        { x: 0, y: 52, z: 2800 },
-        { x: 10, y: 48, z: 3200 },
-        { x: 15, y: 44, z: 2600 },
-        { x: 25, y: 55, z: 1800 },
-        { x: 35, y: 35, z: 1500 },
-        { x: 50, y: 25, z: 900 },
-        { x: 75, y: 35, z: 2100 },
-        { x: 80, y: 30, z: 1400 },
-        { x: 105, y: 38, z: 1900 },
-        { x: 120, y: 35, z: 2400 },
-        { x: 140, y: -25, z: 1600 },
-        { x: -45, y: 10, z: 800 },
-        { x: 30, y: 0, z: 700 },
-      ],
-    },
-  ];
+  useEffect(() => {
+    setMounted(true);
+    fetch(GEO_URL)
+      .then((res) => res.json())
+      .then((topo: Topology<{ land: GeometryCollection }>) => {
+        const land = feature(topo, topo.objects.land) as FeatureCollection<Geometry>;
+        const paths = land.features
+          .map((f) => pathGenerator(f))
+          .filter((d): d is string => d !== null);
+        setLandPaths(paths);
+      });
+  }, []);
 
   return (
     <Card className="p-4 flex flex-col justify-between h-full">
@@ -72,7 +67,40 @@ export function CountrySessionsChart() {
         <span className="text-sm font-semibold">Country wise sessions</span>
       </CardContent>
       <div className="mt-2 flex-1 min-h-0">
-        <Chart options={options} series={series} type="scatter" height={180} />
+        {mounted ? (
+          <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} className="w-full h-auto">
+            {landPaths.map((d, i) => (
+              <path
+                key={i}
+                d={d}
+                fill="#e0e7ff"
+                stroke="#c7d2fe"
+                strokeWidth={0.5}
+              />
+            ))}
+            {sessionData.map((point) => {
+              const coords = projection(point.coordinates);
+              if (!coords) return null;
+              const r = markerSize(point.sessions);
+              return (
+                <g key={point.name}>
+                  <circle
+                    cx={coords[0]}
+                    cy={coords[1]}
+                    r={r}
+                    fill="#4f46e5"
+                    fillOpacity={0.7}
+                    stroke="#312e81"
+                    strokeWidth={0.5}
+                  />
+                  <title>{`${point.name}: ${point.sessions.toLocaleString()} sessions`}</title>
+                </g>
+              );
+            })}
+          </svg>
+        ) : (
+          <div style={{ height: HEIGHT }} />
+        )}
       </div>
       <div className="flex items-center justify-between mt-2 pt-2 border-t">
         <span className="text-xs text-muted-foreground">Last 7 days</span>
