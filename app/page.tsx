@@ -1,21 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { Sidebar } from "./ui/Sidebar";
-import { Header } from "./ui/Header";
+import { Sidebar } from "@/app/ui/Sidebar";
+import { Header } from "@/app/ui/Header";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { DateRangePicker } from "@/components/ui/datepicker";
-import { UsersTable } from "./ui/UsersTable";
-import { PieChart } from "./ui/PieChart";
-import { LineChart } from "./ui/LineChart";
-import { UsersMonthChart } from "./ui/UsersMonthChart";
-import { UsersWeekChart } from "./ui/UsersWeekChart";
-import { LeadsWeekChart } from "./ui/LeadsWeekChart";
-import { WebsiteStatsCard } from "./ui/WebsiteStatsCard";
-import { SalesMonthChart } from "./ui/SalesMonthChart";
-import { UsersByCountryChart } from "./ui/UsersByCountryChart";
-import { CountrySessionsChart } from "./ui/CountrySessionsChart";
+import { UsersTable } from "@/app/ui/UsersTable";
+import { PieChart } from "@/app/ui/PieChart";
+import { LineChart } from "@/app/ui/LineChart";
+import { UsersMonthChart } from "@/app/ui/UsersMonthChart";
+import { UsersWeekChart } from "@/app/ui/UsersWeekChart";
+import { LeadsWeekChart } from "@/app/ui/LeadsWeekChart";
+import { WebsiteStatsCard } from "@/app/ui/WebsiteStatsCard";
+import { SalesMonthChart } from "@/app/ui/SalesMonthChart";
+import { UsersByCountryChart } from "@/app/ui/UsersByCountryChart";
+import { CountrySessionsChart } from "@/app/ui/CountrySessionsChart";
 
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
