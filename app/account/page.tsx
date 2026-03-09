@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { DateRangePicker } from "@/components/ui/datepicker";
 import { OverviewTab } from "./OverviewTab";
 import { PerformanceTab } from "./PerformanceTab";
+import { WebsiteTab } from "./WebsiteTab";
 
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -67,6 +68,7 @@ export default function Dashboard() {
 
           {activeTab === "Overview" && <OverviewTab />}
           {activeTab === "Performance" && <PerformanceTab />}
+          {activeTab === "Website" && <WebsiteTab />}
         </div>
       </div>
     </div>
