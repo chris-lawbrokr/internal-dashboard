@@ -24,7 +24,7 @@ export default function Dashboard() {
 
   return (
     <div className="h-screen w-full overflow-hidden flex flex-col border-x">
-      <Header onMenuClick={() => setSidebarOpen((o) => !o)} />
+      <Header onMenuClick={() => setSidebarOpen((o) => !o)} sidebarOpen={sidebarOpen} />
 
       <div className="flex-1 min-h-0 flex relative">
         <Sidebar open={sidebarOpen} />
