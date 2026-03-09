@@ -9,13 +9,6 @@ import { DateRangePicker } from "@/components/ui/datepicker";
 import { UsersTable } from "@/app/ui/UsersTable";
 import { PieChart } from "@/app/ui/PieChart";
 import { LineChart } from "@/app/ui/LineChart";
-import { UsersMonthChart } from "@/app/ui/UsersMonthChart";
-import { UsersWeekChart } from "@/app/ui/UsersWeekChart";
-import { LeadsWeekChart } from "@/app/ui/LeadsWeekChart";
-import { WebsiteStatsCard } from "@/app/ui/WebsiteStatsCard";
-import { SalesMonthChart } from "@/app/ui/SalesMonthChart";
-import { UsersByCountryChart } from "@/app/ui/UsersByCountryChart";
-import { CountrySessionsChart } from "@/app/ui/CountrySessionsChart";
 
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -24,7 +17,10 @@ export default function Dashboard() {
 
   return (
     <div className="h-screen w-full overflow-hidden flex flex-col border-x">
-      <Header onMenuClick={() => setSidebarOpen((o) => !o)} sidebarOpen={sidebarOpen} />
+      <Header
+        onMenuClick={() => setSidebarOpen((o) => !o)}
+        sidebarOpen={sidebarOpen}
+      />
 
       <div className="flex-1 min-h-0 flex relative">
         <Sidebar open={sidebarOpen} />

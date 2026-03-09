@@ -1,9 +1,6 @@
 "use client";
 
 import {
-  StatCard,
-  VisitsResponsesChart,
-  ConversionRateCard,
   ConversionRatesOverPeriodsChart,
   FunnelsTable,
 } from "@/app/ui/PerformanceCharts";
