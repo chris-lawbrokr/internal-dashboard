@@ -9,16 +9,7 @@ import { Header } from "@/app/ui/Header";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { DateRangePicker } from "@/components/ui/datepicker";
-import { UsersTable } from "@/app/ui/UsersTable";
-import { PieChart } from "@/app/ui/PieChart";
-import { LineChart } from "@/app/ui/LineChart";
-import { UsersMonthChart } from "@/app/ui/UsersMonthChart";
-import { UsersWeekChart } from "@/app/ui/UsersWeekChart";
-import { LeadsWeekChart } from "@/app/ui/LeadsWeekChart";
-import { WebsiteStatsCard } from "@/app/ui/WebsiteStatsCard";
-import { SalesMonthChart } from "@/app/ui/SalesMonthChart";
-import { UsersByCountryChart } from "@/app/ui/UsersByCountryChart";
-import { CountrySessionsChart } from "@/app/ui/CountrySessionsChart";
+import { GaugeChart } from "@/app/ui/GaugeChart";
 
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -61,7 +52,29 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <div className="min-w-[320px] flex flex-col gap-4 @xl:flex-row"></div>
+          <div className="min-w-[320px] flex flex-col gap-4 @xl:flex-row">
+            <GaugeChart
+              title="Onboarding Health"
+              label="Good"
+              value={75}
+              color="#7c3aed"
+              href="#"
+            />
+            <GaugeChart
+              title="Performance Health"
+              label="Fair"
+              value={50}
+              color="#a855f7"
+              href="#"
+            />
+            <GaugeChart
+              title="Website Health"
+              label="Poor"
+              value={25}
+              color="#d8b4fe"
+              href="#"
+            />
+          </div>
         </div>
       </div>
     </div>
