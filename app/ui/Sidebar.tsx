@@ -10,9 +10,9 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { id: "home", label: "Home", href: "/dashboard", icon: Home },
-  { id: "account", label: "Account", href: "/dashboard", icon: User },
-  { id: "analytics", label: "Analytics", href: "/dashboard", icon: BarChart3 },
+  { id: "home", label: "Home", href: "/", icon: Home },
+  { id: "account", label: "Account", href: "/account", icon: User },
+  { id: "analytics", label: "Analytics", href: "/", icon: BarChart3 },
 ];
 
 interface SidebarProps {
