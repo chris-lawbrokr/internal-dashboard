@@ -29,11 +29,16 @@ export default function Dashboard() {
           <Card className="p-4">
             <CardContent className="flex gap-4 justify-between items-center">
               <div className="flex gap-2">
-                <Link href="/" className="hover:underline flex items-center gap-1">
+                <Link
+                  href="/"
+                  className="hover:underline flex items-center gap-1"
+                >
                   <ArrowLeft className="w-4 h-4" />
                   Back
                 </Link>
-                <h1 className="text-xl font-bold leading-[1.25]">Law Firm Name</h1>
+                <h1 className="text-xl font-bold leading-[1.25]">
+                  Law Firm Name
+                </h1>
               </div>
               <div>
                 <DateRangePicker

@@ -4,6 +4,9 @@ import { useState } from "react";
 import { Sidebar } from "@/app/ui/Sidebar";
 import { Header } from "@/app/ui/Header";
 
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { DateRangePicker } from "@/components/ui/datepicker";
 import { UsersTable } from "@/app/ui/UsersTable";
@@ -32,9 +35,18 @@ export default function Dashboard() {
         <div className="w-full p-4 overflow-auto @container flex flex-col gap-4">
           <Card className="p-4">
             <CardContent className="flex gap-4 justify-between items-center">
-              <h1 className="text-xl font-bold leading-[1.25]">
-                Welcome back, Placeholder
-              </h1>
+              <div className="flex gap-2">
+                <Link
+                  href="/"
+                  className="hover:underline flex items-center gap-1"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Back
+                </Link>
+                <h1 className="text-xl font-bold leading-[1.25]">
+                  Law Firm Name
+                </h1>
+              </div>
               <div>
                 <DateRangePicker
                   labels={{ start: "Start Date", end: "End Date" }}
