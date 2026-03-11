@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 
 interface GaugeChartProps {
@@ -32,6 +33,7 @@ function describeArc(
 }
 
 export function GaugeChart({ title, label, value, color, href }: GaugeChartProps) {
+  const t = useTranslations("common");
   const cx = 100;
   const cy = 90;
   const r = 70;
@@ -74,7 +76,7 @@ export function GaugeChart({ title, label, value, color, href }: GaugeChartProps
               href={href}
               className="text-sm hover:underline flex items-center gap-0.5"
             >
-              View More <ChevronRight className="w-4 h-4" />
+              {t("viewMore")} <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
         )}

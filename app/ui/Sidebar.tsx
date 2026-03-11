@@ -4,18 +4,19 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, User, BarChart3 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface NavItem {
   id: string;
-  label: string;
+  labelKey: string;
   href: string;
   icon: LucideIcon;
 }
 
 const navItems: NavItem[] = [
-  { id: "home", label: "Home", href: "/", icon: Home },
-  { id: "account", label: "Account", href: "/account", icon: User },
-  { id: "analytics", label: "Analytics", href: "/analytics", icon: BarChart3 },
+  { id: "home", labelKey: "home", href: "/", icon: Home },
+  { id: "account", labelKey: "account", href: "/account", icon: User },
+  { id: "analytics", labelKey: "analytics", href: "/analytics", icon: BarChart3 },
 ];
 
 interface SidebarProps {
@@ -24,10 +25,11 @@ interface SidebarProps {
 
 export function Sidebar({ open = true }: SidebarProps) {
   const pathname = usePathname();
+  const t = useTranslations("nav");
 
   return (
     <div
-      className={`shrink-0 overflow-hidden bg-card transition-all duration-300 ease-in-out absolute md:relative z-10 h-full ${open ? "w-[200px]" : "w-0"}`}
+      className={`shrink-0 overflow-hidden bg-card transition-all duration-300 ease-in-out absolute md:relative z-10 h-full ${open ? "w-full md:w-[200px]" : "w-0"}`}
     >
       <nav className="min-w-[200px] flex flex-col gap-1 p-4">
         {navItems.map((item) => {
@@ -43,7 +45,7 @@ export function Sidebar({ open = true }: SidebarProps) {
               className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-accent hover:text-accent-foreground ${isActive ? "font-bold text-foreground" : "text-muted-foreground"}`}
             >
               <item.icon size={16} />
-              {item.label}
+              {t(item.labelKey)}
             </Link>
           );
         })}

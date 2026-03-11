@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Sidebar } from "@/app/ui/Sidebar";
 import { Header } from "@/app/ui/Header";
 
@@ -17,6 +18,9 @@ export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const t = useTranslations("dashboard");
+  const tc = useTranslations("common");
+  const ta = useTranslations("account");
 
   return (
     <div className="h-screen w-full overflow-hidden flex flex-col border-x">
@@ -37,7 +41,7 @@ export default function Dashboard() {
                   className="hover:underline flex items-center gap-1"
                 >
                   <ArrowLeft className="w-4 h-4" />
-                  Back
+                  {ta("back")}
                 </Link>
                 <h1 className="text-xl font-bold leading-[1.25]">
                   Law Firm Name
@@ -45,7 +49,7 @@ export default function Dashboard() {
               </div>
               <div>
                 <DateRangePicker
-                  labels={{ start: "Start Date", end: "End Date" }}
+                  labels={{ start: tc("startDate"), end: tc("endDate") }}
                   startDate={startDate}
                   endDate={endDate}
                   onChange={(s, e) => {
@@ -62,26 +66,26 @@ export default function Dashboard() {
               <Card className="flex-1 p-4">
                 <CardContent className="flex flex-col gap-2">
                   <p className="font-sans font-normal text-sm leading-[1.25] tracking-normal">
-                    Total Visits
+                    {t("totalVisits")}
                   </p>
                   <p className="font-sans font-normal text-2xl leading-8 tracking-normal">
                     4,268
                   </p>
                   <p className="font-sans font-normal text-sm leading-[1.25] tracking-normal">
-                    10% increase last month
+                    {t("increaseLastMonth", { percent: "10" })}
                   </p>
                 </CardContent>
               </Card>
               <Card className="flex-1 p-4">
                 <CardContent className="flex flex-col gap-2">
                   <p className="font-sans font-normal text-sm leading-[1.25] tracking-normal">
-                    Total Responses
+                    {t("totalResponses")}
                   </p>
                   <p className="font-sans font-normal text-2xl leading-8 tracking-normal">
                     426
                   </p>
                   <p className="font-sans font-normal text-sm leading-[1.25] tracking-normal">
-                    10% increase last month
+                    {t("increaseLastMonth", { percent: "10" })}
                   </p>
                 </CardContent>
               </Card>
@@ -97,15 +101,15 @@ export default function Dashboard() {
               <CardContent className="flex h-full gap-4">
                 <div className="w-1/3 min-w-0 flex flex-col gap-2">
                   <p className="font-sans font-normal text-sm leading-[1.25] tracking-normal">
-                    Conversion Rate
+                    {t("conversionRate")}
                   </p>
                   <p className="font-sans font-normal text-4xl leading-8 tracking-normal">
                     10%
                   </p>
                   <p className="font-sans font-normal text-sm leading-[1.25] tracking-normal">
-                    10% increase
+                    {t("increase", { percent: "10" })}
                     <br />
-                    last month
+                    {t("lastMonth")}
                   </p>
                 </div>
                 <div className="w-2/3 min-w-0 overflow-hidden">

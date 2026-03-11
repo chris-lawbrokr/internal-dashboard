@@ -1,0 +1,140 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "account": "Compte",
+    "analytics": "Analytique",
+    "logout": "Déconnexion",
+    "toggleSidebar": "Basculer la barre latérale"
+  },
+  "dashboard": {
+    "welcome": "Bon retour, {name}",
+    "totalVisits": "Visites Totales",
+    "totalResponses": "Réponses Totales",
+    "increaseLastMonth": "{percent}% d'augmentation le mois dernier",
+    "conversionRate": "Taux de Conversion",
+    "increase": "{percent}% d'augmentation",
+    "lastMonth": "le mois dernier"
+  },
+  "login": {
+    "enterCredentials": "Entrez vos identifiants pour continuer.",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "rememberMe": "Se souvenir de moi",
+    "forgotPassword": "Mot de passe oublié ?",
+    "signIn": "Se connecter"
+  },
+  "account": {
+    "back": "Retour",
+    "overview": "Aperçu",
+    "performance": "Performance",
+    "website": "Site Web",
+    "usage": "Utilisation",
+    "companyName": "Nom de l'Entreprise :",
+    "duration": "Durée :",
+    "restrictions": "Restrictions :",
+    "location": "Emplacement :",
+    "holdingCapacity": "Capacité :",
+    "companySize": "Taille de l'Entreprise :",
+    "practiceAreas": "Domaines de Pratique",
+    "integrations": "Intégrations",
+    "techStack": "Stack Technique",
+    "lawbrokrFeatures": "Fonctionnalités Lawbrokr",
+    "onboardingHealth": "Santé de l'Intégration",
+    "performanceHealth": "Santé de la Performance",
+    "websiteHealth": "Santé du Site Web",
+    "good": "Bon",
+    "fair": "Moyen",
+    "poor": "Mauvais"
+  },
+  "website": {
+    "websiteStatus": "Statut du Site Web",
+    "live": "En ligne",
+    "sourceAttribution": "Attribution de Source",
+    "enabled": "Activé",
+    "linkStatus": "Statut du Lien Lawbrokr",
+    "down": "Hors ligne",
+    "activeIntegrations": "Intégrations Actives",
+    "sslStatus": "Statut SSL",
+    "websiteLoadTime": "Temps de Chargement",
+    "seconds": "{count} secondes",
+    "liveLawbrokrLinks": "Liens Lawbrokr Actifs",
+    "lawbrokrLinks": "Liens Lawbrokr",
+    "websiteUrl": "URL du Site Web",
+    "lawbrokrUrl": "URL Lawbrokr",
+    "status": "Statut",
+    "active": "Actif",
+    "review": "En revue",
+    "broken": "Cassé",
+    "vsLastMonth": "vs mois dernier"
+  },
+  "performance": {
+    "conversionRatesOverPeriods": "Taux de Conversion par Périodes",
+    "funnels": "Entonnoirs",
+    "funnelName": "Nom de l'Entonnoir",
+    "totalVisits": "Visites Totales",
+    "totalConversions": "Conversions Totales",
+    "conversionRate": "Taux de Conversion",
+    "vsLastMonth": "vs mois dernier"
+  },
+  "common": {
+    "search": "Rechercher",
+    "searchPlaceholder": "Rechercher...",
+    "searchUsersPlaceholder": "Rechercher des utilisateurs...",
+    "filter": "Filtrer",
+    "rowsPerPage": "Lignes par page",
+    "of": "de",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "showing": "Affichage",
+    "viewMore": "Voir Plus",
+    "users": "Utilisateurs",
+    "userRole": "Rôle",
+    "name": "Nom",
+    "email": "E-mail",
+    "type": "Type",
+    "status": "Statut",
+    "role": "Rôle",
+    "startDate": "Date de Début",
+    "endDate": "Date de Fin"
+  },
+  "charts": {
+    "visits": "Visites",
+    "responses": "Réponses",
+    "conversion": "Conversion",
+    "templates": "Modèles",
+    "icons": "Icônes"
+  },
+  "datepicker": {
+    "months": ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
+    "shortMonths": ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"],
+    "weekdays": ["Di", "Lu", "Ma", "Me", "Je", "Ve", "Sa"],
+    "clear": "Effacer",
+    "today": "Aujourd'hui",
+    "selectDate": "Sélectionner une date",
+    "selectStartDate": "Sélectionner la date de début",
+    "selectEndDate": "Sélectionner la date de fin",
+    "previousMonth": "Mois précédent",
+    "nextMonth": "Mois suivant",
+    "openDatePicker": "Ouvrir le sélecteur de date",
+    "closeDatePicker": "Fermer le sélecteur de date",
+    "noDateSelected": "Aucune date sélectionnée",
+    "start": "Début",
+    "end": "Fin"
+  },
+  "table": {
+    "showing": "Affichage",
+    "of": "de"
+  },
+  "statuses": {
+    "active": "Actif",
+    "inactive": "Inactif",
+    "pending": "En attente"
+  },
+  "roles": {
+    "admin": "Administrateur",
+    "editor": "Éditeur",
+    "viewer": "Lecteur",
+    "manager": "Gestionnaire",
+    "analyst": "Analyste"
+  }
+}

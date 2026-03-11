@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
@@ -15,6 +16,7 @@ interface StatCardProps {
 }
 
 export function StatCard({ title, value, change, sparkData }: StatCardProps) {
+  const tp = useTranslations("performance");
   const options: ApexCharts.ApexOptions = {
     chart: { type: "line", sparkline: { enabled: true } },
     colors: ["#374151"],
@@ -28,7 +30,7 @@ export function StatCard({ title, value, change, sparkData }: StatCardProps) {
         <div className="flex flex-col gap-1">
           <p className="text-xs text-muted-foreground">{title}</p>
           <p className="text-2xl font-bold">{value}</p>
-          <p className="text-xs text-green-600">&uarr; {change} vs last month</p>
+          <p className="text-xs text-green-600">&uarr; {change} {tp("vsLastMonth")}</p>
         </div>
         <div className="w-24 h-10">
           <Chart options={options} series={[{ data: sparkData }]} type="line" height={40} width="100%" />
@@ -39,6 +41,7 @@ export function StatCard({ title, value, change, sparkData }: StatCardProps) {
 }
 
 export function VisitsResponsesChart() {
+  const tc = useTranslations("charts");
   const options: ApexCharts.ApexOptions = {
     chart: { type: "area", toolbar: { show: false } },
     colors: ["#312e81", "#e8b86d"],
@@ -76,8 +79,8 @@ export function VisitsResponsesChart() {
   };
 
   const series = [
-    { name: "Visits", data: [15000, 18000, 12000, 20000, 14000, 16000, 11000] },
-    { name: "Responses", data: [8000, 10000, 7000, 12000, 9000, 11000, 6000] },
+    { name: tc("visits"), data: [15000, 18000, 12000, 20000, 14000, 16000, 11000] },
+    { name: tc("responses"), data: [8000, 10000, 7000, 12000, 9000, 11000, 6000] },
   ];
 
   return (
@@ -90,6 +93,7 @@ export function VisitsResponsesChart() {
 }
 
 export function ConversionRateCard() {
+  const tp = useTranslations("performance");
   const options: ApexCharts.ApexOptions = {
     chart: { type: "radialBar" },
     colors: ["#a78bfa"],
@@ -110,9 +114,9 @@ export function ConversionRateCard() {
     <Card className="p-4">
       <CardContent className="flex items-center gap-6">
         <div className="flex flex-col gap-1">
-          <p className="text-sm text-muted-foreground">Conversion Rate</p>
+          <p className="text-sm text-muted-foreground">{tp("conversionRate")}</p>
           <p className="text-3xl font-bold">10%</p>
-          <p className="text-xs text-green-600">&uarr; 10% vs last month</p>
+          <p className="text-xs text-green-600">&uarr; 10% {tp("vsLastMonth")}</p>
         </div>
         <div className="w-32 h-32 ml-auto">
           <Chart options={options} series={[10]} type="radialBar" height={130} />
@@ -123,6 +127,8 @@ export function ConversionRateCard() {
 }
 
 export function ConversionRatesOverPeriodsChart() {
+  const tp = useTranslations("performance");
+  const tc = useTranslations("charts");
   const options: ApexCharts.ApexOptions = {
     chart: { type: "bar", toolbar: { show: false } },
     colors: ["#312e81", "#a78bfa"],
@@ -148,14 +154,14 @@ export function ConversionRatesOverPeriodsChart() {
   };
 
   const series = [
-    { name: "Templates", data: [85, 120, 60, 110, 90, 130, 50] },
-    { name: "Icons", data: [70, 95, 45, 85, 75, 105, 65] },
+    { name: tc("templates"), data: [85, 120, 60, 110, 90, 130, 50] },
+    { name: tc("icons"), data: [70, 95, 45, 85, 75, 105, 65] },
   ];
 
   return (
     <Card className="p-4">
       <CardContent className="flex flex-col gap-2">
-        <h3 className="text-base font-semibold">Conversion Rates over Periods</h3>
+        <h3 className="text-base font-semibold">{tp("conversionRatesOverPeriods")}</h3>
         <div className="border-t" />
         <Chart options={options} series={series} type="bar" height={320} />
       </CardContent>
@@ -172,6 +178,8 @@ const funnels = Array.from({ length: 10 }, () => ({
 
 export function FunnelsTable() {
   const [page, setPage] = useState(1);
+  const tp = useTranslations("performance");
+  const tc = useTranslations("common");
   const pageSize = 6;
   const totalPages = Math.ceil(funnels.length / pageSize);
   const currentPage = Math.min(page, totalPages);
@@ -180,14 +188,14 @@ export function FunnelsTable() {
   return (
     <Card className="p-4">
       <CardContent className="flex flex-col gap-2">
-        <h3 className="text-base font-semibold">Funnels</h3>
+        <h3 className="text-base font-semibold">{tp("funnels")}</h3>
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b">
-              <th className="text-left py-2 px-2 font-medium text-muted-foreground">Funnel Name</th>
-              <th className="text-left py-2 px-2 font-medium text-muted-foreground">Total Visits</th>
-              <th className="text-left py-2 px-2 font-medium text-muted-foreground">Total Conversions</th>
-              <th className="text-left py-2 px-2 font-medium text-muted-foreground">Conversion Rate</th>
+              <th className="text-left py-2 px-2 font-medium text-muted-foreground">{tp("funnelName")}</th>
+              <th className="text-left py-2 px-2 font-medium text-muted-foreground">{tp("totalVisits")}</th>
+              <th className="text-left py-2 px-2 font-medium text-muted-foreground">{tp("totalConversions")}</th>
+              <th className="text-left py-2 px-2 font-medium text-muted-foreground">{tp("conversionRate")}</th>
             </tr>
           </thead>
           <tbody>
@@ -203,12 +211,12 @@ export function FunnelsTable() {
         </table>
         <div className="flex items-center justify-between text-sm">
           <div className="flex items-center gap-2 text-muted-foreground">
-            Rows per page
-            <select aria-label="Rows per page" className="border rounded px-1 py-0.5 text-sm" defaultValue={99}>
+            {tc("rowsPerPage")}
+            <select aria-label={tc("rowsPerPage")} className="border rounded px-1 py-0.5 text-sm" defaultValue={99}>
               <option value={99}>99</option>
             </select>
             <span>
-              <strong>1-{Math.min(currentPage * pageSize, funnels.length)}</strong> of <strong>{funnels.length}</strong>
+              <strong>1-{Math.min(currentPage * pageSize, funnels.length)}</strong> {tc("of")} <strong>{funnels.length}</strong>
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -218,7 +226,7 @@ export function FunnelsTable() {
               onClick={() => setPage((p) => p - 1)}
               className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground disabled:opacity-50 disabled:pointer-events-none"
             >
-              <ChevronLeft size={14} /> Previous
+              <ChevronLeft size={14} /> {tc("previous")}
             </button>
             <button
               type="button"
@@ -226,7 +234,7 @@ export function FunnelsTable() {
               onClick={() => setPage((p) => p + 1)}
               className="flex items-center gap-1 text-sm font-medium hover:text-foreground disabled:opacity-50 disabled:pointer-events-none"
             >
-              Next <ChevronRight size={14} />
+              {tc("next")} <ChevronRight size={14} />
             </button>
           </div>
         </div>

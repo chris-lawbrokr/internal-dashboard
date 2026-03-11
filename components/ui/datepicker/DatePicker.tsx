@@ -6,44 +6,13 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 function cn(...values: Array<string | undefined | null | false>): string {
   return values.filter(Boolean).join(" ");
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────
-
-const MONTHS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-] as const;
-
-const SHORT_MONTHS = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-] as const;
-
-const WEEKDAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"] as const;
 
 function daysInMonth(year: number, month: number): number {
   return new Date(year, month + 1, 0).getDate();
@@ -67,13 +36,6 @@ function isInRange(date: Date, start: Date | null, end: Date | null): boolean {
   return t > start.getTime() && t < end.getTime();
 }
 
-function formatDate(date: Date): string {
-  const day = date.getDate();
-  const month = SHORT_MONTHS[date.getMonth()];
-  const year = date.getFullYear();
-  return `${day} ${month} ${year}`;
-}
-
 function today(): Date {
   const d = new Date();
   return new Date(d.getFullYear(), d.getMonth(), d.getDate());
@@ -94,7 +56,6 @@ function useDropdownAlign(
     const dropdown = dropdownRef.current.getBoundingClientRect();
     const viewportWidth = window.innerWidth;
 
-    // If dropdown overflows right edge, align to right
     if (container.left + dropdown.width > viewportWidth - 8) {
       setAlign("right");
     } else {
@@ -122,9 +83,20 @@ export const DatePickerInput = React.forwardRef<
   DatePickerInputProps
 >(
   (
-    { label, required, value, placeholder = "Select date", onClick, disabled },
+    { label, required, value, placeholder, onClick, disabled },
     ref,
   ) => {
+    const t = useTranslations("datepicker");
+    const resolvedPlaceholder = placeholder ?? t("selectDate");
+
+    function formatDate(date: Date): string {
+      const shortMonths: string[] = t.raw("shortMonths");
+      const day = date.getDate();
+      const month = shortMonths[date.getMonth()];
+      const year = date.getFullYear();
+      return `${day} ${month} ${year}`;
+    }
+
     return (
       <div className="flex flex-col gap-1">
         {label && (
@@ -148,7 +120,7 @@ export const DatePickerInput = React.forwardRef<
         >
           <CalendarIcon className="h-4 w-4 text-muted-foreground shrink-0" />
           <span className="truncate">
-            {value ? formatDate(value) : placeholder}
+            {value ? formatDate(value) : resolvedPlaceholder}
           </span>
         </button>
       </div>
@@ -182,10 +154,13 @@ export function Calendar({
   startClassName = "bg-primary text-primary-foreground hover:bg-primary/90",
   endClassName = "bg-primary text-primary-foreground hover:bg-primary/90",
 }: CalendarProps) {
+  const t = useTranslations("datepicker");
+  const months: string[] = t.raw("months");
+  const weekdays: string[] = t.raw("weekdays");
+
   const totalDays = daysInMonth(year, month);
   const firstDay = startDayOfWeek(year, month);
 
-  // Previous month filler days
   const prevMonth = month === 0 ? 11 : month - 1;
   const prevYear = month === 0 ? year - 1 : year;
   const prevDays = daysInMonth(prevYear, prevMonth);
@@ -239,7 +214,7 @@ export function Calendar({
             type="button"
             onClick={goPrev}
             className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer"
-            aria-label="Previous month"
+            aria-label={t("previousMonth")}
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
@@ -247,14 +222,14 @@ export function Calendar({
           <div className="w-7" />
         )}
         <span className="text-sm font-medium">
-          {MONTHS[month]} {year}
+          {months[month]} {year}
         </span>
         {showNav === "right" || showNav === "both" ? (
           <button
             type="button"
             onClick={goNext}
             className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer"
-            aria-label="Next month"
+            aria-label={t("nextMonth")}
           >
             <ChevronRight className="h-4 w-4" />
           </button>
@@ -265,7 +240,7 @@ export function Calendar({
 
       {/* Weekday headers */}
       <div className="grid grid-cols-7">
-        {WEEKDAYS.map((wd) => (
+        {weekdays.map((wd) => (
           <div
             key={wd}
             className="h-8 flex items-center justify-center text-xs text-muted-foreground font-medium"
@@ -338,6 +313,7 @@ export function DatePicker({
   placeholder,
   disabled,
 }: DatePickerProps) {
+  const t = useTranslations("datepicker");
   const [open, setOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
@@ -349,7 +325,6 @@ export function DatePicker({
     value ? value.getFullYear() : new Date().getFullYear(),
   );
 
-  // Click outside
   React.useEffect(() => {
     if (!open) return;
     function handler(e: MouseEvent) {
@@ -364,6 +339,14 @@ export function DatePicker({
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);
 
+  function formatDate(date: Date): string {
+    const shortMonths: string[] = t.raw("shortMonths");
+    const day = date.getDate();
+    const month = shortMonths[date.getMonth()];
+    const year = date.getFullYear();
+    return `${day} ${month} ${year}`;
+  }
+
   function handleSelect(date: Date) {
     onChange?.(date);
     setOpen(false);
@@ -375,16 +358,15 @@ export function DatePicker({
   }
 
   function handleToday() {
-    const t = today();
-    onChange?.(t);
-    setViewMonth(t.getMonth());
-    setViewYear(t.getFullYear());
+    const td = today();
+    onChange?.(td);
+    setViewMonth(td.getMonth());
+    setViewYear(td.getFullYear());
     setOpen(false);
   }
 
   return (
     <div ref={containerRef} className="relative w-full">
-      {/* Full input on md+ screens */}
       <div className="hidden md:block">
         <DatePickerInput
           label={label}
@@ -395,7 +377,6 @@ export function DatePicker({
           disabled={disabled}
         />
       </div>
-      {/* Icon-only toggle on small screens */}
       <button
         type="button"
         onClick={() => !disabled && setOpen((o) => !o)}
@@ -406,7 +387,7 @@ export function DatePicker({
           "disabled:cursor-not-allowed disabled:opacity-50",
           !disabled && "cursor-pointer",
         )}
-        aria-label={open ? "Close date picker" : "Open date picker"}
+        aria-label={open ? t("closeDatePicker") : t("openDatePicker")}
       >
         <CalendarIcon className="h-4 w-4 text-muted-foreground" />
       </button>
@@ -418,9 +399,8 @@ export function DatePicker({
             align === "right" ? "right-0" : "left-0",
           )}
         >
-          {/* Selected date summary on small screens */}
           <div className="md:hidden mb-2 pb-2 border-b border-border text-sm text-center text-muted-foreground">
-            {value ? formatDate(value) : "No date selected"}
+            {value ? formatDate(value) : t("noDateSelected")}
           </div>
           <Calendar
             month={viewMonth}
@@ -438,14 +418,14 @@ export function DatePicker({
               onClick={handleClear}
               className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 text-sm font-medium rounded-xl border border-[#C8C8C8] bg-[#FBFBFB] shadow-[0px_1px_0.5px_0.05px_rgba(29,41,61,0.02)] hover:bg-[#F0F0F0] cursor-pointer"
             >
-              Clear
+              {t("clear")}
             </button>
             <button
               type="button"
               onClick={handleToday}
               className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 text-sm font-medium rounded-xl bg-[#3B2559] text-white shadow-[0px_1px_0.5px_0.05px_rgba(29,41,61,0.02)] hover:bg-[#4A3068] cursor-pointer"
             >
-              Today
+              {t("today")}
             </button>
           </div>
         </div>
@@ -469,7 +449,7 @@ export interface DateRangePickerProps {
 }
 
 export function DateRangePicker({
-  labels = { start: "Start Date", end: "End Date" },
+  labels,
   required,
   startDate = null,
   endDate = null,
@@ -478,6 +458,12 @@ export function DateRangePicker({
   startClassName,
   endClassName,
 }: DateRangePickerProps) {
+  const t = useTranslations("datepicker");
+  const resolvedLabels = {
+    start: labels?.start ?? t("start"),
+    end: labels?.end ?? t("end"),
+  };
+
   const [open, setOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
@@ -492,11 +478,9 @@ export function DateRangePicker({
     startDate ? startDate.getFullYear() : now.getFullYear(),
   );
 
-  // Right calendar is always one month ahead of left
   const rightMonth = leftMonth === 11 ? 0 : leftMonth + 1;
   const rightYear = leftMonth === 11 ? leftYear + 1 : leftYear;
 
-  // Click outside
   React.useEffect(() => {
     if (!open) return;
     function handler(e: MouseEvent) {
@@ -510,6 +494,14 @@ export function DateRangePicker({
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);
+
+  function formatDate(date: Date): string {
+    const shortMonths: string[] = t.raw("shortMonths");
+    const day = date.getDate();
+    const month = shortMonths[date.getMonth()];
+    const year = date.getFullYear();
+    return `${day} ${month} ${year}`;
+  }
 
   function handleDateSelect(date: Date) {
     if (selecting === "start") {
@@ -536,10 +528,10 @@ export function DateRangePicker({
   }
 
   function handleToday() {
-    const t = today();
-    onChange?.(t, t);
-    setLeftMonth(t.getMonth());
-    setLeftYear(t.getFullYear());
+    const td = today();
+    onChange?.(td, td);
+    setLeftMonth(td.getMonth());
+    setLeftYear(td.getFullYear());
     setSelecting("start");
   }
 
@@ -554,14 +546,13 @@ export function DateRangePicker({
 
   return (
     <div ref={containerRef} className="relative">
-      {/* Full inputs on md+ screens */}
       <div className="hidden md:flex items-end gap-3">
         <div className="flex-1">
           <DatePickerInput
-            label={labels.start}
+            label={resolvedLabels.start}
             required={required}
             value={startDate}
-            placeholder="Select start date"
+            placeholder={t("selectStartDate")}
             onClick={() => {
               if (disabled) return;
               setSelecting("start");
@@ -573,10 +564,10 @@ export function DateRangePicker({
         <span className="h-9 flex items-center text-muted-foreground">—</span>
         <div className="flex-1">
           <DatePickerInput
-            label={labels.end}
+            label={resolvedLabels.end}
             required={required}
             value={endDate}
-            placeholder="Select end date"
+            placeholder={t("selectEndDate")}
             onClick={() => {
               if (disabled) return;
               setSelecting("end");
@@ -586,7 +577,6 @@ export function DateRangePicker({
           />
         </div>
       </div>
-      {/* Icon-only toggle on small screens */}
       <button
         type="button"
         onClick={() => {
@@ -600,7 +590,7 @@ export function DateRangePicker({
           "disabled:cursor-not-allowed disabled:opacity-50",
           !disabled && "cursor-pointer",
         )}
-        aria-label={open ? "Close date picker" : "Open date picker"}
+        aria-label={open ? t("closeDatePicker") : t("openDatePicker")}
       >
         <CalendarIcon className="h-4 w-4 text-muted-foreground" />
       </button>
@@ -613,7 +603,6 @@ export function DateRangePicker({
             align === "right" ? "right-0" : "left-0",
           )}
         >
-          {/* Dual calendar on md+ screens */}
           <div className="hidden md:flex gap-4">
             <Calendar
               month={leftMonth}
@@ -642,11 +631,9 @@ export function DateRangePicker({
               endClassName={endClassName}
             />
           </div>
-          {/* Selected range summary on small screens */}
           <div className="md:hidden mb-2 pb-2 border-b border-border text-sm text-center text-muted-foreground">
-            {startDate ? formatDate(startDate) : "Start"}{" — "}{endDate ? formatDate(endDate) : "End"}
+            {startDate ? formatDate(startDate) : t("start")}{" — "}{endDate ? formatDate(endDate) : t("end")}
           </div>
-          {/* Single calendar on small screens */}
           <div className="md:hidden">
             <Calendar
               month={leftMonth}
@@ -669,14 +656,14 @@ export function DateRangePicker({
               onClick={handleClear}
               className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 text-sm font-medium rounded-xl border border-[#C8C8C8] bg-[#FBFBFB] shadow-[0px_1px_0.5px_0.05px_rgba(29,41,61,0.02)] hover:bg-[#F0F0F0] cursor-pointer"
             >
-              Clear
+              {t("clear")}
             </button>
             <button
               type="button"
               onClick={handleToday}
               className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 text-sm font-medium rounded-xl bg-[#3B2559] text-white shadow-[0px_1px_0.5px_0.05px_rgba(29,41,61,0.02)] hover:bg-[#4A3068] cursor-pointer"
             >
-              Today
+              {t("today")}
             </button>
           </div>
         </div>

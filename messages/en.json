@@ -1,0 +1,140 @@
+{
+  "nav": {
+    "home": "Home",
+    "account": "Account",
+    "analytics": "Analytics",
+    "logout": "Logout",
+    "toggleSidebar": "Toggle sidebar"
+  },
+  "dashboard": {
+    "welcome": "Welcome back, {name}",
+    "totalVisits": "Total Visits",
+    "totalResponses": "Total Responses",
+    "increaseLastMonth": "{percent}% increase last month",
+    "conversionRate": "Conversion Rate",
+    "increase": "{percent}% increase",
+    "lastMonth": "last month"
+  },
+  "login": {
+    "enterCredentials": "Enter your credentials to continue.",
+    "email": "Email",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "signIn": "Sign in"
+  },
+  "account": {
+    "back": "Back",
+    "overview": "Overview",
+    "performance": "Performance",
+    "website": "Website",
+    "usage": "Usage",
+    "companyName": "Company Name:",
+    "duration": "Duration:",
+    "restrictions": "Restrictions:",
+    "location": "Location:",
+    "holdingCapacity": "Holding capacity:",
+    "companySize": "Company Size:",
+    "practiceAreas": "Practice Areas",
+    "integrations": "Integrations",
+    "techStack": "Tech Stack",
+    "lawbrokrFeatures": "Lawbrokr Features",
+    "onboardingHealth": "Onboarding Health",
+    "performanceHealth": "Performance Health",
+    "websiteHealth": "Website Health",
+    "good": "Good",
+    "fair": "Fair",
+    "poor": "Poor"
+  },
+  "website": {
+    "websiteStatus": "Website Status",
+    "live": "Live",
+    "sourceAttribution": "Source Attribution",
+    "enabled": "Enabled",
+    "linkStatus": "Lawbrokr Link Status",
+    "down": "Down",
+    "activeIntegrations": "Active Integrations",
+    "sslStatus": "SSL Status",
+    "websiteLoadTime": "Website Load Time",
+    "seconds": "{count} seconds",
+    "liveLawbrokrLinks": "Live Lawbrokr Links",
+    "lawbrokrLinks": "Lawbrokr Links",
+    "websiteUrl": "Website URL",
+    "lawbrokrUrl": "Lawbrokr URL",
+    "status": "Status",
+    "active": "Active",
+    "review": "Review",
+    "broken": "Broken",
+    "vsLastMonth": "vs last month"
+  },
+  "performance": {
+    "conversionRatesOverPeriods": "Conversion Rates over Periods",
+    "funnels": "Funnels",
+    "funnelName": "Funnel Name",
+    "totalVisits": "Total Visits",
+    "totalConversions": "Total Conversions",
+    "conversionRate": "Conversion Rate",
+    "vsLastMonth": "vs last month"
+  },
+  "common": {
+    "search": "Search",
+    "searchPlaceholder": "Search...",
+    "searchUsersPlaceholder": "Search users...",
+    "filter": "Filter",
+    "rowsPerPage": "Rows per page",
+    "of": "of",
+    "previous": "Previous",
+    "next": "Next",
+    "showing": "Showing",
+    "viewMore": "View More",
+    "users": "Users",
+    "userRole": "User Role",
+    "name": "Name",
+    "email": "Email",
+    "type": "Type",
+    "status": "Status",
+    "role": "Role",
+    "startDate": "Start Date",
+    "endDate": "End Date"
+  },
+  "charts": {
+    "visits": "Visits",
+    "responses": "Responses",
+    "conversion": "Conversion",
+    "templates": "Templates",
+    "icons": "Icons"
+  },
+  "datepicker": {
+    "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    "shortMonths": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    "weekdays": ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
+    "clear": "Clear",
+    "today": "Today",
+    "selectDate": "Select date",
+    "selectStartDate": "Select start date",
+    "selectEndDate": "Select end date",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "openDatePicker": "Open date picker",
+    "closeDatePicker": "Close date picker",
+    "noDateSelected": "No date selected",
+    "start": "Start",
+    "end": "End"
+  },
+  "table": {
+    "showing": "Showing",
+    "of": "of"
+  },
+  "statuses": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "pending": "Pending"
+  },
+  "roles": {
+    "admin": "Admin",
+    "editor": "Editor",
+    "viewer": "Viewer",
+    "manager": "Manager",
+    "analyst": "Analyst"
+  }
+}

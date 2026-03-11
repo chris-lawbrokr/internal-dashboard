@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   CardCentered,
@@ -12,6 +15,8 @@ import { Input, PasswordInput } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export default function Login() {
+  const t = useTranslations("login");
+
   return (
     <div className="h-screen w-full p-8 sm:p-24 md:p-36 flex">
       <div className="flex-1 flex gap-24">
@@ -25,28 +30,28 @@ export default function Login() {
                 width="117"
               />
               <CardDescription>
-                Enter your credentials to continue.
+                {t("enterCredentials")}
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
               <Input
                 id="email"
                 type="email"
-                label="Email"
+                label={t("email")}
                 placeholder="you@example.com"
               />
               <PasswordInput
                 id="password"
-                label="Password"
+                label={t("password")}
                 placeholder="••••••••"
               />
             </CardContent>
             <CardFooter>
               <div className="flex items-center justify-between">
-                <Checkbox id="remember" label="Remember me" />
-                <CardLink href="/login">Forgot password?</CardLink>
+                <Checkbox id="remember" label={t("rememberMe")} />
+                <CardLink href="/login">{t("forgotPassword")}</CardLink>
               </div>
-              <Button className="w-full">Sign in</Button>
+              <Button className="w-full">{t("signIn")}</Button>
             </CardFooter>
           </CardCentered>
         </div>

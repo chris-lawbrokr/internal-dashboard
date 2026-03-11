@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import {
   Table,
   TableHeader,
@@ -11,109 +12,23 @@ import {
 } from "@/components/ui/table/Table";
 
 const firstNames = [
-  "James",
-  "Mary",
-  "Robert",
-  "Patricia",
-  "John",
-  "Jennifer",
-  "Michael",
-  "Linda",
-  "David",
-  "Elizabeth",
-  "William",
-  "Barbara",
-  "Richard",
-  "Susan",
-  "Joseph",
-  "Jessica",
-  "Thomas",
-  "Sarah",
-  "Charles",
-  "Karen",
-  "Daniel",
-  "Lisa",
-  "Matthew",
-  "Nancy",
-  "Anthony",
-  "Betty",
-  "Mark",
-  "Margaret",
-  "Donald",
-  "Sandra",
-  "Steven",
-  "Ashley",
-  "Paul",
-  "Emily",
-  "Andrew",
-  "Donna",
-  "Joshua",
-  "Michelle",
-  "Kenneth",
-  "Carol",
-  "Kevin",
-  "Amanda",
-  "Brian",
-  "Dorothy",
-  "George",
-  "Melissa",
-  "Timothy",
-  "Deborah",
-  "Ronald",
-  "Stephanie",
+  "James", "Mary", "Robert", "Patricia", "John", "Jennifer", "Michael", "Linda",
+  "David", "Elizabeth", "William", "Barbara", "Richard", "Susan", "Joseph", "Jessica",
+  "Thomas", "Sarah", "Charles", "Karen", "Daniel", "Lisa", "Matthew", "Nancy",
+  "Anthony", "Betty", "Mark", "Margaret", "Donald", "Sandra", "Steven", "Ashley",
+  "Paul", "Emily", "Andrew", "Donna", "Joshua", "Michelle", "Kenneth", "Carol",
+  "Kevin", "Amanda", "Brian", "Dorothy", "George", "Melissa", "Timothy", "Deborah",
+  "Ronald", "Stephanie",
 ];
 
 const lastNames = [
-  "Smith",
-  "Johnson",
-  "Williams",
-  "Brown",
-  "Jones",
-  "Garcia",
-  "Miller",
-  "Davis",
-  "Rodriguez",
-  "Martinez",
-  "Hernandez",
-  "Lopez",
-  "Gonzalez",
-  "Wilson",
-  "Anderson",
-  "Thomas",
-  "Taylor",
-  "Moore",
-  "Jackson",
-  "Martin",
-  "Lee",
-  "Perez",
-  "Thompson",
-  "White",
-  "Harris",
-  "Sanchez",
-  "Clark",
-  "Ramirez",
-  "Lewis",
-  "Robinson",
-  "Walker",
-  "Young",
-  "Allen",
-  "King",
-  "Wright",
-  "Scott",
-  "Torres",
-  "Nguyen",
-  "Hill",
-  "Flores",
-  "Green",
-  "Adams",
-  "Nelson",
-  "Baker",
-  "Hall",
-  "Rivera",
-  "Campbell",
-  "Mitchell",
-  "Carter",
-  "Roberts",
+  "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis",
+  "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson",
+  "Thomas", "Taylor", "Moore", "Jackson", "Martin", "Lee", "Perez", "Thompson",
+  "White", "Harris", "Sanchez", "Clark", "Ramirez", "Lewis", "Robinson", "Walker",
+  "Young", "Allen", "King", "Wright", "Scott", "Torres", "Nguyen", "Hill", "Flores",
+  "Green", "Adams", "Nelson", "Baker", "Hall", "Rivera", "Campbell", "Mitchell",
+  "Carter", "Roberts",
 ];
 
 const statuses = ["Active", "Inactive", "Pending"] as const;
@@ -137,6 +52,23 @@ const PAGE_SIZE = 10;
 export function UsersTable() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const tc = useTranslations("common");
+  const ts = useTranslations("statuses");
+  const tr = useTranslations("roles");
+
+  const statusKeyMap: Record<string, string> = {
+    Active: "active",
+    Inactive: "inactive",
+    Pending: "pending",
+  };
+
+  const roleKeyMap: Record<string, string> = {
+    Admin: "admin",
+    Editor: "editor",
+    Viewer: "viewer",
+    Manager: "manager",
+    Analyst: "analyst",
+  };
 
   const filtered = fakeUsers.filter((user) => {
     const q = search.toLowerCase();
@@ -162,10 +94,10 @@ export function UsersTable() {
 
   return (
     <Table
-      title="Users"
+      title={tc("users")}
       searchValue={search}
       onSearchChange={handleSearchChange}
-      searchPlaceholder="Search users..."
+      searchPlaceholder={tc("searchUsersPlaceholder")}
       page={currentPage}
       pageSize={PAGE_SIZE}
       totalItems={filtered.length}
@@ -174,10 +106,10 @@ export function UsersTable() {
     >
       <TableHeader>
         <TableRow>
-          <TableHead>Name</TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Role</TableHead>
+          <TableHead>{tc("name")}</TableHead>
+          <TableHead>{tc("email")}</TableHead>
+          <TableHead>{tc("status")}</TableHead>
+          <TableHead>{tc("role")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -185,8 +117,8 @@ export function UsersTable() {
           <TableRow key={user.id}>
             <TableCell>{user.name}</TableCell>
             <TableCell>{user.email}</TableCell>
-            <TableCell>{user.status}</TableCell>
-            <TableCell>{user.role}</TableCell>
+            <TableCell>{ts(statusKeyMap[user.status])}</TableCell>
+            <TableCell>{tr(roleKeyMap[user.role])}</TableCell>
           </TableRow>
         ))}
       </TableBody>

@@ -1,10 +1,13 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 export function LineChart() {
+  const t = useTranslations("charts");
+
   const options: ApexCharts.ApexOptions = {
     chart: {
       type: "area",
@@ -47,11 +50,11 @@ export function LineChart() {
 
   const series = [
     {
-      name: "Visits",
+      name: t("visits"),
       data: [45, 52, 38, 30, 42, 55, 60],
     },
     {
-      name: "Responses",
+      name: t("responses"),
       data: [20, 25, 32, 35, 28, 35, 40],
     },
   ];
@@ -61,11 +64,11 @@ export function LineChart() {
       <div className="flex items-center gap-4 mb-2">
         <div className="flex items-center gap-1.5">
           <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#6366f1]" />
-          <span className="text-xs text-muted-foreground">Visits</span>
+          <span className="text-xs text-muted-foreground">{t("visits")}</span>
         </div>
         <div className="flex items-center gap-1.5">
           <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#a78bfa]" />
-          <span className="text-xs text-muted-foreground">Responses</span>
+          <span className="text-xs text-muted-foreground">{t("responses")}</span>
         </div>
       </div>
       <Chart options={options} series={series} type="area" height="100%" />

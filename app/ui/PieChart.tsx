@@ -1,10 +1,13 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 export function PieChart() {
+  const t = useTranslations("charts");
+
   const options: ApexCharts.ApexOptions = {
     chart: {
       type: "radialBar",
@@ -32,7 +35,7 @@ export function PieChart() {
     stroke: {
       lineCap: "round",
     },
-    labels: ["Conversion"],
+    labels: [t("conversion")],
   };
 
   const series = [90];

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Sidebar } from "@/app/ui/Sidebar";
 import { Header } from "@/app/ui/Header";
@@ -12,11 +13,15 @@ import { OverviewTab } from "./OverviewTab";
 import { PerformanceTab } from "./PerformanceTab";
 import { WebsiteTab } from "./WebsiteTab";
 
+const tabKeys = ["overview", "performance", "website", "usage"] as const;
+
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [activeTab, setActiveTab] = useState("Overview");
+  const [activeTab, setActiveTab] = useState<string>("overview");
+  const t = useTranslations("account");
+  const tc = useTranslations("common");
 
   return (
     <div className="h-screen w-full overflow-hidden flex flex-col border-x">
@@ -34,7 +39,7 @@ export default function Dashboard() {
                   className="hover:underline flex items-center gap-1"
                 >
                   <ArrowLeft className="w-4 h-4" />
-                  Back
+                  {t("back")}
                 </Link>
                 <h1 className="text-xl font-bold leading-[1.25]">
                   Law Firm Name
@@ -42,7 +47,7 @@ export default function Dashboard() {
               </div>
               <div>
                 <DateRangePicker
-                  labels={{ start: "Start Date", end: "End Date" }}
+                  labels={{ start: tc("startDate"), end: tc("endDate") }}
                   startDate={startDate}
                   endDate={endDate}
                   onChange={(s, e) => {
@@ -55,25 +60,25 @@ export default function Dashboard() {
           </Card>
 
           <div className="flex gap-6 border-b">
-            {["Overview", "Performance", "Website", "Usage"].map((tab) => (
+            {tabKeys.map((tabKey) => (
               <button
-                key={tab}
+                key={tabKey}
                 type="button"
-                onClick={() => setActiveTab(tab)}
+                onClick={() => setActiveTab(tabKey)}
                 className={`pb-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
-                  activeTab === tab
+                  activeTab === tabKey
                     ? "border-primary text-foreground"
                     : "border-transparent text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {tab}
+                {t(tabKey)}
               </button>
             ))}
           </div>
 
-          {activeTab === "Overview" && <OverviewTab />}
-          {activeTab === "Performance" && <PerformanceTab />}
-          {activeTab === "Website" && <WebsiteTab />}
+          {activeTab === "overview" && <OverviewTab />}
+          {activeTab === "performance" && <PerformanceTab />}
+          {activeTab === "website" && <WebsiteTab />}
         </div>
       </div>
     </div>
