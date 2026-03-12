@@ -1,8 +1,17 @@
 import type { Preview } from '@storybook/nextjs-vite'
+import { NextIntlClientProvider } from 'next-intl'
+import messages from '../messages/en.json'
 import '../app/globals.css'
 
 const preview: Preview = {
   tags: ['autodocs'],
+  decorators: [
+    (Story) => (
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <Story />
+      </NextIntlClientProvider>
+    ),
+  ],
   parameters: {
     controls: {
       matchers: {
