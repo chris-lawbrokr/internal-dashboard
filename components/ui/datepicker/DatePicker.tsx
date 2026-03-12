@@ -85,52 +85,47 @@ export interface DatePickerInputProps {
 export const DatePickerInput = React.forwardRef<
   HTMLButtonElement,
   DatePickerInputProps
->(
-  (
-    { label, required, value, placeholder, onClick, disabled },
-    ref,
-  ) => {
-    const t = useTranslations("datepicker");
-    const resolvedPlaceholder = placeholder ?? t("selectDate");
+>(({ label, required, value, placeholder, onClick, disabled }, ref) => {
+  const t = useTranslations("datepicker");
+  const resolvedPlaceholder = placeholder ?? t("selectDate");
 
-    function formatDate(date: Date): string {
-      const shortMonths: string[] = t.raw("shortMonths");
-      const day = date.getDate();
-      const month = shortMonths[date.getMonth()];
-      const year = date.getFullYear();
-      return `${day} ${month} ${year}`;
-    }
+  function formatDate(date: Date): string {
+    const shortMonths: string[] = t.raw("shortMonths");
+    const day = date.getDate();
+    const month = shortMonths[date.getMonth()];
+    const year = date.getFullYear();
+    return `${day} ${month} ${year}`;
+  }
 
-    return (
-      <div className="flex flex-col gap-1">
-        {label && (
-          <label className="text-xs font-medium">
-            {label}
-            {required && <span className="text-destructive ml-0.5">*</span>}
-          </label>
+  return (
+    <div className="flex flex-col gap-1">
+      {label && (
+        <label className="text-xs font-medium">
+          {label}
+          {required && <span className="text-destructive ml-0.5">*</span>}
+        </label>
+      )}
+      <button
+        ref={ref}
+        type="button"
+        onClick={onClick}
+        disabled={disabled}
+        className={cn(
+          "h-9 w-full rounded-md border border-input bg-background px-3 text-sm text-left flex items-center gap-2",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          "disabled:cursor-not-allowed disabled:opacity-50",
+          !value && "text-muted-foreground",
+          !disabled && "cursor-pointer",
         )}
-        <button
-          ref={ref}
-          type="button"
-          onClick={onClick}
-          disabled={disabled}
-          className={cn(
-            "h-9 w-full rounded-md border border-input bg-background px-3 text-sm text-left flex items-center gap-2",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            "disabled:cursor-not-allowed disabled:opacity-50",
-            !value && "text-muted-foreground",
-            !disabled && "cursor-pointer",
-          )}
-        >
-          <CalendarIcon className="h-4 w-4 text-muted-foreground shrink-0" />
-          <span className="truncate">
-            {value ? formatDate(value) : resolvedPlaceholder}
-          </span>
-        </button>
-      </div>
-    );
-  },
-);
+      >
+        <CalendarIcon className="h-4 w-4 text-muted-foreground shrink-0" />
+        <span className="truncate">
+          {value ? formatDate(value) : resolvedPlaceholder}
+        </span>
+      </button>
+    </div>
+  );
+});
 DatePickerInput.displayName = "DatePickerInput";
 
 // ── Calendar ────────────────────────────────────────────────────────
@@ -486,14 +481,15 @@ export function DatePicker({
         <div
           ref={dropdownRef}
           className={cn(
-            "absolute z-50 mt-2 rounded-lg border border-border bg-popover p-3 shadow-lg",
+            "absolute z-50 mt-2 rounded-lg border border-border bg-popover p-2 shadow-lg",
             align === "right" ? "right-0" : "left-0",
           )}
         >
           <div className="flex items-center gap-1 mb-2 pb-2 border-b border-border">
-            <span className="flex-1 text-sm text-muted-foreground truncate">
+            <span className="hidden md:block flex-1 text-sm text-muted-foreground truncate">
               {value ? formatDate(value) : t("noDateSelected")}
             </span>
+            <span className="flex-1 md:hidden" />
             <button
               type="button"
               onClick={handleToday}
@@ -532,6 +528,9 @@ export function DatePicker({
               setViewYear(y);
             }}
           />
+          <div className="md:hidden mt-2 pt-2 border-t border-border text-sm text-center text-muted-foreground">
+            {value ? formatDate(value) : t("noDateSelected")}
+          </div>
         </div>
       )}
     </div>
@@ -663,14 +662,17 @@ export function DateRangePicker({
         <div
           ref={dropdownRef}
           className={cn(
-            "absolute z-50 mt-2 rounded-lg border border-border bg-popover p-4 shadow-lg",
+            "absolute z-50 mt-2 rounded-lg border border-border bg-popover p-2 md:p-4 shadow-lg",
             align === "right" ? "right-0" : "left-0",
           )}
         >
           <div className="flex items-center gap-1 mb-2 pb-2 border-b border-border">
-            <span className="flex-1 text-sm text-muted-foreground truncate">
-              {startDate ? formatDate(startDate) : t("start")}{" — "}{endDate ? formatDate(endDate) : t("end")}
+            <span className="hidden md:block flex-1 text-sm text-muted-foreground truncate">
+              {startDate ? formatDate(startDate) : t("start")}
+              {" — "}
+              {endDate ? formatDate(endDate) : t("end")}
             </span>
+            <span className="flex-1 md:hidden" />
             <button
               type="button"
               onClick={handleToday}
@@ -748,6 +750,11 @@ export function DateRangePicker({
               startClassName={startClassName}
               endClassName={endClassName}
             />
+          </div>
+          <div className="md:hidden mt-2 pt-2 border-t border-border text-sm text-center text-muted-foreground">
+            {startDate ? formatDate(startDate) : t("start")}
+            {" — "}
+            {endDate ? formatDate(endDate) : t("end")}
           </div>
         </div>
       )}
