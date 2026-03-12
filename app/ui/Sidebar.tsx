@@ -29,7 +29,7 @@ export function Sidebar({ open = true }: SidebarProps) {
 
   return (
     <div
-      className={`shrink-0 overflow-hidden bg-card transition-all duration-300 ease-in-out absolute md:relative z-10 h-full ${open ? "w-full md:w-[200px]" : "w-0"}`}
+      className={`shrink-0 overflow-hidden bg-card transition-all duration-300 ease-in-out absolute md:relative z-[60] h-full ${open ? "w-full md:w-[200px]" : "w-0"}`}
     >
       <nav className="min-w-[200px] flex flex-col gap-1 p-4">
         {navItems.map((item) => {
