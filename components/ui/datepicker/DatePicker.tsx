@@ -3,8 +3,12 @@
 import * as React from "react";
 import {
   Calendar as CalendarIcon,
+  CalendarCheck,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
+  Eraser,
+  X,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -205,6 +209,36 @@ export function Calendar({
     else onMonthChange(month + 1, year);
   }
 
+  const currentYear = new Date().getFullYear();
+  const yearRange = Array.from({ length: 21 }, (_, i) => currentYear - 10 + i);
+
+  const [monthDropdownOpen, setMonthDropdownOpen] = React.useState(false);
+  const [yearDropdownOpen, setYearDropdownOpen] = React.useState(false);
+  const monthDropdownRef = React.useRef<HTMLDivElement>(null);
+  const yearDropdownRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (!monthDropdownOpen && !yearDropdownOpen) return;
+    function handler(e: MouseEvent) {
+      if (
+        monthDropdownOpen &&
+        monthDropdownRef.current &&
+        !monthDropdownRef.current.contains(e.target as Node)
+      ) {
+        setMonthDropdownOpen(false);
+      }
+      if (
+        yearDropdownOpen &&
+        yearDropdownRef.current &&
+        !yearDropdownRef.current.contains(e.target as Node)
+      ) {
+        setYearDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [monthDropdownOpen, yearDropdownOpen]);
+
   return (
     <div className="w-[252px]">
       {/* Header */}
@@ -221,9 +255,76 @@ export function Calendar({
         ) : (
           <div className="w-7" />
         )}
-        <span className="text-sm font-medium">
-          {months[month]} {year}
-        </span>
+        <div className="flex items-center gap-1">
+          {/* Month dropdown */}
+          <div ref={monthDropdownRef} className="relative">
+            <button
+              type="button"
+              onClick={() => {
+                setMonthDropdownOpen((o) => !o);
+                setYearDropdownOpen(false);
+              }}
+              className="flex items-center gap-0.5 text-sm font-medium rounded px-1.5 py-0.5 hover:bg-muted cursor-pointer"
+            >
+              {months[month]}
+              <ChevronDown className="h-3 w-3 text-muted-foreground" />
+            </button>
+            {monthDropdownOpen && (
+              <div className="absolute top-full left-1/2 -translate-x-1/2 z-50 mt-1 rounded-md border border-border bg-popover shadow-md py-1 max-h-[200px] overflow-y-auto w-[120px]">
+                {months.map((m, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => {
+                      onMonthChange(i, year);
+                      setMonthDropdownOpen(false);
+                    }}
+                    className={cn(
+                      "w-full px-3 py-1.5 text-sm text-left hover:bg-muted cursor-pointer",
+                      i === month && "bg-muted font-medium",
+                    )}
+                  >
+                    {m}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          {/* Year dropdown */}
+          <div ref={yearDropdownRef} className="relative">
+            <button
+              type="button"
+              onClick={() => {
+                setYearDropdownOpen((o) => !o);
+                setMonthDropdownOpen(false);
+              }}
+              className="flex items-center gap-0.5 text-sm font-medium rounded px-1.5 py-0.5 hover:bg-muted cursor-pointer"
+            >
+              {year}
+              <ChevronDown className="h-3 w-3 text-muted-foreground" />
+            </button>
+            {yearDropdownOpen && (
+              <div className="absolute top-full left-1/2 -translate-x-1/2 z-50 mt-1 rounded-md border border-border bg-popover shadow-md py-1 max-h-[200px] overflow-y-auto w-[80px]">
+                {yearRange.map((y) => (
+                  <button
+                    key={y}
+                    type="button"
+                    onClick={() => {
+                      onMonthChange(month, y);
+                      setYearDropdownOpen(false);
+                    }}
+                    className={cn(
+                      "w-full px-3 py-1.5 text-sm text-left hover:bg-muted cursor-pointer",
+                      y === year && "bg-muted font-medium",
+                    )}
+                  >
+                    {y}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
         {showNav === "right" || showNav === "both" ? (
           <button
             type="button"
@@ -367,22 +468,12 @@ export function DatePicker({
 
   return (
     <div ref={containerRef} className="relative w-full">
-      <div className="hidden md:block">
-        <DatePickerInput
-          label={label}
-          required={required}
-          value={value}
-          placeholder={placeholder}
-          onClick={() => !disabled && setOpen((o) => !o)}
-          disabled={disabled}
-        />
-      </div>
       <button
         type="button"
         onClick={() => !disabled && setOpen((o) => !o)}
         disabled={disabled}
         className={cn(
-          "md:hidden h-9 w-9 flex items-center justify-center rounded-md border border-input bg-background",
+          "h-9 w-9 flex items-center justify-center rounded-md border border-input bg-background",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           "disabled:cursor-not-allowed disabled:opacity-50",
           !disabled && "cursor-pointer",
@@ -399,8 +490,37 @@ export function DatePicker({
             align === "right" ? "right-0" : "left-0",
           )}
         >
-          <div className="md:hidden mb-2 pb-2 border-b border-border text-sm text-center text-muted-foreground">
-            {value ? formatDate(value) : t("noDateSelected")}
+          <div className="flex items-center gap-1 mb-2 pb-2 border-b border-border">
+            <span className="flex-1 text-sm text-muted-foreground truncate">
+              {value ? formatDate(value) : t("noDateSelected")}
+            </span>
+            <button
+              type="button"
+              onClick={handleToday}
+              className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer"
+              aria-label={t("today")}
+              title={t("today")}
+            >
+              <CalendarCheck className="h-4 w-4 text-muted-foreground" />
+            </button>
+            <button
+              type="button"
+              onClick={handleClear}
+              className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer"
+              aria-label={t("clear")}
+              title={t("clear")}
+            >
+              <Eraser className="h-4 w-4 text-muted-foreground" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer"
+              aria-label={t("closeDatePicker")}
+              title={t("closeDatePicker")}
+            >
+              <X className="h-4 w-4 text-muted-foreground" />
+            </button>
           </div>
           <Calendar
             month={viewMonth}
@@ -412,22 +532,6 @@ export function DatePicker({
               setViewYear(y);
             }}
           />
-          <div className="flex gap-2 mt-2 pt-2 border-t border-border">
-            <button
-              type="button"
-              onClick={handleClear}
-              className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 text-sm font-medium rounded-xl border border-[#C8C8C8] bg-[#FBFBFB] shadow-[0px_1px_0.5px_0.05px_rgba(29,41,61,0.02)] hover:bg-[#F0F0F0] cursor-pointer"
-            >
-              {t("clear")}
-            </button>
-            <button
-              type="button"
-              onClick={handleToday}
-              className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 text-sm font-medium rounded-xl bg-[#3B2559] text-white shadow-[0px_1px_0.5px_0.05px_rgba(29,41,61,0.02)] hover:bg-[#4A3068] cursor-pointer"
-            >
-              {t("today")}
-            </button>
-          </div>
         </div>
       )}
     </div>
@@ -535,48 +639,8 @@ export function DateRangePicker({
     setSelecting("start");
   }
 
-  function goLeftNext() {
-    if (leftMonth === 11) {
-      setLeftMonth(0);
-      setLeftYear(leftYear + 1);
-    } else {
-      setLeftMonth(leftMonth + 1);
-    }
-  }
-
   return (
     <div ref={containerRef} className="relative">
-      <div className="hidden md:flex items-end gap-3">
-        <div className="flex-1">
-          <DatePickerInput
-            label={resolvedLabels.start}
-            required={required}
-            value={startDate}
-            placeholder={t("selectStartDate")}
-            onClick={() => {
-              if (disabled) return;
-              setSelecting("start");
-              setOpen((o) => !o);
-            }}
-            disabled={disabled}
-          />
-        </div>
-        <span className="h-9 flex items-center text-muted-foreground">—</span>
-        <div className="flex-1">
-          <DatePickerInput
-            label={resolvedLabels.end}
-            required={required}
-            value={endDate}
-            placeholder={t("selectEndDate")}
-            onClick={() => {
-              if (disabled) return;
-              setSelecting("end");
-              setOpen((o) => !o);
-            }}
-            disabled={disabled}
-          />
-        </div>
-      </div>
       <button
         type="button"
         onClick={() => {
@@ -585,7 +649,7 @@ export function DateRangePicker({
         }}
         disabled={disabled}
         className={cn(
-          "md:hidden h-9 w-9 flex items-center justify-center rounded-md border border-input bg-background",
+          "h-9 w-9 flex items-center justify-center rounded-md border border-input bg-background",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           "disabled:cursor-not-allowed disabled:opacity-50",
           !disabled && "cursor-pointer",
@@ -603,6 +667,38 @@ export function DateRangePicker({
             align === "right" ? "right-0" : "left-0",
           )}
         >
+          <div className="flex items-center gap-1 mb-2 pb-2 border-b border-border">
+            <span className="flex-1 text-sm text-muted-foreground truncate">
+              {startDate ? formatDate(startDate) : t("start")}{" — "}{endDate ? formatDate(endDate) : t("end")}
+            </span>
+            <button
+              type="button"
+              onClick={handleToday}
+              className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
+              aria-label={t("today")}
+              title={t("today")}
+            >
+              <CalendarCheck className="h-4 w-4 text-muted-foreground" />
+            </button>
+            <button
+              type="button"
+              onClick={handleClear}
+              className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
+              aria-label={t("clear")}
+              title={t("clear")}
+            >
+              <Eraser className="h-4 w-4 text-muted-foreground" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
+              aria-label={t("closeDatePicker")}
+              title={t("closeDatePicker")}
+            >
+              <X className="h-4 w-4 text-muted-foreground" />
+            </button>
+          </div>
           <div className="hidden md:flex gap-4">
             <Calendar
               month={leftMonth}
@@ -625,14 +721,17 @@ export function DateRangePicker({
               selectedStart={startDate}
               selectedEnd={endDate}
               onDateSelect={handleDateSelect}
-              onMonthChange={() => goLeftNext()}
+              onMonthChange={(m, y) => {
+                // Right is always left + 1 month, so derive left from the right selection
+                const newLeftMonth = m === 0 ? 11 : m - 1;
+                const newLeftYear = m === 0 ? y - 1 : y;
+                setLeftMonth(newLeftMonth);
+                setLeftYear(newLeftYear);
+              }}
               showNav="right"
               startClassName={startClassName}
               endClassName={endClassName}
             />
-          </div>
-          <div className="md:hidden mb-2 pb-2 border-b border-border text-sm text-center text-muted-foreground">
-            {startDate ? formatDate(startDate) : t("start")}{" — "}{endDate ? formatDate(endDate) : t("end")}
           </div>
           <div className="md:hidden">
             <Calendar
@@ -649,22 +748,6 @@ export function DateRangePicker({
               startClassName={startClassName}
               endClassName={endClassName}
             />
-          </div>
-          <div className="flex gap-2 mt-3 pt-3 border-t border-border">
-            <button
-              type="button"
-              onClick={handleClear}
-              className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 text-sm font-medium rounded-xl border border-[#C8C8C8] bg-[#FBFBFB] shadow-[0px_1px_0.5px_0.05px_rgba(29,41,61,0.02)] hover:bg-[#F0F0F0] cursor-pointer"
-            >
-              {t("clear")}
-            </button>
-            <button
-              type="button"
-              onClick={handleToday}
-              className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 text-sm font-medium rounded-xl bg-[#3B2559] text-white shadow-[0px_1px_0.5px_0.05px_rgba(29,41,61,0.02)] hover:bg-[#4A3068] cursor-pointer"
-            >
-              {t("today")}
-            </button>
           </div>
         </div>
       )}
