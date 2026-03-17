@@ -11,6 +11,7 @@ export function PieChart() {
   const options: ApexCharts.ApexOptions = {
     chart: {
       type: "radialBar",
+      sparkline: { enabled: true },
     },
     colors: ["#A78BFA"],
     plotOptions: {
@@ -41,6 +42,6 @@ export function PieChart() {
   const series = [10];
 
   return (
-    <Chart options={options} series={series} type="radialBar" height="100%" />
+    <Chart options={options} series={series} type="radialBar" height={140} width={140} />
   );
 }

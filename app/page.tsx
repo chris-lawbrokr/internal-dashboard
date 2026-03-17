@@ -18,9 +18,11 @@ export default function Dashboard() {
     <div className="h-screen w-full overflow-hidden flex">
       <Sidebar open={sidebarOpen} onToggle={() => setSidebarOpen(false)} />
 
-        <div className="relative flex-1 min-w-0 flex flex-col bg-[#fbfbfb]">
-          {!sidebarOpen && <SidebarOpenButton onClick={() => setSidebarOpen(true)} />}
-          <div className="flex-1 min-h-0 p-6 overflow-y-auto overflow-x-hidden @container flex flex-col gap-6">
+      <div className="relative flex-1 min-w-0 flex flex-col bg-[#fbfbfb]">
+        {!sidebarOpen && (
+          <SidebarOpenButton onClick={() => setSidebarOpen(true)} />
+        )}
+        <div className="flex-1 min-h-0 p-6 overflow-y-auto overflow-x-hidden @container flex flex-col gap-6">
           {/* Welcome + Date Filter */}
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold">
@@ -54,7 +56,7 @@ export default function Dashboard() {
                   </div>
                   <SparklineChart
                     data={[30, 40, 35, 50, 45, 55, 60]}
-                    color="#3b2559"
+                    color="#bcbc95"
                   />
                 </CardContent>
               </Card>
@@ -72,7 +74,7 @@ export default function Dashboard() {
                   </div>
                   <SparklineChart
                     data={[20, 25, 22, 30, 28, 35, 40]}
-                    color="#3b2559"
+                    color="#bcbc95"
                   />
                 </CardContent>
               </Card>
@@ -86,9 +88,9 @@ export default function Dashboard() {
             </Card>
 
             {/* Right: Conversion rate + donut */}
-            <Card className="flex-1 min-w-0 p-4">
-              <CardContent className="flex flex-col h-full">
-                <div className="flex flex-col gap-1">
+            <Card className="flex-1 min-w-0 p-4 @container/conv">
+              <CardContent className="flex flex-col @[200px]/conv:flex-row @[200px]/conv:items-center @[200px]/conv:justify-between h-full gap-2">
+                <div className="flex flex-col gap-1 items-start h-full">
                   <p className="text-sm text-muted-foreground">
                     {t("conversionRate")}
                   </p>
@@ -98,7 +100,7 @@ export default function Dashboard() {
                     {t("vsLastMonth")}
                   </p>
                 </div>
-                <div className="flex-1 min-h-0 flex items-center justify-center">
+                <div className="shrink-0 self-center">
                   <PieChart />
                 </div>
               </CardContent>
@@ -109,8 +111,8 @@ export default function Dashboard() {
           <div className="min-w-[320px]">
             <AccountsTable />
           </div>
-          </div>
         </div>
+      </div>
     </div>
   );
 }
