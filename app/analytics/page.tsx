@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Sidebar } from "@/app/ui/Sidebar";
+import { Sidebar, SidebarOpenButton } from "@/app/ui/Sidebar";
 
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -16,15 +16,18 @@ import { LineChart } from "@/app/ui/LineChart";
 export default function Dashboard() {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const t = useTranslations("dashboard");
   const tc = useTranslations("common");
   const ta = useTranslations("account");
 
   return (
-    <div className="h-screen w-full overflow-hidden flex border-x">
-      <Sidebar />
+    <div className="h-screen w-full overflow-hidden flex">
+      <Sidebar open={sidebarOpen} onToggle={() => setSidebarOpen(false)} />
 
-        <div className="w-full p-4 overflow-auto @container flex flex-col gap-4">
+        <div className="relative flex-1 min-w-0 flex flex-col bg-[#fbfbfb]">
+          {!sidebarOpen && <SidebarOpenButton onClick={() => setSidebarOpen(true)} />}
+          <div className="flex-1 min-h-0 p-4 overflow-y-auto overflow-x-hidden @container flex flex-col gap-4">
           <Card className="p-4">
             <CardContent className="flex gap-4 justify-between items-center">
               <div className="flex gap-2">
@@ -113,6 +116,7 @@ export default function Dashboard() {
 
           <div className="min-w-[320px]">
             <UsersTable />
+          </div>
           </div>
         </div>
     </div>

@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Calendar, ChevronDown } from "lucide-react";
-import { Sidebar } from "@/app/ui/Sidebar";
+import { Sidebar, SidebarOpenButton } from "@/app/ui/Sidebar";
 import { Card, CardContent } from "@/components/ui/card";
 import { AccountsTable } from "@/app/ui/AccountsTable";
 import { PieChart } from "@/app/ui/PieChart";
@@ -10,13 +11,16 @@ import { LineChart } from "@/app/ui/LineChart";
 import { SparklineChart } from "@/app/ui/SparklineChart";
 
 export default function Dashboard() {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const t = useTranslations("dashboard");
 
   return (
     <div className="h-screen w-full overflow-hidden flex">
-      <Sidebar />
+      <Sidebar open={sidebarOpen} onToggle={() => setSidebarOpen(false)} />
 
-        <div className="flex-1 min-w-0 p-6 overflow-y-auto overflow-x-hidden @container flex flex-col gap-6 bg-[#fbfbfb]">
+        <div className="relative flex-1 min-w-0 flex flex-col bg-[#fbfbfb]">
+          {!sidebarOpen && <SidebarOpenButton onClick={() => setSidebarOpen(true)} />}
+          <div className="flex-1 min-h-0 p-6 overflow-y-auto overflow-x-hidden @container flex flex-col gap-6">
           {/* Welcome + Date Filter */}
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold">
@@ -104,6 +108,7 @@ export default function Dashboard() {
           {/* Accounts Table */}
           <div className="min-w-[320px]">
             <AccountsTable />
+          </div>
           </div>
         </div>
     </div>

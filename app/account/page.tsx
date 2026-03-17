@@ -5,7 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 
-import { Sidebar } from "@/app/ui/Sidebar";
+import { Sidebar, SidebarOpenButton } from "@/app/ui/Sidebar";
 import { Card, CardContent } from "@/components/ui/card";
 import { DateRangePicker } from "@/components/ui/datepicker";
 import { OverviewTab } from "./OverviewTab";
@@ -18,14 +18,17 @@ export default function Dashboard() {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [activeTab, setActiveTab] = useState<string>("overview");
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const t = useTranslations("account");
   const tc = useTranslations("common");
 
   return (
-    <div className="h-screen w-full overflow-hidden flex border-x">
-      <Sidebar />
+    <div className="h-screen w-full overflow-hidden flex">
+      <Sidebar open={sidebarOpen} onToggle={() => setSidebarOpen(false)} />
 
-        <div className="w-full p-4 overflow-auto @container flex flex-col gap-4">
+        <div className="relative flex-1 min-w-0 flex flex-col bg-[#fbfbfb]">
+          {!sidebarOpen && <SidebarOpenButton onClick={() => setSidebarOpen(true)} />}
+          <div className="flex-1 min-h-0 p-4 overflow-y-auto overflow-x-hidden @container flex flex-col gap-4">
           <Card className="p-4">
             <CardContent className="flex gap-4 justify-between items-center">
               <div className="flex gap-2">
@@ -74,6 +77,7 @@ export default function Dashboard() {
           {activeTab === "overview" && <OverviewTab />}
           {activeTab === "performance" && <PerformanceTab />}
           {activeTab === "website" && <WebsiteTab />}
+          </div>
         </div>
     </div>
   );
