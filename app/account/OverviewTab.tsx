@@ -9,26 +9,67 @@ import {
   Filter,
   Lock,
   Eye,
-  Pencil,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
 
+const ROLE_STYLES: Record<string, { bg: string; text: string; border: string }> = {
+  Admin: { bg: "#e1dff6", text: "#250d53", border: "#c4c0e8" },
+  Internal: { bg: "#fff2cf", text: "#946a22", border: "#daad75" },
+  Agency: { bg: "#ededc7", text: "#626444", border: "#bcbc95" },
+  Support: { bg: "#ffe2de", text: "#ab626f", border: "#eaa289" },
+};
+
+const ROLE_ICONS: Record<string, React.ComponentType<{ size: number }>> = {
+  Admin: Lock,
+  Internal: Eye,
+  Agency: Eye,
+  Support: Eye,
+};
+
 const users = [
-  { name: "Joseph McFall", email: "name@example.com", role: "Admin", roleIcon: "lock", type: "PRO" },
-  { name: "Micheal Gough", email: "name@example.com", role: "Viewer", roleIcon: "eye", type: "PRO" },
-  { name: "Leslie Livingston", email: "livingston@example.com", role: "Editor", roleIcon: "pencil", type: "Lite" },
-  { name: "Lana byrd", email: "name@example.com", role: "Editor", roleIcon: "pencil", type: "PRO" },
-  { name: "Bonnie Green", email: "name@example.com", role: "Viewer", roleIcon: "eye", type: "Free" },
-  { name: "Leslie Livingston", email: "livingston@example.com", role: "Editor", roleIcon: "pencil", type: "Lite" },
-  { name: "Lana byrd", email: "name@example.com", role: "Editor", roleIcon: "pencil", type: "PRO" },
-  { name: "Bonnie Green", email: "name@example.com", role: "Viewer", roleIcon: "eye", type: "Free" },
+  { name: "Full Name", email: "name@example.com", role: "Admin", dateAdded: "Feb. 1, 2026" },
+  { name: "Full Name", email: "name@example.com", role: "Internal", dateAdded: "Feb. 1, 2026" },
+  { name: "Full Name", email: "livingston@example.com", role: "Agency", dateAdded: "Feb. 1, 2026" },
+  { name: "Full Name", email: "name@example.com", role: "Agency", dateAdded: "Feb. 1, 2026" },
+  { name: "Full Name", email: "name@example.com", role: "Support", dateAdded: "Feb. 1, 2026" },
+  { name: "Full Name", email: "name@example.com", role: "Admin", dateAdded: "Feb. 1, 2026" },
+  { name: "Full Name", email: "livingston@example.com", role: "Agency", dateAdded: "Feb. 1, 2026" },
+  { name: "Full Name", email: "name@example.com", role: "Internal", dateAdded: "Feb. 1, 2026" },
+  { name: "Full Name", email: "name@example.com", role: "Support", dateAdded: "Feb. 1, 2026" },
+  { name: "Full Name", email: "name@example.com", role: "Admin", dateAdded: "Feb. 1, 2026" },
 ];
+
+const PAGE_SIZE = 5;
+
+function RoleBadge({ role }: { role: string }) {
+  const style = ROLE_STYLES[role] || ROLE_STYLES.Admin;
+  const Icon = ROLE_ICONS[role] || Eye;
+  return (
+    <span
+      className="inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-medium"
+      style={{ backgroundColor: style.bg, color: style.text, borderColor: style.border }}
+    >
+      <Icon size={12} />
+      {role}
+    </span>
+  );
+}
+
+function TagBadge({ label, bg, text, border }: { label: string; bg: string; text: string; border: string }) {
+  return (
+    <span
+      className="inline-flex items-center rounded-md border px-2.5 py-1 text-xs font-medium"
+      style={{ backgroundColor: bg, color: text, borderColor: border }}
+    >
+      {label}
+    </span>
+  );
+}
 
 export function OverviewTab() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
   const t = useTranslations("account");
   const tc = useTranslations("common");
 
@@ -39,78 +80,77 @@ export function OverviewTab() {
       (u) =>
         u.name.toLowerCase().includes(q) ||
         u.email.toLowerCase().includes(q) ||
-        u.role.toLowerCase().includes(q) ||
-        u.type.toLowerCase().includes(q),
+        u.role.toLowerCase().includes(q),
     );
   }, [search]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredUsers.length / pageSize));
+  const totalPages = Math.max(1, Math.ceil(filteredUsers.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
   const paginatedUsers = filteredUsers.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize,
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE,
   );
+  const startItem = filteredUsers.length === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
+  const endItem = Math.min(currentPage * PAGE_SIZE, filteredUsers.length);
 
   return (
     <>
+      {/* Health Gauges */}
       <div className="min-w-[320px] flex flex-col gap-4 @xl:flex-row">
         <GaugeChart title={t("onboardingHealth")} label={t("good")} value={75} color="#7c3aed" href="#" />
-        <GaugeChart title={t("performanceHealth")} label={t("fair")} value={50} color="#a855f7" href="#" />
-        <GaugeChart title={t("websiteHealth")} label={t("poor")} value={25} color="#d8b4fe" href="#" />
+        <GaugeChart title={t("performanceHealth")} label={t("fair")} value={50} color="#c9955e" href="#" />
+        <GaugeChart title={t("websiteHealth")} label={t("poor")} value={25} color="#eaa289" href="#" />
       </div>
 
+      {/* Company Info + Users Table */}
       <div className="flex flex-col gap-4 @xl:flex-row">
-        {/* Company Info Card */}
+        {/* Company Info */}
         <Card className="flex-1 p-6">
-          <CardContent className="grid grid-cols-2 gap-6">
-            <div className="flex flex-col gap-6">
-              <div>
-                <p className="font-bold">{t("companyName")}</p>
-                <p className="text-muted-foreground">In-Person</p>
-              </div>
-              <div>
-                <p className="font-bold">{t("duration")}</p>
-                <p className="text-muted-foreground">1 Week</p>
-              </div>
-              <div>
-                <p className="font-bold">{t("restrictions")}</p>
-                <p className="text-muted-foreground">None</p>
-              </div>
-              <div>
-                <p className="font-bold">{t("location")}</p>
-                <p className="text-muted-foreground">123 Congress Hall, King St</p>
-              </div>
-              <div>
-                <p className="font-bold">{t("holdingCapacity")}</p>
-                <p className="text-muted-foreground">25,000</p>
-              </div>
+          <CardContent className="grid grid-cols-2 gap-x-8 gap-y-5">
+            <div>
+              <p className="text-sm font-bold text-[#070043]">{t("companyName")}:</p>
+              <p className="text-sm text-[#777]">Law Firm Name</p>
             </div>
-            <div className="flex flex-col gap-6">
-              <div>
-                <p className="font-bold">{t("companySize")}</p>
-                <p className="text-muted-foreground">In-Person</p>
-              </div>
-              <div>
-                <p className="font-bold">{t("duration")}</p>
-                <p className="text-muted-foreground">1 Week</p>
-              </div>
-              <div>
-                <p className="font-bold">{t("restrictions")}</p>
-                <p className="text-muted-foreground">None</p>
-              </div>
-              <div>
-                <p className="font-bold">{t("location")}</p>
-                <p className="text-muted-foreground">123 Congress Hall, King St</p>
-              </div>
-              <div>
-                <p className="font-bold">{t("holdingCapacity")}</p>
-                <p className="text-muted-foreground">25,000</p>
-              </div>
+            <div>
+              <p className="text-sm font-bold text-[#070043]">{t("companySize")}:</p>
+              <p className="text-sm text-[#777]">25 employees</p>
+            </div>
+            <div>
+              <p className="text-sm font-bold text-[#070043]">{t("location")}:</p>
+              <p className="text-sm text-[#777]">Los Angeles, CA, USA</p>
+            </div>
+            <div>
+              <p className="text-sm font-bold text-[#070043]">{t("marketingAgency")}:</p>
+              <p className="text-sm text-[#777]">N/A</p>
+            </div>
+            <div>
+              <p className="text-sm font-bold text-[#070043]">{t("website")}:</p>
+              <p className="text-sm text-[#777]">www.lawfirmname.com</p>
+            </div>
+            <div>
+              <p className="text-sm font-bold text-[#070043]">{t("marketingSpend")}:</p>
+              <p className="text-sm text-[#777]">N/A</p>
+            </div>
+            <div>
+              <p className="text-sm font-bold text-[#070043]">{t("activationDate")}:</p>
+              <p className="text-sm text-[#777]">Feb. 1, 2026</p>
+            </div>
+            <div>
+              <p className="text-sm font-bold text-[#070043]">{tc("status")}:</p>
+              <p className="text-sm text-[#777]">Active</p>
+            </div>
+            <div>
+              <p className="text-sm font-bold text-[#070043]">{t("username")}:</p>
+              <p className="text-sm text-[#777]">lawfirmname</p>
+            </div>
+            <div>
+              <p className="text-sm font-bold text-[#070043]">{t("integrations")}:</p>
+              <p className="text-sm text-[#777]">Active</p>
             </div>
           </CardContent>
         </Card>
 
-        {/* Users Table Card */}
+        {/* Users Table */}
         <Card className="flex-1 p-4">
           <CardContent className="flex flex-col gap-4">
             <div className="flex items-center justify-between gap-4">
@@ -121,10 +161,10 @@ export function OverviewTab() {
                   placeholder={tc("search")}
                   value={search}
                   onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-                  className="h-9 w-56 rounded-md border border-input bg-background pl-8 pr-3 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="h-9 w-48 rounded-md border border-input bg-background pl-8 pr-3 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
               </div>
-              <button type="button" className="flex items-center gap-1.5 rounded-md border border-input px-3 h-9 text-sm text-muted-foreground hover:bg-muted">
+              <button type="button" className="flex items-center gap-1.5 rounded-md border border-[#3b2559] px-3 h-9 text-sm hover:bg-muted cursor-pointer">
                 <Filter size={14} />
                 {tc("filter")}
               </button>
@@ -132,70 +172,44 @@ export function OverviewTab() {
 
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b">
+                <tr className="border-b border-[#c8c8c8]">
                   <th className="text-left py-2 px-2 font-medium text-muted-foreground">{tc("users")}</th>
                   <th className="text-left py-2 px-2 font-medium text-muted-foreground">{tc("userRole")}</th>
                   <th className="text-left py-2 px-2 font-medium text-muted-foreground">{tc("email")}</th>
-                  <th className="text-left py-2 px-2 font-medium text-muted-foreground">{tc("type")}</th>
+                  <th className="text-left py-2 px-2 font-medium text-muted-foreground">{t("dateAdded")}</th>
                 </tr>
               </thead>
               <tbody>
                 {paginatedUsers.map((user, i) => (
-                  <tr key={`${user.name}-${i}`} className="border-b last:border-0">
+                  <tr key={`${user.name}-${i}`} className="border-b border-[#f2f2f2] last:border-0">
                     <td className="py-3 px-2">
                       <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-xs font-medium">
+                        <div className="w-7 h-7 rounded-full bg-[#e1dff6] text-[#777] flex items-center justify-center text-xs font-medium shrink-0">
                           PH
                         </div>
-                        <div>
-                          <p className="font-medium">{user.name}</p>
-                          <p className="text-xs text-muted-foreground">name@flowbite.com</p>
-                        </div>
+                        <span className="font-medium">{user.name}</span>
                       </div>
                     </td>
                     <td className="py-3 px-2">
-                      <span className="inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-medium">
-                        {user.roleIcon === "lock" && <Lock size={12} />}
-                        {user.roleIcon === "eye" && <Eye size={12} />}
-                        {user.roleIcon === "pencil" && <Pencil size={12} />}
-                        {user.role}
-                      </span>
+                      <RoleBadge role={user.role} />
                     </td>
-                    <td className="py-3 px-2 text-muted-foreground">{user.email}</td>
-                    <td className="py-3 px-2 font-medium">{user.type}</td>
+                    <td className="py-3 px-2 text-[#777]">{user.email}</td>
+                    <td className="py-3 px-2 font-medium">{user.dateAdded}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
 
             <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center gap-2 text-muted-foreground">
-                {tc("rowsPerPage")}
-                <select
-                  aria-label={tc("rowsPerPage")}
-                  value={pageSize}
-                  onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }}
-                  className="border rounded px-1 py-0.5 text-sm"
-                >
-                  <option value={5}>5</option>
-                  <option value={10}>10</option>
-                  <option value={25}>25</option>
-                  <option value={99}>99</option>
-                </select>
-                <span>
-                  <strong>
-                    {filteredUsers.length === 0 ? 0 : (currentPage - 1) * pageSize + 1}-
-                    {Math.min(currentPage * pageSize, filteredUsers.length)}
-                  </strong>{" "}
-                  {tc("of")} <strong>{filteredUsers.length}</strong>
-                </span>
-              </div>
+              <span className="text-muted-foreground">
+                {startItem}-{endItem} {tc("of")} {filteredUsers.length}
+              </span>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   disabled={currentPage <= 1}
                   onClick={() => setPage((p) => p - 1)}
-                  className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground disabled:opacity-50 disabled:pointer-events-none"
+                  className="flex items-center gap-1 rounded-md border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
                 >
                   <ChevronLeft size={14} /> {tc("previous")}
                 </button>
@@ -203,7 +217,7 @@ export function OverviewTab() {
                   type="button"
                   disabled={currentPage >= totalPages}
                   onClick={() => setPage((p) => p + 1)}
-                  className="flex items-center gap-1 text-sm font-medium hover:text-foreground disabled:opacity-50 disabled:pointer-events-none"
+                  className="flex items-center gap-1 rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
                 >
                   {tc("next")} <ChevronRight size={14} />
                 </button>
@@ -213,23 +227,40 @@ export function OverviewTab() {
         </Card>
       </div>
 
-      <div className="flex flex-col gap-4">
-        <div className="flex gap-4">
-          <Card className="flex-1 p-4">
-            <CardContent className="flex flex-col gap-4">{t("practiceAreas")}</CardContent>
-          </Card>
-          <Card className="flex-1 p-4">
-            <CardContent className="flex flex-col gap-4">{t("integrations")}</CardContent>
-          </Card>
-        </div>
-        <div className="flex gap-4">
-          <Card className="flex-1 p-4">
-            <CardContent className="flex flex-col gap-4">{t("techStack")}</CardContent>
-          </Card>
-          <Card className="flex-1 p-4">
-            <CardContent className="flex flex-col gap-4">{t("lawbrokrFeatures")}</CardContent>
-          </Card>
-        </div>
+      {/* Tags Section */}
+      <div className="grid grid-cols-2 gap-4">
+        <Card className="p-6">
+          <CardContent className="flex flex-col gap-3">
+            <h3 className="text-base font-medium text-[#777]">{t("practiceAreas")}</h3>
+            <div className="flex flex-wrap gap-2">
+              <TagBadge label="Practice area" bg="#d8e6f4" text="#637c93" border="#b0cde4" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="p-6">
+          <CardContent className="flex flex-col gap-3">
+            <h3 className="text-base font-medium text-[#777]">{t("integrations")}</h3>
+            <div className="flex flex-wrap gap-2">
+              <TagBadge label="Integration" bg="#ededc7" text="#626444" border="#bcbc95" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="p-6">
+          <CardContent className="flex flex-col gap-3">
+            <h3 className="text-base font-medium text-[#777]">{t("techStack")}</h3>
+            <div className="flex flex-wrap gap-2">
+              <TagBadge label="Tech platform" bg="#e1dff6" text="#250d53" border="#c4c0e8" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="p-6">
+          <CardContent className="flex flex-col gap-3">
+            <h3 className="text-base font-medium text-[#777]">{t("lawbrokrFeatures")}</h3>
+            <div className="flex flex-wrap gap-2">
+              <TagBadge label="Feature" bg="#ededc7" text="#626444" border="#bcbc95" />
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </>
   );

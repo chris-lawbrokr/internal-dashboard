@@ -55,7 +55,13 @@
     "websiteHealth": "Website Health",
     "good": "Good",
     "fair": "Fair",
-    "poor": "Poor"
+    "poor": "Poor",
+    "viewMore": "View More",
+    "marketingAgency": "Marketing Agency:",
+    "marketingSpend": "Marketing Spend:",
+    "activationDate": "Activation Date:",
+    "username": "Username:",
+    "dateAdded": "Date Added"
   },
   "website": {
     "websiteStatus": "Website Status",
