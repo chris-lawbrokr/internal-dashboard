@@ -16,7 +16,7 @@ export default function Dashboard() {
     <div className="h-screen w-full overflow-hidden flex">
       <Sidebar />
 
-        <div className="w-full p-6 overflow-auto @container flex flex-col gap-6 bg-[#fbfbfb]">
+        <div className="flex-1 min-w-0 p-6 overflow-y-auto overflow-x-hidden @container flex flex-col gap-6 bg-[#fbfbfb]">
           {/* Welcome + Date Filter */}
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold">
