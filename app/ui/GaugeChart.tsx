@@ -57,7 +57,7 @@ export function GaugeChart({ title, label, value, color, href }: GaugeChartProps
               fill="none"
               stroke="#e5e7eb"
               strokeWidth={strokeWidth}
-              strokeLinecap="round"
+              strokeLinecap="butt"
             />
             {value > 0 && (
               <path
@@ -65,7 +65,7 @@ export function GaugeChart({ title, label, value, color, href }: GaugeChartProps
                 fill="none"
                 stroke={color}
                 strokeWidth={strokeWidth}
-                strokeLinecap="round"
+                strokeLinecap="butt"
               />
             )}
           </svg>
