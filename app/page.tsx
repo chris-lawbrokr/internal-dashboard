@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Sidebar, SidebarOpenButton } from "@/app/ui/Sidebar";
+import { Sidebar } from "@/app/ui/Sidebar";
 import { Card, CardContent } from "@/components/ui/card";
 import { AccountsTable } from "@/app/ui/AccountsTable";
 import { PieChart } from "@/app/ui/PieChart";
@@ -16,13 +16,9 @@ export default function Dashboard() {
 
   return (
     <div className="h-screen w-full overflow-hidden flex">
-      <Sidebar open={sidebarOpen} onToggle={() => setSidebarOpen(false)} />
+      <Sidebar open={sidebarOpen} onToggle={() => setSidebarOpen((o) => !o)} />
 
-      <div className="relative flex-1 min-w-0 flex flex-col bg-[#fbfbfb]">
-        {!sidebarOpen && (
-          <SidebarOpenButton onClick={() => setSidebarOpen(true)} />
-        )}
-        <div className="flex-1 min-h-0 p-6 overflow-y-auto overflow-x-hidden @container flex flex-col gap-6">
+      <div className="flex-1 min-w-0 p-6 overflow-y-auto overflow-x-hidden @container flex flex-col gap-6 bg-[#fbfbfb]">
           {/* Welcome + Date Filter */}
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold">
@@ -108,7 +104,6 @@ export default function Dashboard() {
           <div className="min-w-[320px]">
             <AccountsTable />
           </div>
-        </div>
       </div>
     </div>
   );
