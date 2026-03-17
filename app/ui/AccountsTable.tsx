@@ -5,10 +5,9 @@ import { useTranslations } from "next-intl";
 import {
   Search,
   X,
+  Check,
   ChevronDown,
-  CheckCircle2,
   AlertCircle,
-  XCircle,
   SlidersHorizontal,
   ArrowUpDown,
   ChevronLeft,
@@ -59,10 +58,10 @@ const PAGE_SIZE = 10;
 function StatusBadge({ status }: { status: "Active" | "Inactive" }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+      className={`inline-flex items-center rounded-md px-2 py-1 text-sm font-medium border ${
         status === "Active"
-          ? "bg-green-50 text-green-700 ring-1 ring-inset ring-green-200"
-          : "bg-red-50 text-red-700 ring-1 ring-inset ring-red-200"
+          ? "bg-[#ededc7] text-[#626444] border-[#bcbc95]"
+          : "bg-[#ffd9c5] text-[#b13c33] border-[#eaa289]"
       }`}
     >
       {status}
@@ -71,14 +70,25 @@ function StatusBadge({ status }: { status: "Active" | "Inactive" }) {
 }
 
 function StatusIconCell({ icon }: { icon: StatusIcon }) {
-  switch (icon) {
-    case "check":
-      return <CheckCircle2 size={20} className="text-green-600" />;
-    case "warning":
-      return <AlertCircle size={20} className="text-amber-500" />;
-    case "error":
-      return <XCircle size={20} className="text-red-500" />;
-  }
+  const styles = {
+    check: "bg-[#ededc7] border-[#bcbc95] text-[#626444]",
+    warning: "bg-[#fff2cf] border-[#daad75] text-[#A56737]",
+    error: "bg-[#ffd9c5] border-[#eaa289] text-[#b13c33]",
+  };
+
+  const icons = {
+    check: <Check size={14} strokeWidth={2.5} />,
+    warning: <AlertCircle size={14} strokeWidth={2} />,
+    error: <X size={14} strokeWidth={2.5} />,
+  };
+
+  return (
+    <div
+      className={`inline-flex items-center justify-center size-6 rounded-full border ${styles[icon]}`}
+    >
+      {icons[icon]}
+    </div>
+  );
 }
 
 type SortField = "totalVisits" | "totalResponses" | "conversionRate";
@@ -91,7 +101,6 @@ export function AccountsTable() {
   const [sortDir, setSortDir] = useState<SortDir>("asc");
   const t = useTranslations("dashboard");
   const tc = useTranslations("common");
-  const ts = useTranslations("statuses");
 
   const filtered = fakeAccounts.filter((a) => {
     const q = search.toLowerCase();
