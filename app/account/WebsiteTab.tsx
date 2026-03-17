@@ -23,7 +23,9 @@ interface LawbrokrLink {
 const links: LawbrokrLink[] = Array.from({ length: 100 }, (_, i) => ({
   websiteUrl: "www.lawfirmname.com/homepage",
   lawbrokrUrl: "www.lawfirm.lawbrokr.com/practiceareas",
-  status: (["Active", "Active", "Review", "Broken", "Active", "Active"] as LinkStatus[])[i % 6],
+  status: (
+    ["Active", "Active", "Review", "Broken", "Active", "Active"] as LinkStatus[]
+  )[i % 6],
 }));
 
 function StatusBadge({ status }: { status: LinkStatus }) {
@@ -50,16 +52,26 @@ function StatusBadge({ status }: { status: LinkStatus }) {
   }[status];
 
   return (
-    <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-medium ${config.className}`}>
+    <span
+      className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-medium ${config.className}`}
+    >
       {config.icon}
       {t(statusKeyMap[status])}
     </span>
   );
 }
 
-function StatusCard({ label, children }: { label: string; children: React.ReactNode }) {
+function StatusCard({
+  label,
+  children,
+  className,
+}: {
+  label: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <Card className="flex-1 p-4">
+    <Card className={`flex-1 p-4${className ? ` ${className}` : ""}`}>
       <CardContent className="flex flex-col gap-2">
         <p className="text-xs text-muted-foreground">{label}</p>
         {children}
@@ -84,7 +96,7 @@ export function WebsiteTab() {
   return (
     <>
       {/* Top stat cards – row 1 */}
-      <div className="grid grid-cols-2 gap-4 @xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 @xl:grid-cols-4">
         <StatusCard label={t("websiteStatus")}>
           <span className="inline-flex items-center gap-1.5 self-start rounded-md border px-2 py-0.5 text-xs font-medium border-green-200 bg-green-50 text-green-700">
             <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
@@ -106,15 +118,12 @@ export function WebsiteTab() {
           </span>
         </StatusCard>
 
-        <StatusCard label={t("activeIntegrations")}>
+        <StatusCard label={t("activeIntegrations")} className="row-span-2">
           <span className="inline-flex items-center gap-1.5 self-start rounded-md border border-foreground px-2 py-0.5 text-xs font-medium">
             Scorpion
           </span>
         </StatusCard>
-      </div>
 
-      {/* Top stat cards – row 2 */}
-      <div className="grid grid-cols-2 gap-4 @xl:grid-cols-3">
         <StatusCard label={t("sslStatus")}>
           <span className="inline-flex items-center gap-1.5 self-start rounded-md border px-2 py-0.5 text-xs font-medium border-green-200 bg-green-50 text-green-700">
             <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
@@ -123,14 +132,17 @@ export function WebsiteTab() {
         </StatusCard>
 
         <StatusCard label={t("websiteLoadTime")}>
-          <span className="text-2xl font-bold text-yellow-600">{t("seconds", { count: 8 })}</span>
+          <span className="text-2xl font-bold text-yellow-600">
+            {t("seconds", { count: 8 })}
+          </span>
         </StatusCard>
 
         <StatusCard label={t("liveLawbrokrLinks")}>
           <span className="text-2xl font-bold">39</span>
           <span className="inline-flex items-center gap-1 text-sm text-red-500">
             <ArrowDown size={14} />
-            10% <span className="text-muted-foreground">{t("vsLastMonth")}</span>
+            10%{" "}
+            <span className="text-muted-foreground">{t("vsLastMonth")}</span>
           </span>
         </StatusCard>
       </div>
@@ -143,16 +155,26 @@ export function WebsiteTab() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b">
-                <th className="text-left py-2 px-2 font-medium text-muted-foreground">{t("websiteUrl")}</th>
-                <th className="text-left py-2 px-2 font-medium text-muted-foreground">{t("lawbrokrUrl")}</th>
-                <th className="text-right py-2 px-2 font-medium text-muted-foreground">{t("status")}</th>
+                <th className="text-left py-2 px-2 font-medium text-muted-foreground">
+                  {t("websiteUrl")}
+                </th>
+                <th className="text-left py-2 px-2 font-medium text-muted-foreground">
+                  {t("lawbrokrUrl")}
+                </th>
+                <th className="text-right py-2 px-2 font-medium text-muted-foreground">
+                  {t("status")}
+                </th>
               </tr>
             </thead>
             <tbody>
               {paginatedLinks.map((link, i) => (
                 <tr key={i} className="border-b last:border-0">
-                  <td className="py-3 px-2 text-muted-foreground">{link.websiteUrl}</td>
-                  <td className="py-3 px-2 text-muted-foreground">{link.lawbrokrUrl}</td>
+                  <td className="py-3 px-2 text-muted-foreground">
+                    {link.websiteUrl}
+                  </td>
+                  <td className="py-3 px-2 text-muted-foreground">
+                    {link.lawbrokrUrl}
+                  </td>
                   <td className="py-3 px-2 text-right">
                     <StatusBadge status={link.status} />
                   </td>
@@ -167,7 +189,10 @@ export function WebsiteTab() {
               <select
                 aria-label={tc("rowsPerPage")}
                 value={pageSize}
-                onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }}
+                onChange={(e) => {
+                  setPageSize(Number(e.target.value));
+                  setPage(1);
+                }}
                 className="border rounded px-1 py-0.5 text-sm"
               >
                 <option value={5}>5</option>
