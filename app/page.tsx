@@ -42,7 +42,7 @@ export default function Dashboard() {
           <div className="min-w-[320px] flex flex-col gap-4 @xl:flex-row">
             {/* Left: Stacked stat cards */}
             <div className="flex-1 min-w-0 flex flex-col gap-4">
-              <Card className="flex-1 p-4">
+              <Card className="flex-1 p-4 @container/stat">
                 <CardContent className="flex items-center justify-between">
                   <div className="flex flex-col gap-1">
                     <p className="text-sm text-muted-foreground">
@@ -54,13 +54,15 @@ export default function Dashboard() {
                       {t("vsLastMonth")}
                     </p>
                   </div>
-                  <SparklineChart
-                    data={[30, 40, 35, 50, 45, 55, 60]}
-                    color="#bcbc95"
-                  />
+                  <div className="hidden @[200px]/stat:block">
+                    <SparklineChart
+                      data={[30, 40, 35, 50, 45, 55, 60]}
+                      color="#bcbc95"
+                    />
+                  </div>
                 </CardContent>
               </Card>
-              <Card className="flex-1 p-4">
+              <Card className="flex-1 p-4 @container/stat2">
                 <CardContent className="flex items-center justify-between">
                   <div className="flex flex-col gap-1">
                     <p className="text-sm text-muted-foreground">
@@ -72,10 +74,12 @@ export default function Dashboard() {
                       {t("vsLastMonth")}
                     </p>
                   </div>
-                  <SparklineChart
-                    data={[20, 25, 22, 30, 28, 35, 40]}
-                    color="#bcbc95"
-                  />
+                  <div className="hidden @[200px]/stat2:block">
+                    <SparklineChart
+                      data={[20, 25, 22, 30, 28, 35, 40]}
+                      color="#bcbc95"
+                    />
+                  </div>
                 </CardContent>
               </Card>
             </div>
