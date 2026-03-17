@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -14,6 +15,8 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
+
+const MOBILE_BREAKPOINT = 768;
 
 interface NavItem {
   id: string;
@@ -43,14 +46,34 @@ export function Sidebar({
   const pathname = usePathname();
   const t = useTranslations("nav");
 
+  useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+    if (mql.matches && open) onToggle();
+    const handler = (e: MediaQueryListEvent) => {
+      if (e.matches) onToggle();
+    };
+    mql.addEventListener("change", handler);
+    return () => mql.removeEventListener("change", handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <div
-      className={`shrink-0 h-full overflow-hidden transition-[width] duration-300 ease-in-out ${open ? "w-[200px]" : "w-0"}`}
-    >
+    <>
+      {/* Backdrop on mobile when open */}
+      {open && (
+        <div
+          className="fixed inset-0 bg-black/30 z-40 md:hidden"
+          onClick={onToggle}
+          aria-hidden="true"
+        />
+      )}
       <div
-        className={`h-full w-[200px] bg-white flex p-5 shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.1)] transition-transform duration-300 ease-in-out ${open ? "translate-x-0" : "-translate-x-full"}`}
+        className={`shrink-0 h-full overflow-hidden transition-[width] duration-300 ease-in-out fixed md:relative z-50 md:z-auto ${open ? "w-full md:w-[200px]" : "w-0"}`}
       >
-        <div className="flex flex-col h-full w-[160px] gap-7">
+        <div
+          className={`h-full w-[200px] bg-white flex p-5 shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.1)] transition-transform duration-300 ease-in-out ${open ? "translate-x-0" : "-translate-x-full"}`}
+        >
+          <div className="flex flex-col h-full w-[160px] gap-7">
           {/* User Profile + Logout */}
           <div className="flex flex-col gap-5 items-start w-full">
             <div className="flex flex-col gap-2 items-center w-full">
@@ -138,9 +161,10 @@ export function Sidebar({
               <PanelLeftClose size={20} />
             </button>
           </div>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
