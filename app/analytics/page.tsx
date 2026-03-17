@@ -3,122 +3,113 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Sidebar, SidebarOpenButton } from "@/app/ui/Sidebar";
-
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
-
 import { Card, CardContent } from "@/components/ui/card";
-import { DateRangePicker } from "@/components/ui/datepicker";
-import { UsersTable } from "@/app/ui/UsersTable";
+import { AccountsTable } from "@/app/ui/AccountsTable";
 import { PieChart } from "@/app/ui/PieChart";
 import { LineChart } from "@/app/ui/LineChart";
+import { SparklineChart } from "@/app/ui/SparklineChart";
+import { DateRangePickerWithPresets } from "@/components/ui/datepicker";
 
 export default function Dashboard() {
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const t = useTranslations("dashboard");
-  const tc = useTranslations("common");
-  const ta = useTranslations("account");
 
   return (
     <div className="h-screen w-full overflow-hidden flex">
       <Sidebar open={sidebarOpen} onToggle={() => setSidebarOpen(false)} />
 
-        <div className="relative flex-1 min-w-0 flex flex-col bg-[#fbfbfb]">
-          {!sidebarOpen && <SidebarOpenButton onClick={() => setSidebarOpen(true)} />}
-          <div className="flex-1 min-h-0 p-4 overflow-y-auto overflow-x-hidden @container flex flex-col gap-4">
-          <Card className="p-4">
-            <CardContent className="flex gap-4 justify-between items-center">
-              <div className="flex gap-2">
-                <Link
-                  href="/"
-                  className="hover:underline flex items-center gap-1"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  {ta("back")}
-                </Link>
-                <h1 className="text-xl font-bold leading-[1.25]">
-                  Law Firm Name
-                </h1>
-              </div>
-              <div>
-                <DateRangePicker
-                  labels={{ start: tc("startDate"), end: tc("endDate") }}
-                  startDate={startDate}
-                  endDate={endDate}
-                  onChange={(s, e) => {
-                    setStartDate(s);
-                    setEndDate(e);
-                  }}
-                />
-              </div>
-            </CardContent>
-          </Card>
+      <div className="relative flex-1 min-w-0 flex flex-col bg-[#fbfbfb]">
+        {!sidebarOpen && (
+          <SidebarOpenButton onClick={() => setSidebarOpen(true)} />
+        )}
+        <div className="flex-1 min-h-0 p-6 overflow-y-auto overflow-x-hidden @container flex flex-col gap-6">
+          {/* Welcome + Date Filter */}
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold">
+              {t("welcome", { name: "Penelope" })}
+            </h1>
+            <DateRangePickerWithPresets defaultPreset="90d" />
+          </div>
 
+          {/* Stats Row */}
           <div className="min-w-[320px] flex flex-col gap-4 @xl:flex-row">
+            {/* Left: Stacked stat cards */}
             <div className="flex-1 min-w-0 flex flex-col gap-4">
-              <Card className="flex-1 p-4">
-                <CardContent className="flex flex-col gap-2">
-                  <p className="font-sans font-normal text-sm leading-[1.25] tracking-normal">
-                    {t("totalVisits")}
-                  </p>
-                  <p className="font-sans font-normal text-2xl leading-8 tracking-normal">
-                    4,268
-                  </p>
-                  <p className="font-sans font-normal text-sm leading-[1.25] tracking-normal">
-                    {t("increaseLastMonth", { percent: "10" })}
-                  </p>
+              <Card className="flex-1 p-4 @container/stat">
+                <CardContent className="flex items-center justify-between">
+                  <div className="flex flex-col gap-1">
+                    <p className="text-sm text-muted-foreground">
+                      {t("totalVisits")}
+                    </p>
+                    <p className="text-2xl font-bold">4,268</p>
+                    <p className="text-xs text-muted-foreground">
+                      <span className="text-[#bcbc95]">&#8593; 10%</span>{" "}
+                      {t("vsLastMonth")}
+                    </p>
+                  </div>
+                  <div className="hidden @[200px]/stat:block">
+                    <SparklineChart
+                      data={[30, 40, 35, 50, 45, 55, 60]}
+                      color="#bcbc95"
+                    />
+                  </div>
                 </CardContent>
               </Card>
-              <Card className="flex-1 p-4">
-                <CardContent className="flex flex-col gap-2">
-                  <p className="font-sans font-normal text-sm leading-[1.25] tracking-normal">
-                    {t("totalResponses")}
-                  </p>
-                  <p className="font-sans font-normal text-2xl leading-8 tracking-normal">
-                    426
-                  </p>
-                  <p className="font-sans font-normal text-sm leading-[1.25] tracking-normal">
-                    {t("increaseLastMonth", { percent: "10" })}
-                  </p>
+              <Card className="flex-1 p-4 @container/stat2">
+                <CardContent className="flex items-center justify-between">
+                  <div className="flex flex-col gap-1">
+                    <p className="text-sm text-muted-foreground">
+                      {t("totalResponses")}
+                    </p>
+                    <p className="text-2xl font-bold">426</p>
+                    <p className="text-xs text-muted-foreground">
+                      <span className="text-[#bcbc95]">&#8593; 10%</span>{" "}
+                      {t("vsLastMonth")}
+                    </p>
+                  </div>
+                  <div className="hidden @[200px]/stat2:block">
+                    <SparklineChart
+                      data={[20, 25, 22, 30, 28, 35, 40]}
+                      color="#bcbc95"
+                    />
+                  </div>
                 </CardContent>
               </Card>
             </div>
 
-            <Card className="flex-1 min-w-0 p-4 flex">
+            {/* Middle: Area chart */}
+            <Card className="flex-[2] min-w-0 p-4 flex">
               <CardContent className="overflow-hidden flex flex-col justify-center flex-1">
                 <LineChart />
               </CardContent>
             </Card>
 
-            <Card className="flex-1 min-w-0 p-4">
-              <CardContent className="flex h-full gap-4">
-                <div className="w-1/3 min-w-0 flex flex-col gap-2">
-                  <p className="font-sans font-normal text-sm leading-[1.25] tracking-normal">
+            {/* Right: Conversion rate + donut */}
+            <Card className="flex-1 min-w-0 p-4 @container/conv">
+              <CardContent className="flex flex-col @[200px]/conv:flex-row @[200px]/conv:items-center @[200px]/conv:justify-between h-full gap-2">
+                <div className="flex flex-col gap-1 items-start h-full">
+                  <p className="text-sm text-muted-foreground">
                     {t("conversionRate")}
                   </p>
-                  <p className="font-sans font-normal text-4xl leading-8 tracking-normal">
-                    10%
-                  </p>
-                  <p className="font-sans font-normal text-sm leading-[1.25] tracking-normal">
-                    {t("increase", { percent: "10" })}
-                    <br />
-                    {t("lastMonth")}
+                  <p className="text-3xl font-bold text-[#070043]">10%</p>
+                  <p className="text-xs text-muted-foreground">
+                    <span className="text-[#bcbc95]">&#8593; 10%</span>{" "}
+                    {t("vsLastMonth")}
                   </p>
                 </div>
-                <div className="w-2/3 min-w-0 overflow-hidden">
+                <div className="shrink-0 self-center">
                   <PieChart />
                 </div>
               </CardContent>
             </Card>
           </div>
 
+          {/* Accounts Table */}
           <div className="min-w-[320px]">
-            <UsersTable />
-          </div>
+            <AccountsTable />
           </div>
         </div>
+      </div>
     </div>
   );
 }

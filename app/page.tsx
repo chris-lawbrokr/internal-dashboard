@@ -1,98 +1,18 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Calendar as CalendarIcon, ChevronDown, CalendarCheck, Eraser, X, Clock } from "lucide-react";
 import { Sidebar, SidebarOpenButton } from "@/app/ui/Sidebar";
 import { Card, CardContent } from "@/components/ui/card";
 import { AccountsTable } from "@/app/ui/AccountsTable";
 import { PieChart } from "@/app/ui/PieChart";
 import { LineChart } from "@/app/ui/LineChart";
 import { SparklineChart } from "@/app/ui/SparklineChart";
-import { Calendar } from "@/components/ui/datepicker";
-
-type Preset = "90d" | "30d" | "all" | "custom";
-
-function subDays(days: number): Date {
-  const d = new Date();
-  d.setDate(d.getDate() - days);
-  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
-}
-
-function formatShort(date: Date): string {
-  return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-}
+import { DateRangePickerWithPresets } from "@/components/ui/datepicker";
 
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [dateOpen, setDateOpen] = useState(false);
-  const [preset, setPreset] = useState<Preset>("90d");
-  const [startDate, setStartDate] = useState<Date | null>(subDays(90));
-  const [endDate, setEndDate] = useState<Date | null>(new Date());
-  const [selecting, setSelecting] = useState<"start" | "end">("start");
-  const [presetsOpen, setPresetsOpen] = useState(false);
-  const [viewMonth, setViewMonth] = useState(new Date().getMonth());
-  const [viewYear, setViewYear] = useState(new Date().getFullYear());
-  const dateRef = useRef<HTMLDivElement>(null);
   const t = useTranslations("dashboard");
-
-  useEffect(() => {
-    if (!dateOpen) return;
-    function handler(e: MouseEvent) {
-      if (dateRef.current && !dateRef.current.contains(e.target as Node)) {
-        setDateOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [dateOpen]);
-
-  function applyPreset(p: Preset) {
-    setPreset(p);
-    if (p === "90d") {
-      setStartDate(subDays(90));
-      setEndDate(new Date());
-    } else if (p === "30d") {
-      setStartDate(subDays(30));
-      setEndDate(new Date());
-    } else if (p === "all") {
-      setStartDate(null);
-      setEndDate(null);
-    }
-    if (p !== "custom") setDateOpen(false);
-  }
-
-  function handleDateSelect(date: Date) {
-    setPreset("custom");
-    if (selecting === "start") {
-      if (endDate && date.getTime() > endDate.getTime()) {
-        setStartDate(date);
-        setEndDate(null);
-      } else {
-        setStartDate(date);
-      }
-      setSelecting("end");
-    } else {
-      if (startDate && date.getTime() < startDate.getTime()) {
-        setStartDate(date);
-        setSelecting("end");
-      } else {
-        setEndDate(date);
-        setSelecting("start");
-      }
-    }
-  }
-
-  const presetLabel =
-    preset === "90d"
-      ? t("last90Days")
-      : preset === "30d"
-        ? "Last 30 Days"
-        : preset === "all"
-          ? "All Time"
-          : startDate && endDate
-            ? `${formatShort(startDate)} – ${formatShort(endDate)}`
-            : "Custom";
 
   return (
     <div className="h-screen w-full overflow-hidden flex">
@@ -108,146 +28,7 @@ export default function Dashboard() {
             <h1 className="text-2xl font-bold">
               {t("welcome", { name: "Penelope" })}
             </h1>
-            <div ref={dateRef} className="relative">
-              <button
-                type="button"
-                onClick={() => setDateOpen((o) => !o)}
-                className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm hover:bg-muted cursor-pointer"
-              >
-                <CalendarIcon size={14} />
-                {presetLabel}
-                <ChevronDown size={14} />
-              </button>
-              {dateOpen && (
-                <div className="absolute right-0 z-50 mt-2 rounded-lg border border-border bg-popover p-2 md:p-4 shadow-lg">
-                  {/* Header: range display + actions */}
-                  <div className="flex items-center gap-1 mb-2 pb-2 border-b border-border">
-                    <span className="flex-1 text-sm text-muted-foreground truncate">
-                      {startDate ? formatShort(startDate) : "Start"}
-                      {" — "}
-                      {endDate ? formatShort(endDate) : "End"}
-                    </span>
-                    {/* Presets dropdown */}
-                    <div className="relative shrink-0">
-                      <button
-                        type="button"
-                        onClick={() => setPresetsOpen((o) => !o)}
-                        className={`h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer ${presetsOpen ? "bg-muted" : ""}`}
-                        aria-label="Presets"
-                        title="Presets"
-                      >
-                        <Clock className="h-4 w-4 text-muted-foreground" />
-                      </button>
-                      {presetsOpen && (
-                        <div className="absolute right-0 top-full mt-1 z-50 rounded-md border border-border bg-popover shadow-md py-1 w-[120px]">
-                          {(["30d", "90d", "all"] as const).map((p) => (
-                            <button
-                              key={p}
-                              type="button"
-                              onClick={() => {
-                                applyPreset(p);
-                                setPresetsOpen(false);
-                              }}
-                              className={`w-full px-3 py-1.5 text-sm text-left cursor-pointer hover:bg-muted ${
-                                preset === p ? "font-medium bg-muted" : ""
-                              }`}
-                            >
-                              {p === "30d" ? "30 Days" : p === "90d" ? "90 Days" : "All Time"}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const td = new Date();
-                        setStartDate(td);
-                        setEndDate(td);
-                        setPreset("custom");
-                        setViewMonth(td.getMonth());
-                        setViewYear(td.getFullYear());
-                      }}
-                      className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
-                      aria-label="Today"
-                      title="Today"
-                    >
-                      <CalendarCheck className="h-4 w-4 text-muted-foreground" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setStartDate(null);
-                        setEndDate(null);
-                        setPreset("custom");
-                        setSelecting("start");
-                      }}
-                      className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
-                      aria-label="Clear"
-                      title="Clear"
-                    >
-                      <Eraser className="h-4 w-4 text-muted-foreground" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setDateOpen(false)}
-                      className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
-                      aria-label="Close"
-                      title="Close"
-                    >
-                      <X className="h-4 w-4 text-muted-foreground" />
-                    </button>
-                  </div>
-
-
-                  {/* Dual calendars (desktop) */}
-                  <div className="hidden md:flex gap-4">
-                    <Calendar
-                      month={viewMonth}
-                      year={viewYear}
-                      selectedStart={startDate}
-                      selectedEnd={endDate}
-                      onDateSelect={handleDateSelect}
-                      onMonthChange={(m, y) => {
-                        setViewMonth(m);
-                        setViewYear(y);
-                      }}
-                      showNav="left"
-                    />
-                    <div className="w-px bg-border" />
-                    <Calendar
-                      month={viewMonth === 11 ? 0 : viewMonth + 1}
-                      year={viewMonth === 11 ? viewYear + 1 : viewYear}
-                      selectedStart={startDate}
-                      selectedEnd={endDate}
-                      onDateSelect={handleDateSelect}
-                      onMonthChange={(m, y) => {
-                        const newLeft = m === 0 ? 11 : m - 1;
-                        const newLeftYear = m === 0 ? y - 1 : y;
-                        setViewMonth(newLeft);
-                        setViewYear(newLeftYear);
-                      }}
-                      showNav="right"
-                    />
-                  </div>
-
-                  {/* Single calendar (mobile) */}
-                  <div className="md:hidden">
-                    <Calendar
-                      month={viewMonth}
-                      year={viewYear}
-                      selectedStart={startDate}
-                      selectedEnd={endDate}
-                      onDateSelect={handleDateSelect}
-                      onMonthChange={(m, y) => {
-                        setViewMonth(m);
-                        setViewYear(y);
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
+            <DateRangePickerWithPresets defaultPreset="90d" />
           </div>
 
           {/* Stats Row */}

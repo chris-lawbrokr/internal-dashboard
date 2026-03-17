@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 
 import { Sidebar, SidebarOpenButton } from "@/app/ui/Sidebar";
 import { Card, CardContent } from "@/components/ui/card";
-import { DateRangePicker } from "@/components/ui/datepicker";
+import { DateRangePickerWithPresets } from "@/components/ui/datepicker";
 import { OverviewTab } from "./OverviewTab";
 import { PerformanceTab } from "./PerformanceTab";
 import { WebsiteTab } from "./WebsiteTab";
@@ -15,8 +15,6 @@ import { WebsiteTab } from "./WebsiteTab";
 const tabKeys = ["overview", "performance", "website", "usage"] as const;
 
 export default function Dashboard() {
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
   const [activeTab, setActiveTab] = useState<string>("overview");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const t = useTranslations("account");
@@ -43,17 +41,7 @@ export default function Dashboard() {
                   Law Firm Name
                 </h1>
               </div>
-              <div>
-                <DateRangePicker
-                  labels={{ start: tc("startDate"), end: tc("endDate") }}
-                  startDate={startDate}
-                  endDate={endDate}
-                  onChange={(s, e) => {
-                    setStartDate(s);
-                    setEndDate(e);
-                  }}
-                />
-              </div>
+              <DateRangePickerWithPresets defaultPreset="90d" />
             </CardContent>
           </Card>
 

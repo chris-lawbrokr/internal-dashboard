@@ -7,6 +7,7 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  Clock,
   Eraser,
   X,
 } from "lucide-react";
@@ -762,3 +763,274 @@ export function DateRangePicker({
   );
 }
 DateRangePicker.displayName = "DateRangePicker";
+
+// ── DateRangePickerWithPresets ──────────────────────────────────────
+
+type Preset = "90d" | "30d" | "all" | "custom";
+
+function subDays(days: number): Date {
+  const d = new Date();
+  d.setDate(d.getDate() - days);
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+
+function formatShort(date: Date): string {
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+export interface DateRangePickerWithPresetsProps {
+  defaultPreset?: "30d" | "90d" | "all";
+  presets?: Array<{ key: string; label: string; days: number | null }>;
+  onChange?: (start: Date | null, end: Date | null, preset: string) => void;
+  disabled?: boolean;
+}
+
+export function DateRangePickerWithPresets({
+  defaultPreset = "90d",
+  presets = [
+    { key: "30d", label: "30 Days", days: 30 },
+    { key: "90d", label: "90 Days", days: 90 },
+    { key: "all", label: "All Time", days: null },
+  ],
+  onChange,
+  disabled,
+}: DateRangePickerWithPresetsProps) {
+  const t = useTranslations("datepicker");
+
+  const defaultStart =
+    defaultPreset === "all"
+      ? null
+      : subDays(defaultPreset === "30d" ? 30 : 90);
+  const defaultEnd = defaultPreset === "all" ? null : today();
+
+  const [open, setOpen] = React.useState(false);
+  const [preset, setPreset] = React.useState<string>(defaultPreset);
+  const [startDate, setStartDate] = React.useState<Date | null>(defaultStart);
+  const [endDate, setEndDate] = React.useState<Date | null>(defaultEnd);
+  const [selecting, setSelecting] = React.useState<"start" | "end">("start");
+  const [presetsOpen, setPresetsOpen] = React.useState(false);
+  const [viewMonth, setViewMonth] = React.useState(new Date().getMonth());
+  const [viewYear, setViewYear] = React.useState(new Date().getFullYear());
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (!open) return;
+    function handler(e: MouseEvent) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
+        setOpen(false);
+        setPresetsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  function applyPreset(p: { key: string; days: number | null }) {
+    setPreset(p.key);
+    const newStart = p.days != null ? subDays(p.days) : null;
+    const newEnd = p.days != null ? today() : null;
+    setStartDate(newStart);
+    setEndDate(newEnd);
+    onChange?.(newStart, newEnd, p.key);
+    setOpen(false);
+    setPresetsOpen(false);
+  }
+
+  function handleDateSelect(date: Date) {
+    setPreset("custom");
+    if (selecting === "start") {
+      if (endDate && date.getTime() > endDate.getTime()) {
+        setStartDate(date);
+        setEndDate(null);
+      } else {
+        setStartDate(date);
+      }
+      setSelecting("end");
+    } else {
+      if (startDate && date.getTime() < startDate.getTime()) {
+        setStartDate(date);
+        setSelecting("end");
+      } else {
+        setEndDate(date);
+        setSelecting("start");
+        onChange?.(startDate, date, "custom");
+      }
+    }
+  }
+
+  function handleClear() {
+    setStartDate(null);
+    setEndDate(null);
+    setPreset("custom");
+    setSelecting("start");
+    onChange?.(null, null, "custom");
+  }
+
+  function handleToday() {
+    const td = today();
+    setStartDate(td);
+    setEndDate(td);
+    setPreset("custom");
+    setViewMonth(td.getMonth());
+    setViewYear(td.getFullYear());
+    onChange?.(td, td, "custom");
+  }
+
+  const activePreset = presets.find((p) => p.key === preset);
+  const label = activePreset
+    ? activePreset.label
+    : startDate && endDate
+      ? `${formatShort(startDate)} – ${formatShort(endDate)}`
+      : t("selectDate");
+
+  const rightMonth = viewMonth === 11 ? 0 : viewMonth + 1;
+  const rightYear = viewMonth === 11 ? viewYear + 1 : viewYear;
+
+  return (
+    <div ref={containerRef} className="relative">
+      <button
+        type="button"
+        onClick={() => !disabled && setOpen((o) => !o)}
+        disabled={disabled}
+        className={cn(
+          "flex items-center gap-2 rounded-md border px-3 py-2 text-sm hover:bg-muted",
+          "disabled:cursor-not-allowed disabled:opacity-50",
+          !disabled && "cursor-pointer",
+        )}
+      >
+        <CalendarIcon className="h-3.5 w-3.5" />
+        {label}
+        <ChevronDown className="h-3.5 w-3.5" />
+      </button>
+
+      {open && (
+        <div className="absolute right-0 z-50 mt-2 rounded-lg border border-border bg-popover p-2 md:p-4 shadow-lg">
+          {/* Header: range display + action icons */}
+          <div className="flex items-center gap-1 mb-2 pb-2 border-b border-border">
+            <span className="flex-1 text-sm text-muted-foreground truncate">
+              {startDate ? formatShort(startDate) : t("start")}
+              {" — "}
+              {endDate ? formatShort(endDate) : t("end")}
+            </span>
+            {/* Presets dropdown */}
+            <div className="relative shrink-0">
+              <button
+                type="button"
+                onClick={() => setPresetsOpen((o) => !o)}
+                className={cn(
+                  "h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer",
+                  presetsOpen && "bg-muted",
+                )}
+                aria-label="Presets"
+                title="Presets"
+              >
+                <Clock className="h-4 w-4 text-muted-foreground" />
+              </button>
+              {presetsOpen && (
+                <div className="absolute right-0 top-full mt-1 z-50 rounded-md border border-border bg-popover shadow-md py-1 w-[120px]">
+                  {presets.map((p) => (
+                    <button
+                      key={p.key}
+                      type="button"
+                      onClick={() => applyPreset(p)}
+                      className={cn(
+                        "w-full px-3 py-1.5 text-sm text-left cursor-pointer hover:bg-muted",
+                        preset === p.key && "font-medium bg-muted",
+                      )}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={handleToday}
+              className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
+              aria-label={t("today")}
+              title={t("today")}
+            >
+              <CalendarCheck className="h-4 w-4 text-muted-foreground" />
+            </button>
+            <button
+              type="button"
+              onClick={handleClear}
+              className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
+              aria-label={t("clear")}
+              title={t("clear")}
+            >
+              <Eraser className="h-4 w-4 text-muted-foreground" />
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                setPresetsOpen(false);
+              }}
+              className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
+              aria-label={t("closeDatePicker")}
+              title={t("closeDatePicker")}
+            >
+              <X className="h-4 w-4 text-muted-foreground" />
+            </button>
+          </div>
+
+          {/* Dual calendars (desktop) */}
+          <div className="hidden md:flex gap-4">
+            <Calendar
+              month={viewMonth}
+              year={viewYear}
+              selectedStart={startDate}
+              selectedEnd={endDate}
+              onDateSelect={handleDateSelect}
+              onMonthChange={(m, y) => {
+                setViewMonth(m);
+                setViewYear(y);
+              }}
+              showNav="left"
+            />
+            <div className="w-px bg-border" />
+            <Calendar
+              month={rightMonth}
+              year={rightYear}
+              selectedStart={startDate}
+              selectedEnd={endDate}
+              onDateSelect={handleDateSelect}
+              onMonthChange={(m, y) => {
+                const newLeft = m === 0 ? 11 : m - 1;
+                const newLeftYear = m === 0 ? y - 1 : y;
+                setViewMonth(newLeft);
+                setViewYear(newLeftYear);
+              }}
+              showNav="right"
+            />
+          </div>
+
+          {/* Single calendar (mobile) */}
+          <div className="md:hidden">
+            <Calendar
+              month={viewMonth}
+              year={viewYear}
+              selectedStart={startDate}
+              selectedEnd={endDate}
+              onDateSelect={handleDateSelect}
+              onMonthChange={(m, y) => {
+                setViewMonth(m);
+                setViewYear(y);
+              }}
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+DateRangePickerWithPresets.displayName = "DateRangePickerWithPresets";
