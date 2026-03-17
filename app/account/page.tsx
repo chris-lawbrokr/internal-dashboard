@@ -6,7 +6,6 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 
 import { Sidebar } from "@/app/ui/Sidebar";
-import { Header } from "@/app/ui/Header";
 import { Card, CardContent } from "@/components/ui/card";
 import { DateRangePicker } from "@/components/ui/datepicker";
 import { OverviewTab } from "./OverviewTab";
@@ -16,7 +15,6 @@ import { WebsiteTab } from "./WebsiteTab";
 const tabKeys = ["overview", "performance", "website", "usage"] as const;
 
 export default function Dashboard() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [activeTab, setActiveTab] = useState<string>("overview");
@@ -24,11 +22,8 @@ export default function Dashboard() {
   const tc = useTranslations("common");
 
   return (
-    <div className="h-screen w-full overflow-hidden flex flex-col border-x">
-      <Header onMenuClick={() => setSidebarOpen((o) => !o)} sidebarOpen={sidebarOpen} />
-
-      <div className="flex-1 min-h-0 flex relative">
-        <Sidebar open={sidebarOpen} />
+    <div className="h-screen w-full overflow-hidden flex border-x">
+      <Sidebar />
 
         <div className="w-full p-4 overflow-auto @container flex flex-col gap-4">
           <Card className="p-4">
@@ -80,7 +75,6 @@ export default function Dashboard() {
           {activeTab === "performance" && <PerformanceTab />}
           {activeTab === "website" && <WebsiteTab />}
         </div>
-      </div>
     </div>
   );
 }

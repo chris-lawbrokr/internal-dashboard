@@ -1,25 +1,25 @@
 @import "tailwindcss";
 
 :root {
-  --background: oklch(100% 0 0);
-  --foreground: oklch(23.93% 0 0);
-  --card: oklch(98.81% 0 0);
-  --card-foreground: oklch(23.93% 0 0);
-  --popover: oklch(100% 0 0);
-  --popover-foreground: oklch(23.93% 0 0);
-  --primary: oklch(31.94% 0.091 300.91);
-  --primary-foreground: oklch(100% 0 0);
-  --secondary: oklch(0.97 0.001 106.424);
-  --secondary-foreground: oklch(0.216 0.006 56.043);
-  --muted: oklch(0.97 0.001 106.424);
-  --muted-foreground: oklch(0.553 0.013 58.071);
-  --accent: oklch(0.97 0.001 106.424);
-  --accent-foreground: oklch(0.216 0.006 56.043);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0.001 106.423);
-  --border: oklch(0.923 0.003 48.717);
-  --input: oklch(0.923 0.003 48.717);
-  --ring: oklch(0.709 0.01 56.259);
+  --background: #f2f2f2;
+  --foreground: #070043;
+  --card: #ffffff;
+  --card-foreground: #070043;
+  --popover: #ffffff;
+  --popover-foreground: #070043;
+  --primary: #3b2559;
+  --primary-foreground: #ffffff;
+  --secondary: #f2f2f2;
+  --secondary-foreground: #070043;
+  --muted: #f2f2f2;
+  --muted-foreground: #777777;
+  --accent: #f2f2f2;
+  --accent-foreground: #070043;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #c8c8c8;
+  --input: #c8c8c8;
+  --ring: #3b2559;
   --radius: 0.625rem;
 }
 

@@ -2,9 +2,11 @@
   "nav": {
     "home": "Home",
     "account": "Account",
+    "accounts": "Accounts",
     "analytics": "Analytics",
     "logout": "Logout",
-    "toggleSidebar": "Toggle sidebar"
+    "toggleSidebar": "Toggle sidebar",
+    "dashboardTitle": "Internal Dashboard - Home"
   },
   "dashboard": {
     "welcome": "Welcome back, {name}",
@@ -13,7 +15,16 @@
     "increaseLastMonth": "{percent}% increase last month",
     "conversionRate": "Conversion Rate",
     "increase": "{percent}% increase",
-    "lastMonth": "last month"
+    "lastMonth": "last month",
+    "vsLastMonth": "vs last month",
+    "last90Days": "Last 90 Days",
+    "searchAccounts": "Search for accounts",
+    "accountName": "Account Name",
+    "totalVisitsShort": "Total Visits",
+    "totalResponsesShort": "Total Responses",
+    "conversionRateShort": "Conversion Rate",
+    "onboarding": "Onboarding",
+    "performanceCol": "Performance"
   },
   "login": {
     "enterCredentials": "Enter your credentials to continue.",
@@ -81,6 +92,8 @@
     "searchPlaceholder": "Search...",
     "searchUsersPlaceholder": "Search users...",
     "filter": "Filter",
+    "filters": "Filters",
+    "actions": "Actions",
     "rowsPerPage": "Rows per page",
     "of": "of",
     "previous": "Previous",
@@ -94,6 +107,7 @@
     "type": "Type",
     "status": "Status",
     "role": "Role",
+    "website": "Website",
     "startDate": "Start Date",
     "endDate": "End Date"
   },

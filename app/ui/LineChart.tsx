@@ -14,7 +14,7 @@ export function LineChart() {
       toolbar: { show: false },
       sparkline: { enabled: false },
     },
-    colors: ["#6366f1", "#a78bfa"],
+    colors: ["#3b2559", "#c9955e"],
     stroke: {
       curve: "smooth",
       width: 2,
@@ -29,16 +29,16 @@ export function LineChart() {
       },
     },
     xaxis: {
-      categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-      labels: { style: { fontSize: "11px", colors: "#9ca3af" } },
+      categories: ["Jan 19", "Feb 19", "Mar 19", "Apr 19", "May 19", "Jun 19", "Jul 19"],
+      labels: { style: { fontSize: "11px", colors: "#777777" } },
       axisBorder: { show: false },
       axisTicks: { show: false },
     },
     yaxis: {
-      labels: { style: { fontSize: "11px", colors: "#9ca3af" } },
+      labels: { style: { fontSize: "11px", colors: "#777777" } },
     },
     grid: {
-      borderColor: "#f3f4f6",
+      borderColor: "#f2f2f2",
       strokeDashArray: 4,
     },
     legend: { show: false },
@@ -63,12 +63,16 @@ export function LineChart() {
     <div>
       <div className="flex items-center gap-4 mb-2">
         <div className="flex items-center gap-1.5">
-          <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#6366f1]" />
-          <span className="text-xs text-muted-foreground">{t("visits")}</span>
+          <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#3b2559]" />
+          <span className="text-xs text-muted-foreground">
+            {t("visits")}: <span className="font-semibold text-foreground">4,268</span>
+          </span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#a78bfa]" />
-          <span className="text-xs text-muted-foreground">{t("responses")}</span>
+          <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#c9955e]" />
+          <span className="text-xs text-muted-foreground">
+            {t("responses")}: <span className="font-semibold text-foreground">426</span>
+          </span>
         </div>
       </div>
       <Chart options={options} series={series} type="area" height="100%" />

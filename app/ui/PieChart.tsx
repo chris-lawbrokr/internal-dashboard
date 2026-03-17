@@ -12,14 +12,14 @@ export function PieChart() {
     chart: {
       type: "radialBar",
     },
-    colors: ["#6366f1"],
+    colors: ["#A78BFA"],
     plotOptions: {
       radialBar: {
         hollow: {
           size: "55%",
         },
         track: {
-          background: "#e5e7eb",
+          background: "#e1dff6",
           strokeWidth: "100%",
         },
         dataLabels: {
@@ -38,7 +38,7 @@ export function PieChart() {
     labels: [t("conversion")],
   };
 
-  const series = [90];
+  const series = [10];
 
   return (
     <Chart options={options} series={series} type="radialBar" height="100%" />

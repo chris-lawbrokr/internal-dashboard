@@ -2,9 +2,11 @@
   "nav": {
     "home": "Accueil",
     "account": "Compte",
+    "accounts": "Comptes",
     "analytics": "Analytique",
     "logout": "Déconnexion",
-    "toggleSidebar": "Basculer la barre latérale"
+    "toggleSidebar": "Basculer la barre latérale",
+    "dashboardTitle": "Tableau de Bord Interne - Accueil"
   },
   "dashboard": {
     "welcome": "Bon retour, {name}",
@@ -13,7 +15,16 @@
     "increaseLastMonth": "{percent}% d'augmentation le mois dernier",
     "conversionRate": "Taux de Conversion",
     "increase": "{percent}% d'augmentation",
-    "lastMonth": "le mois dernier"
+    "lastMonth": "le mois dernier",
+    "vsLastMonth": "vs mois dernier",
+    "last90Days": "90 Derniers Jours",
+    "searchAccounts": "Rechercher des comptes",
+    "accountName": "Nom du Compte",
+    "totalVisitsShort": "Visites Totales",
+    "totalResponsesShort": "Réponses Totales",
+    "conversionRateShort": "Taux de Conversion",
+    "onboarding": "Intégration",
+    "performanceCol": "Performance"
   },
   "login": {
     "enterCredentials": "Entrez vos identifiants pour continuer.",
@@ -81,6 +92,8 @@
     "searchPlaceholder": "Rechercher...",
     "searchUsersPlaceholder": "Rechercher des utilisateurs...",
     "filter": "Filtrer",
+    "filters": "Filtres",
+    "actions": "Actions",
     "rowsPerPage": "Lignes par page",
     "of": "de",
     "previous": "Précédent",
@@ -94,6 +107,7 @@
     "type": "Type",
     "status": "Statut",
     "role": "Rôle",
+    "website": "Site Web",
     "startDate": "Date de Début",
     "endDate": "Date de Fin"
   },

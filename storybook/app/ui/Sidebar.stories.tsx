@@ -13,27 +13,16 @@ const meta: Meta<typeof Sidebar> = {
       },
     },
   },
-  argTypes: {
-    open: { control: "boolean" },
-  },
 };
 
 export default meta;
 
 type Story = StoryObj<typeof Sidebar>;
 
-export const Open: Story = {
+export const Default: Story = {
   render: () => (
-    <div className="relative h-[400px]">
-      <Sidebar open={true} />
-    </div>
-  ),
-};
-
-export const Closed: Story = {
-  render: () => (
-    <div className="relative h-[400px]">
-      <Sidebar open={false} />
+    <div className="relative h-[500px]">
+      <Sidebar />
     </div>
   ),
 };

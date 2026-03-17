@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Sidebar } from "@/app/ui/Sidebar";
-import { Header } from "@/app/ui/Header";
 
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -15,7 +14,6 @@ import { PieChart } from "@/app/ui/PieChart";
 import { LineChart } from "@/app/ui/LineChart";
 
 export default function Dashboard() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const t = useTranslations("dashboard");
@@ -23,14 +21,8 @@ export default function Dashboard() {
   const ta = useTranslations("account");
 
   return (
-    <div className="h-screen w-full overflow-hidden flex flex-col border-x">
-      <Header
-        onMenuClick={() => setSidebarOpen((o) => !o)}
-        sidebarOpen={sidebarOpen}
-      />
-
-      <div className="flex-1 min-h-0 flex relative">
-        <Sidebar open={sidebarOpen} />
+    <div className="h-screen w-full overflow-hidden flex border-x">
+      <Sidebar />
 
         <div className="w-full p-4 overflow-auto @container flex flex-col gap-4">
           <Card className="p-4">
@@ -123,7 +115,6 @@ export default function Dashboard() {
             <UsersTable />
           </div>
         </div>
-      </div>
     </div>
   );
 }

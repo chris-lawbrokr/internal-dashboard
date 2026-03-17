@@ -11,7 +11,7 @@ export const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-xl bg-card text-card-foreground shadow-[0_1px_2px_0_rgba(29,41,61,0.05)]",
+      "rounded-xl bg-card text-card-foreground shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.05)]",
       className,
     )}
     {...props}
@@ -26,7 +26,7 @@ export const CardCentered = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-xl bg-card text-card-foreground shadow-[0_1px_2px_0_rgba(29,41,61,0.05)] h-full flex flex-col overflow-y-auto p-8",
+      "rounded-xl bg-card text-card-foreground shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.05)] h-full flex flex-col overflow-y-auto p-8",
       className,
     )}
     {...props}
@@ -94,7 +94,7 @@ export const CardLink = React.forwardRef<
   <a
     ref={ref}
     className={cn(
-      "text-sm font-medium leading-[14px] text-[#250D53] text-right hover:underline cursor-pointer",
+      "text-sm font-medium leading-[14px] text-[#070043] text-right hover:underline cursor-pointer",
       className,
     )}
     {...props}
