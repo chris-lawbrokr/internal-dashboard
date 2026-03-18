@@ -309,9 +309,9 @@ export function UsageTab() {
         {/* Account Info – right side cards */}
         <div className="flex-1 flex flex-col gap-4">
           {/* Row 1: Account Status + Subscription Type */}
-          <div className="flex gap-4">
+          <div className="flex-1 flex gap-4">
             <Card className="flex-1 p-5">
-              <CardContent className="flex flex-col gap-2">
+              <CardContent className="flex flex-col justify-center gap-2">
                 <p className="text-sm text-[#777]">Account Status</p>
                 <span className="inline-flex items-center gap-1.5 self-start rounded-lg border px-2 py-1 text-xs font-bold border-[#bcbc95] bg-[#ededc7] text-[#626444]">
                   <span className="h-1.5 w-1.5 rounded-full bg-[#626444]" />
@@ -320,37 +320,37 @@ export function UsageTab() {
               </CardContent>
             </Card>
             <Card className="flex-1 p-5">
-              <CardContent className="flex flex-col gap-2">
+              <CardContent className="flex flex-col justify-center gap-2">
                 <p className="text-sm text-[#777]">Subscription Type</p>
                 <p className="text-2xl font-bold text-[#070043]">Annual</p>
               </CardContent>
             </Card>
           </div>
           {/* Row 2: Account Created + Next Payment Due */}
-          <div className="flex gap-4">
+          <div className="flex-1 flex gap-4">
             <Card className="flex-1 p-5">
-              <CardContent className="flex flex-col gap-2">
+              <CardContent className="flex flex-col justify-center gap-2">
                 <p className="text-sm text-[#777]">Account Created</p>
                 <p className="text-xl font-bold text-[#070043]">Feb. 1, 2026</p>
               </CardContent>
             </Card>
             <Card className="flex-1 p-5">
-              <CardContent className="flex flex-col gap-2">
+              <CardContent className="flex flex-col justify-center gap-2">
                 <p className="text-sm text-[#777]">Next Payment Due</p>
                 <p className="text-xl font-bold text-[#070043]">Feb. 1, 2027</p>
               </CardContent>
             </Card>
           </div>
           {/* Row 3: Live Funnels + Live Workflows */}
-          <div className="flex gap-4">
+          <div className="flex-1 flex gap-4">
             <Card className="flex-1 p-5">
-              <CardContent className="flex flex-col gap-2">
+              <CardContent className="flex flex-col justify-center gap-2">
                 <p className="text-sm text-[#777]">Live Funnels</p>
                 <p className="text-2xl font-bold text-[#070043]">12</p>
               </CardContent>
             </Card>
             <Card className="flex-1 p-5">
-              <CardContent className="flex flex-col gap-2">
+              <CardContent className="flex flex-col justify-center gap-2">
                 <p className="text-sm text-[#777]">Live Workflows</p>
                 <p className="text-2xl font-bold text-[#070043]">29</p>
               </CardContent>
