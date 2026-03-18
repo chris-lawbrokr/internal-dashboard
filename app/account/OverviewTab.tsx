@@ -189,77 +189,39 @@ export function OverviewTab() {
       </div>
 
       {/* Company Info + Users Table */}
-      <div className="flex flex-col gap-4 @xl:flex-row">
+      <div className="flex flex-col gap-4 @[1100px]:flex-row">
         {/* Company Info */}
-        <Card className="flex-1 p-6">
-          <CardContent className="flex items-center justify-center w-full h-full">
-            <div className="grid grid-cols-2 gap-x-8 gap-y-5 flex-1">
-              <div>
-                <p className="text-sm font-bold text-[#070043]">
-                  {t("companyName")}:
-                </p>
-                <p className="text-sm text-[#777]">Law Firm Name</p>
-              </div>
-              <div>
-                <p className="text-sm font-bold text-[#070043]">
-                  {t("companySize")}:
-                </p>
-                <p className="text-sm text-[#777]">25 employees</p>
-              </div>
-              <div>
-                <p className="text-sm font-bold text-[#070043]">
-                  {t("location")}:
-                </p>
-                <p className="text-sm text-[#777]">Los Angeles, CA, USA</p>
-              </div>
-              <div>
-                <p className="text-sm font-bold text-[#070043]">
-                  {t("marketingAgency")}:
-                </p>
-                <p className="text-sm text-[#777]">N/A</p>
-              </div>
-              <div>
-                <p className="text-sm font-bold text-[#070043]">
-                  {t("website")}:
-                </p>
-                <p className="text-sm text-[#777]">www.lawfirmname.com</p>
-              </div>
-              <div>
-                <p className="text-sm font-bold text-[#070043]">
-                  {t("marketingSpend")}:
-                </p>
-                <p className="text-sm text-[#777]">N/A</p>
-              </div>
-              <div>
-                <p className="text-sm font-bold text-[#070043]">
-                  {t("activationDate")}:
-                </p>
-                <p className="text-sm text-[#777]">Feb. 1, 2026</p>
-              </div>
-              <div>
-                <p className="text-sm font-bold text-[#070043]">
-                  {tc("status")}:
-                </p>
-                <p className="text-sm text-[#777]">Active</p>
-              </div>
-              <div>
-                <p className="text-sm font-bold text-[#070043]">
-                  {t("username")}:
-                </p>
-                <p className="text-sm text-[#777]">lawfirmname</p>
-              </div>
-              <div>
-                <p className="text-sm font-bold text-[#070043]">
-                  {t("integrations")}:
-                </p>
-                <p className="text-sm text-[#777]">Active</p>
-              </div>
+        <Card className="flex-1 min-w-0 @[1100px]:basis-1/2 p-6">
+          <CardContent className="h-full">
+            <div className="grid grid-cols-2 h-full">
+              {[
+                { label: `${t("companyName")}:`, value: "Law Firm Name" },
+                { label: `${t("companySize")}:`, value: "25 employees" },
+                { label: `${t("location")}:`, value: "Los Angeles, CA, USA" },
+                { label: `${t("marketingAgency")}:`, value: "N/A" },
+                { label: `${t("website")}:`, value: "www.lawfirmname.com" },
+                { label: `${t("marketingSpend")}:`, value: "N/A" },
+                { label: `${t("activationDate")}:`, value: "Feb. 1, 2026" },
+                { label: `${tc("status")}:`, value: "Active" },
+                { label: `${t("username")}:`, value: "lawfirmname" },
+                { label: `${t("integrations")}:`, value: "Active" },
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  className="flex flex-col gap-1 py-4 px-4 border-b border-[#e8e8e8] last:border-b-0 [&:nth-last-child(2)]:border-b-0"
+                >
+                  <p className="text-sm font-bold text-[#070043]">
+                    {item.label}
+                  </p>
+                  <p className="text-sm text-[#777]">{item.value}</p>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
 
         {/* Users Table */}
-        <Card className="flex-1 p-4">
+        <Card className="flex-1 min-w-0 @[1100px]:basis-1/2 p-4">
           <CardContent className="flex flex-col gap-4">
             <div className="flex items-center justify-between gap-4">
               <div className="relative">
@@ -414,9 +376,9 @@ export function OverviewTab() {
             <div className="flex flex-wrap gap-2">
               <TagBadge
                 label="Feature"
-                bg="#ededc7"
-                text="#626444"
-                border="#bcbc95"
+                bg="#e1dff6"
+                text="#250d53"
+                border="#c4c0e8"
               />
             </div>
           </CardContent>

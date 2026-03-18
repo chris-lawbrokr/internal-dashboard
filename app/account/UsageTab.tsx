@@ -244,7 +244,7 @@ function AccountUsersTable() {
                   <td className="py-3 px-2 whitespace-nowrap">{user.phone}</td>
                   <td className="py-3 px-2 whitespace-nowrap">{user.lastVisit}</td>
                   <td className="py-3 px-2 whitespace-nowrap">
-                    <span className="inline-flex items-center rounded-md border border-[#E1DFF6] bg-[#E1DFF6] px-2 py-0.5 text-xs font-medium">
+                    <span className="inline-flex items-center rounded-md border border-[#c4c0e8] bg-[#e1dff6] text-[#250d53] px-2 py-0.5 text-xs font-medium">
                       {user.latestInteractions}
                     </span>
                   </td>
