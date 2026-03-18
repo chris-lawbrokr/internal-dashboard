@@ -169,7 +169,11 @@ export function ConversionRatesOverPeriodsChart() {
     chart: { type: "bar", toolbar: { show: false } },
     colors: ["#3B2559", "#B6B2D3"],
     plotOptions: {
-      bar: { columnWidth: "60%", borderRadius: 3 },
+      bar: {
+        columnWidth: "70%",
+        borderRadius: 6,
+        borderRadiusApplication: "end",
+      },
     },
     xaxis: {
       categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
