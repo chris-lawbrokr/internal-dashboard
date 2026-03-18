@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 
@@ -45,8 +45,25 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Tabs */}
-          <div className="flex gap-6 border-b border-[#c8c8c8]">
+          {/* Tabs – dropdown on mobile, inline tabs on desktop */}
+          <div className="relative @xl:hidden">
+            <select
+              value={activeTab}
+              onChange={(e) => setActiveTab(e.target.value)}
+              aria-label={t("selectTab")}
+              className="w-full appearance-none rounded-md border px-3 py-2 pr-8 text-sm cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {tabKeys.map((tabKey) => (
+                <option key={tabKey} value={tabKey}>
+                  {t(tabKey)}
+                </option>
+              ))}
+            </select>
+            <ChevronDown
+              className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none h-3.5 w-3.5"
+            />
+          </div>
+          <div className="hidden @xl:flex gap-6 border-b border-[#c8c8c8]">
             {tabKeys.map((tabKey) => (
               <button
                 key={tabKey}

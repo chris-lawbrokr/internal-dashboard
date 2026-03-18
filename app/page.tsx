@@ -30,7 +30,7 @@ export default function Dashboard() {
           </div>
 
           {/* Stats Row */}
-          <div className="min-w-[320px] flex flex-col gap-4 @xl:flex-row">
+          <div className="flex flex-col gap-4 @xl:flex-row">
             {/* Left: Stacked stat cards */}
             <div className="flex-1 min-w-0 flex flex-col gap-4">
               <Card className="flex-1 p-4 @container/stat">

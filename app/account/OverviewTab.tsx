@@ -167,7 +167,7 @@ export function OverviewTab() {
   return (
     <>
       {/* Health Gauges */}
-      <div className="min-w-[320px] flex flex-col gap-4 @xl:flex-row">
+      <div className="flex flex-col gap-4 @xl:flex-row">
         <GaugeChart
           title={t("onboardingHealth")}
           label={t("good")}
@@ -196,7 +196,7 @@ export function OverviewTab() {
         {/* Company Info */}
         <Card className="flex-1 min-w-0 @[1100px]:basis-1/2 p-6">
           <CardContent className="h-full">
-            <div className="grid grid-cols-2 h-full">
+            <div className="grid grid-cols-1 @lg:grid-cols-2 h-full">
               {[
                 { label: `${t("companyName")}:`, value: "Law Firm Name" },
                 { label: `${t("companySize")}:`, value: "25 employees" },
@@ -211,7 +211,7 @@ export function OverviewTab() {
               ].map((item, i) => (
                 <div
                   key={i}
-                  className="flex flex-col gap-1 py-4 px-4 border-b border-[#e8e8e8] last:border-b-0 [&:nth-last-child(2)]:border-b-0"
+                  className="flex flex-col gap-1 py-4 px-4 border-b border-[#e8e8e8] last:border-b-0 @lg:[&:nth-last-child(2)]:border-b-0"
                 >
                   <p className="text-sm font-bold text-[#070043]">
                     {item.label}
@@ -301,7 +301,7 @@ export function OverviewTab() {
       </div>
 
       {/* Tags Section */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 @xl:grid-cols-2 gap-4">
         <Card className="p-6">
           <CardContent className="flex flex-col gap-3">
             <h3 className="text-base font-medium text-[#777]">

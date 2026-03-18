@@ -46,7 +46,7 @@ export function GaugeChart({ title, label, value, color, href }: GaugeChartProps
   const valuePath = value > 0 ? describeArc(cx, cy, r, 180, endAngle) : "";
 
   return (
-    <Card className="flex-1 p-4">
+    <Card className="flex-1 min-w-0 p-4">
       <CardContent className="flex flex-col">
         <h3 className="text-lg font-medium">{title}</h3>
         <p className="text-sm text-muted-foreground">{label}</p>
