@@ -11,15 +11,15 @@ export function WebsiteStatsCard() {
             <span className="text-sm font-semibold">flowbite.com</span>
             <p className="text-[11px] text-muted-foreground">31 Nov - 31 Dec</p>
           </div>
-          <button className="text-xs text-muted-foreground border rounded px-2 py-1 hover:bg-muted">
+          <button className="text-xs text-muted-foreground border rounded px-2 py-1 hover:bg-muted cursor-pointer">
             Export
           </button>
         </div>
         <div className="flex items-center gap-2 mt-2">
-          <button className="text-[11px] font-medium bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded">
+          <button className="text-[11px] font-medium bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded cursor-pointer">
             Organic
           </button>
-          <button className="text-[11px] font-medium text-muted-foreground px-2 py-0.5 rounded hover:bg-muted">
+          <button className="text-[11px] font-medium text-muted-foreground px-2 py-0.5 rounded hover:bg-muted cursor-pointer">
             Paid
           </button>
         </div>

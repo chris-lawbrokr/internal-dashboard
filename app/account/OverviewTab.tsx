@@ -192,66 +192,68 @@ export function OverviewTab() {
       <div className="flex flex-col gap-4 @xl:flex-row">
         {/* Company Info */}
         <Card className="flex-1 p-6">
-          <CardContent className="grid grid-cols-2 gap-x-8 gap-y-5">
-            <div>
-              <p className="text-sm font-bold text-[#070043]">
-                {t("companyName")}:
-              </p>
-              <p className="text-sm text-[#777]">Law Firm Name</p>
-            </div>
-            <div>
-              <p className="text-sm font-bold text-[#070043]">
-                {t("companySize")}:
-              </p>
-              <p className="text-sm text-[#777]">25 employees</p>
-            </div>
-            <div>
-              <p className="text-sm font-bold text-[#070043]">
-                {t("location")}:
-              </p>
-              <p className="text-sm text-[#777]">Los Angeles, CA, USA</p>
-            </div>
-            <div>
-              <p className="text-sm font-bold text-[#070043]">
-                {t("marketingAgency")}:
-              </p>
-              <p className="text-sm text-[#777]">N/A</p>
-            </div>
-            <div>
-              <p className="text-sm font-bold text-[#070043]">
-                {t("website")}:
-              </p>
-              <p className="text-sm text-[#777]">www.lawfirmname.com</p>
-            </div>
-            <div>
-              <p className="text-sm font-bold text-[#070043]">
-                {t("marketingSpend")}:
-              </p>
-              <p className="text-sm text-[#777]">N/A</p>
-            </div>
-            <div>
-              <p className="text-sm font-bold text-[#070043]">
-                {t("activationDate")}:
-              </p>
-              <p className="text-sm text-[#777]">Feb. 1, 2026</p>
-            </div>
-            <div>
-              <p className="text-sm font-bold text-[#070043]">
-                {tc("status")}:
-              </p>
-              <p className="text-sm text-[#777]">Active</p>
-            </div>
-            <div>
-              <p className="text-sm font-bold text-[#070043]">
-                {t("username")}:
-              </p>
-              <p className="text-sm text-[#777]">lawfirmname</p>
-            </div>
-            <div>
-              <p className="text-sm font-bold text-[#070043]">
-                {t("integrations")}:
-              </p>
-              <p className="text-sm text-[#777]">Active</p>
+          <CardContent className="flex items-center justify-center w-full h-full">
+            <div className="grid grid-cols-2 gap-x-8 gap-y-5 flex-1">
+              <div>
+                <p className="text-sm font-bold text-[#070043]">
+                  {t("companyName")}:
+                </p>
+                <p className="text-sm text-[#777]">Law Firm Name</p>
+              </div>
+              <div>
+                <p className="text-sm font-bold text-[#070043]">
+                  {t("companySize")}:
+                </p>
+                <p className="text-sm text-[#777]">25 employees</p>
+              </div>
+              <div>
+                <p className="text-sm font-bold text-[#070043]">
+                  {t("location")}:
+                </p>
+                <p className="text-sm text-[#777]">Los Angeles, CA, USA</p>
+              </div>
+              <div>
+                <p className="text-sm font-bold text-[#070043]">
+                  {t("marketingAgency")}:
+                </p>
+                <p className="text-sm text-[#777]">N/A</p>
+              </div>
+              <div>
+                <p className="text-sm font-bold text-[#070043]">
+                  {t("website")}:
+                </p>
+                <p className="text-sm text-[#777]">www.lawfirmname.com</p>
+              </div>
+              <div>
+                <p className="text-sm font-bold text-[#070043]">
+                  {t("marketingSpend")}:
+                </p>
+                <p className="text-sm text-[#777]">N/A</p>
+              </div>
+              <div>
+                <p className="text-sm font-bold text-[#070043]">
+                  {t("activationDate")}:
+                </p>
+                <p className="text-sm text-[#777]">Feb. 1, 2026</p>
+              </div>
+              <div>
+                <p className="text-sm font-bold text-[#070043]">
+                  {tc("status")}:
+                </p>
+                <p className="text-sm text-[#777]">Active</p>
+              </div>
+              <div>
+                <p className="text-sm font-bold text-[#070043]">
+                  {t("username")}:
+                </p>
+                <p className="text-sm text-[#777]">lawfirmname</p>
+              </div>
+              <div>
+                <p className="text-sm font-bold text-[#070043]">
+                  {t("integrations")}:
+                </p>
+                <p className="text-sm text-[#777]">Active</p>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -285,46 +287,50 @@ export function OverviewTab() {
               </button>
             </div>
 
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-[#c8c8c8]">
-                  <th className="text-left py-2 px-2 font-medium text-muted-foreground">
-                    {tc("users")}
-                  </th>
-                  <th className="text-left py-2 px-2 font-medium text-muted-foreground">
-                    {tc("userRole")}
-                  </th>
-                  <th className="text-left py-2 px-2 font-medium text-muted-foreground">
-                    {tc("email")}
-                  </th>
-                  <th className="text-left py-2 px-2 font-medium text-muted-foreground">
-                    {t("dateAdded")}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedUsers.map((user, i) => (
-                  <tr
-                    key={`${user.name}-${i}`}
-                    className="border-b border-[#f2f2f2] last:border-0"
-                  >
-                    <td className="py-3 px-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-full bg-[#e1dff6] text-[#777] flex items-center justify-center text-xs font-medium shrink-0">
-                          PH
-                        </div>
-                        <span className="font-medium">{user.name}</span>
-                      </div>
-                    </td>
-                    <td className="py-3 px-2">
-                      <RoleBadge role={user.role} />
-                    </td>
-                    <td className="py-3 px-2 text-[#777]">{user.email}</td>
-                    <td className="py-3 px-2 font-medium">{user.dateAdded}</td>
+            <div className="overflow-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-[#c8c8c8]">
+                    <th className="text-left py-2 px-2 font-medium text-muted-foreground">
+                      {tc("users")}
+                    </th>
+                    <th className="text-left py-2 px-2 font-medium text-muted-foreground">
+                      {tc("userRole")}
+                    </th>
+                    <th className="text-left py-2 px-2 font-medium text-muted-foreground">
+                      {tc("email")}
+                    </th>
+                    <th className="text-left py-2 px-2 font-medium text-muted-foreground">
+                      {t("dateAdded")}
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {paginatedUsers.map((user, i) => (
+                    <tr
+                      key={`${user.name}-${i}`}
+                      className="border-b border-[#f2f2f2] last:border-0"
+                    >
+                      <td className="py-3 px-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-7 h-7 rounded-full bg-[#e1dff6] text-[#777] flex items-center justify-center text-xs font-medium shrink-0">
+                            PH
+                          </div>
+                          <span className="font-medium">{user.name}</span>
+                        </div>
+                      </td>
+                      <td className="py-3 px-2">
+                        <RoleBadge role={user.role} />
+                      </td>
+                      <td className="py-3 px-2 text-[#777]">{user.email}</td>
+                      <td className="py-3 px-2 font-medium">
+                        {user.dateAdded}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
             <div className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">

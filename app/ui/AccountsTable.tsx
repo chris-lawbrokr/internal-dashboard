@@ -136,7 +136,7 @@ export function AccountsTable() {
   const endItem = Math.min(currentPage * PAGE_SIZE, sorted.length);
 
   return (
-    <div className="rounded-xl bg-card text-card-foreground shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.05)]">
+    <div className="rounded-xl bg-card text-card-foreground shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.05)] min-w-0">
       {/* Toolbar */}
       <div className="flex items-center justify-between gap-4 p-4 border-b border-[#c8c8c8]">
         <div className="relative">

@@ -42,7 +42,7 @@ export const Table = React.forwardRef<
   ) => {
     const t = useTranslations("table");
     return (
-      <div className="relative w-full rounded-xl bg-card text-card-foreground shadow-[0_1px_2px_0_rgba(29,41,61,0.05)]">
+      <div className="relative w-full min-w-0 rounded-xl bg-card text-card-foreground shadow-[0_1px_2px_0_rgba(29,41,61,0.05)]">
         {(title || onSearchChange) && (
           <div className="flex items-center justify-between gap-4 p-4 pb-0">
             {title && <h3 className="text-base font-semibold px-2">{title}</h3>}

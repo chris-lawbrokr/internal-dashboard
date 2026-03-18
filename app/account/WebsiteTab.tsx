@@ -152,36 +152,38 @@ export function WebsiteTab() {
         <CardContent className="flex flex-col gap-4">
           <h2 className="text-lg font-semibold">{t("lawbrokrLinks")}</h2>
 
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b">
-                <th className="text-left py-2 px-2 font-medium text-muted-foreground">
-                  {t("websiteUrl")}
-                </th>
-                <th className="text-left py-2 px-2 font-medium text-muted-foreground">
-                  {t("lawbrokrUrl")}
-                </th>
-                <th className="text-right py-2 px-2 font-medium text-muted-foreground">
-                  {t("status")}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedLinks.map((link, i) => (
-                <tr key={i} className="border-b last:border-0">
-                  <td className="py-3 px-2 text-muted-foreground">
-                    {link.websiteUrl}
-                  </td>
-                  <td className="py-3 px-2 text-muted-foreground">
-                    {link.lawbrokrUrl}
-                  </td>
-                  <td className="py-3 px-2 text-right">
-                    <StatusBadge status={link.status} />
-                  </td>
+          <div className="overflow-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left py-2 px-2 font-medium text-muted-foreground">
+                    {t("websiteUrl")}
+                  </th>
+                  <th className="text-left py-2 px-2 font-medium text-muted-foreground">
+                    {t("lawbrokrUrl")}
+                  </th>
+                  <th className="text-right py-2 px-2 font-medium text-muted-foreground">
+                    {t("status")}
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {paginatedLinks.map((link, i) => (
+                  <tr key={i} className="border-b last:border-0">
+                    <td className="py-3 px-2 text-muted-foreground">
+                      {link.websiteUrl}
+                    </td>
+                    <td className="py-3 px-2 text-muted-foreground">
+                      {link.lawbrokrUrl}
+                    </td>
+                    <td className="py-3 px-2 text-right">
+                      <StatusBadge status={link.status} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center gap-2 text-muted-foreground">
@@ -193,7 +195,7 @@ export function WebsiteTab() {
                   setPageSize(Number(e.target.value));
                   setPage(1);
                 }}
-                className="border rounded px-1 py-0.5 text-sm"
+                className="border rounded px-1 py-0.5 text-sm cursor-pointer"
               >
                 <option value={5}>5</option>
                 <option value={10}>10</option>
@@ -213,7 +215,7 @@ export function WebsiteTab() {
                 type="button"
                 disabled={currentPage <= 1}
                 onClick={() => setPage((p) => p - 1)}
-                className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground disabled:opacity-50 disabled:pointer-events-none"
+                className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
               >
                 <ChevronLeft size={14} /> {tc("previous")}
               </button>
@@ -221,7 +223,7 @@ export function WebsiteTab() {
                 type="button"
                 disabled={currentPage >= totalPages}
                 onClick={() => setPage((p) => p + 1)}
-                className="flex items-center gap-1 text-sm font-medium hover:text-foreground disabled:opacity-50 disabled:pointer-events-none"
+                className="flex items-center gap-1 text-sm font-medium hover:text-foreground disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
               >
                 {tc("next")} <ChevronRight size={14} />
               </button>
