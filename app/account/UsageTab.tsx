@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { ChevronLeft, ChevronRight, Check, X } from "lucide-react";
 
 // ── Shared pagination component ──────────────────────────────────────
 
@@ -73,24 +73,24 @@ function StatusBadge({ status }: { status: string }) {
 
 function CheckIcon({ checked }: { checked: boolean }) {
   return (
-    <div className={`size-5 rounded-full border flex items-center justify-center ${checked ? "bg-[#ededc7] border-[#bcbc95] text-[#626444]" : "border-[#c8c8c8]"}`}>
-      {checked && <Check size={12} strokeWidth={2.5} />}
+    <div className={`size-6 rounded-full border flex items-center justify-center ${checked ? "bg-[#ededc7] border-[#bcbc95] text-[#626444]" : "bg-[#ffd9c5] border-[#eaa289] text-[#b13c33]"}`}>
+      {checked ? <Check size={14} strokeWidth={2.5} /> : <X size={14} strokeWidth={2.5} />}
     </div>
   );
 }
 
 // ── Data ─────────────────────────────────────────────────────────────
 
-const accountUsers = Array.from({ length: 5 }, (_, i) => ({
+const accountUsers = Array.from({ length: 100 }, (_, i) => ({
   name: "Full Name Here",
-  role: ["Owner", "Lawyer", "Marketer", "Admin", "Intake"][i],
-  email: `user@lawfirmname.com`,
+  role: ["Owner", "Lawyer", "Marketer", "Admin", "Intake"][i % 5],
+  email: "user@lawfirmname.com",
   phone: "+1 (555) 123-4567",
   lastVisit: "Feb. 3, 2026 9:27 AM",
   latestInteractions: "Home",
-  lastMonthly: i % 2 === 0,
-  integrationPct: i % 2 === 0,
-  platformPct: i % 2 === 0,
+  leadNotifications: i % 5 < 2 || i % 5 === 4,
+  integrationNotifications: i % 5 < 2 || i % 5 === 4,
+  platformNotifications: i % 5 < 2 || i % 5 === 4,
 }));
 
 const funnels = Array.from({ length: 6 }, () => ({
@@ -207,6 +207,79 @@ function TableSection({
   );
 }
 
+// ── Account Users Table ──────────────────────────────────────────────
+
+function AccountUsersTable() {
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
+  const totalPages = Math.max(1, Math.ceil(accountUsers.length / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const paginated = accountUsers.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+  return (
+    <Card className="p-4">
+      <CardContent className="flex flex-col gap-3">
+        <h3 className="text-lg font-bold text-[#070043]">Account Users</h3>
+        <div className="overflow-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-[#c8c8c8]">
+                <th className="text-left py-2 px-2 font-medium text-muted-foreground whitespace-nowrap">User Name</th>
+                <th className="text-left py-2 px-2 font-medium text-muted-foreground whitespace-nowrap">Role</th>
+                <th className="text-left py-2 px-2 font-medium text-muted-foreground whitespace-nowrap">Email</th>
+                <th className="text-left py-2 px-2 font-medium text-muted-foreground whitespace-nowrap">Phone</th>
+                <th className="text-left py-2 px-2 font-medium text-muted-foreground whitespace-nowrap">Last Visit</th>
+                <th className="text-left py-2 px-2 font-medium text-muted-foreground whitespace-nowrap">Latest Interactions</th>
+                <th className="text-center py-2 px-2 font-medium text-muted-foreground whitespace-nowrap">Lead Notifications</th>
+                <th className="text-center py-2 px-2 font-medium text-muted-foreground whitespace-nowrap">Integration Notifications</th>
+                <th className="text-center py-2 px-2 font-medium text-muted-foreground whitespace-nowrap">Platform Notifications</th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginated.map((user, i) => (
+                <tr key={i} className="border-b border-[#f2f2f2] last:border-0">
+                  <td className="py-3 px-2 whitespace-nowrap">{user.name}</td>
+                  <td className="py-3 px-2 whitespace-nowrap">{user.role}</td>
+                  <td className="py-3 px-2 whitespace-nowrap">{user.email}</td>
+                  <td className="py-3 px-2 whitespace-nowrap">{user.phone}</td>
+                  <td className="py-3 px-2 whitespace-nowrap">{user.lastVisit}</td>
+                  <td className="py-3 px-2 whitespace-nowrap">
+                    <span className="inline-flex items-center rounded-md border border-[#E1DFF6] bg-[#E1DFF6] px-2 py-0.5 text-xs font-medium">
+                      {user.latestInteractions}
+                    </span>
+                  </td>
+                  <td className="py-3 px-2">
+                    <div className="flex justify-center">
+                      <CheckIcon checked={user.leadNotifications} />
+                    </div>
+                  </td>
+                  <td className="py-3 px-2">
+                    <div className="flex justify-center">
+                      <CheckIcon checked={user.integrationNotifications} />
+                    </div>
+                  </td>
+                  <td className="py-3 px-2">
+                    <div className="flex justify-center">
+                      <CheckIcon checked={user.platformNotifications} />
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <Pagination
+          page={currentPage}
+          totalPages={totalPages}
+          total={accountUsers.length}
+          pageSize={pageSize}
+          onPageChange={setPage}
+        />
+      </CardContent>
+    </Card>
+  );
+}
+
 // ── Usage Tab ────────────────────────────────────────────────────────
 
 export function UsageTab() {
@@ -214,72 +287,80 @@ export function UsageTab() {
     <div className="flex flex-col gap-6">
       {/* Onboarding Checklist + Account Info */}
       <div className="flex flex-col gap-4 @xl:flex-row">
+        {/* Onboarding Checklist */}
         <Card className="flex-1 p-6">
-          <CardContent className="flex flex-col gap-4">
-            <h3 className="text-lg font-bold text-[#070043]">Onboarding Checklist</h3>
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-2">
-                <CheckIcon checked={true} />
-                <span className="text-sm">Account status is active</span>
+          <CardContent className="flex flex-col gap-0">
+            <h3 className="text-lg font-bold text-[#070043] mb-4">Onboarding Checklist</h3>
+            {[
+              { label: "Account status is active", checked: true },
+              { label: "A funnel with a workflow is live", checked: false },
+              { label: "At least one Lawbrokr URL is live on website", checked: true },
+              { label: "At least one integration is connected", checked: false },
+              { label: "At least one team member added", checked: true },
+            ].map((item, i) => (
+              <div key={i} className="flex items-center justify-between py-3 border-t border-[#e8e8e8]">
+                <span className="text-sm">{item.label}</span>
+                <CheckIcon checked={item.checked} />
               </div>
-              <div className="flex items-center gap-2">
-                <CheckIcon checked={true} />
-                <span className="text-sm">A funnel with a workflow is live</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckIcon checked={true} />
-                <span className="text-sm">At least one Lawbrokr URL is live on website</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckIcon checked={true} />
-                <span className="text-sm">At least one integration is connected</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckIcon checked={true} />
-                <span className="text-sm">At least one team member added</span>
-              </div>
-            </div>
+            ))}
           </CardContent>
         </Card>
-        <Card className="flex-1 p-6">
-          <CardContent className="grid grid-cols-2 gap-x-8 gap-y-5">
-            <div>
-              <p className="text-sm text-[#777]">Account Status</p>
-              <StatusBadge status="Active" />
-            </div>
-            <div>
-              <p className="text-sm text-[#777]">Subscription Type</p>
-              <p className="text-2xl font-bold text-[#070043]">Annual</p>
-            </div>
-            <div>
-              <p className="text-sm text-[#777]">Account Created</p>
-              <p className="text-lg font-bold text-[#070043]">Feb. 1, 2026</p>
-            </div>
-            <div>
-              <p className="text-sm text-[#777]">Next Payment Date</p>
-              <p className="text-lg font-bold text-[#070043]">Feb. 1, 2027</p>
-            </div>
-            <div>
-              <p className="text-sm text-[#777]">Total Forms</p>
-              <p className="text-2xl font-bold text-[#070043]">12</p>
-            </div>
-            <div>
-              <p className="text-sm text-[#777]">Live Links</p>
-              <p className="text-2xl font-bold text-[#070043]">29</p>
-            </div>
-          </CardContent>
-        </Card>
+
+        {/* Account Info – right side cards */}
+        <div className="flex-1 flex flex-col gap-4">
+          {/* Row 1: Account Status + Subscription Type */}
+          <div className="flex gap-4">
+            <Card className="flex-1 p-5">
+              <CardContent className="flex flex-col gap-2">
+                <p className="text-sm text-[#777]">Account Status</p>
+                <span className="inline-flex items-center gap-1.5 self-start rounded-lg border px-2 py-1 text-xs font-bold border-[#bcbc95] bg-[#ededc7] text-[#626444]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#626444]" />
+                  Active
+                </span>
+              </CardContent>
+            </Card>
+            <Card className="flex-1 p-5">
+              <CardContent className="flex flex-col gap-2">
+                <p className="text-sm text-[#777]">Subscription Type</p>
+                <p className="text-2xl font-bold text-[#070043]">Annual</p>
+              </CardContent>
+            </Card>
+          </div>
+          {/* Row 2: Account Created + Next Payment Due */}
+          <div className="flex gap-4">
+            <Card className="flex-1 p-5">
+              <CardContent className="flex flex-col gap-2">
+                <p className="text-sm text-[#777]">Account Created</p>
+                <p className="text-xl font-bold text-[#070043]">Feb. 1, 2026</p>
+              </CardContent>
+            </Card>
+            <Card className="flex-1 p-5">
+              <CardContent className="flex flex-col gap-2">
+                <p className="text-sm text-[#777]">Next Payment Due</p>
+                <p className="text-xl font-bold text-[#070043]">Feb. 1, 2027</p>
+              </CardContent>
+            </Card>
+          </div>
+          {/* Row 3: Live Funnels + Live Workflows */}
+          <div className="flex gap-4">
+            <Card className="flex-1 p-5">
+              <CardContent className="flex flex-col gap-2">
+                <p className="text-sm text-[#777]">Live Funnels</p>
+                <p className="text-2xl font-bold text-[#070043]">12</p>
+              </CardContent>
+            </Card>
+            <Card className="flex-1 p-5">
+              <CardContent className="flex flex-col gap-2">
+                <p className="text-sm text-[#777]">Live Workflows</p>
+                <p className="text-2xl font-bold text-[#070043]">29</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
 
       {/* Account Users */}
-      <TableSection
-        title="Account Users"
-        headers={["User Names", "Role", "Email", "Phone", "Last Visit", "Latest Interactions", "Last Monthly", "Integration %", "Platform %"]}
-        rows={accountUsers.map((u) => [
-          u.name, u.role, u.email, u.phone, u.lastVisit, u.latestInteractions,
-          u.lastMonthly ? "✓" : "–", u.integrationPct ? "✓" : "–", u.platformPct ? "✓" : "–",
-        ])}
-      />
+      <AccountUsersTable />
 
       {/* Funnels */}
       <TableSection

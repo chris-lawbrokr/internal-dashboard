@@ -137,7 +137,7 @@ export function WebsiteTab() {
         </StatusCard>
 
         <StatusCard label={t("activeIntegrations")} className="row-span-2">
-          <span className="inline-flex items-center bg-[#E1DFF6] gap-1.5 self-start rounded-md border border-foreground px-2 py-1 text-xs font-bold border border-[#E1DFF6]">
+          <span className="inline-flex items-center bg-[#E1DFF6] gap-1.5 self-start rounded-md border border-[#A18DBE] px-2 py-1 text-xs font-bold">
             Scorpion
           </span>
         </StatusCard>

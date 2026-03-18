@@ -19,7 +19,7 @@ const ROLE_STYLES: Record<
 > = {
   Admin: { bg: "#e1dff6", text: "#250d53", border: "#c4c0e8" },
   Internal: { bg: "#fff2cf", text: "#946a22", border: "#daad75" },
-  Agency: { bg: "#ededc7", text: "#626444", border: "#bcbc95" },
+  Agency: { bg: "#D8E6F4", text: "#637C93", border: "#93A8BA" },
   Support: { bg: "#ffe2de", text: "#ab626f", border: "#eaa289" },
 };
 
