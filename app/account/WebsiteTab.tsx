@@ -10,13 +10,12 @@ import {
   TableRow,
   TableHead,
   TableCell,
+  TablePagination,
 } from "@/components/ui/table/Table";
 import {
   Check,
   AlertCircle,
   X,
-  ChevronLeft,
-  ChevronRight,
   ArrowDown,
 } from "lucide-react";
 
@@ -110,7 +109,6 @@ export function WebsiteTab() {
   const [page, setPage] = useState(1);
   const pageSize = 10;
   const t = useTranslations("website");
-  const tc = useTranslations("common");
 
   const totalPages = Math.max(1, Math.ceil(links.length / pageSize));
   const currentPage = Math.min(page, totalPages);
@@ -177,36 +175,16 @@ export function WebsiteTab() {
       {/* Lawbrokr Links table */}
       <Table
         toolbar={
-          <div className="p-4 pb-0">
-            <h2 className="text-lg font-semibold">{t("lawbrokrLinks")}</h2>
-          </div>
+          <h2 className="text-lg font-semibold">{t("lawbrokrLinks")}</h2>
         }
         footer={
-          <div className="flex items-center justify-between text-sm px-4 pb-4">
-            <span className="text-muted-foreground">
-              {links.length === 0 ? 0 : (currentPage - 1) * pageSize + 1}-
-              {Math.min(currentPage * pageSize, links.length)} {tc("of")}{" "}
-              {links.length}
-            </span>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                disabled={currentPage <= 1}
-                onClick={() => setPage((p) => p - 1)}
-                className="flex items-center gap-1 rounded-md border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
-              >
-                <ChevronLeft size={14} /> {tc("previous")}
-              </button>
-              <button
-                type="button"
-                disabled={currentPage >= totalPages}
-                onClick={() => setPage((p) => p + 1)}
-                className="flex items-center gap-1 rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
-              >
-                {tc("next")} <ChevronRight size={14} />
-              </button>
-            </div>
-          </div>
+          <TablePagination
+            page={currentPage}
+            totalPages={totalPages}
+            totalItems={links.length}
+            pageSize={pageSize}
+            onPageChange={setPage}
+          />
         }
       >
         <TableHeader>

@@ -9,6 +9,7 @@ import {
   TableRow,
   TableHead,
   TableCell,
+  TablePagination,
 } from "@/components/ui/table/Table";
 import {
   Search,
@@ -18,8 +19,6 @@ import {
   AlertCircle,
   SlidersHorizontal,
   ArrowUpDown,
-  ChevronLeft,
-  ChevronRight,
 } from "lucide-react";
 
 type StatusIcon = "check" | "warning" | "error";
@@ -140,14 +139,11 @@ export function AccountsTable() {
     }
   };
 
-  const startItem = (currentPage - 1) * PAGE_SIZE + 1;
-  const endItem = Math.min(currentPage * PAGE_SIZE, sorted.length);
-
   return (
     <Table
       wrapperClassName="shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.05)]"
       toolbar={
-        <div className="flex items-center justify-between gap-4 p-4 border-b border-[#c8c8c8]">
+        <div className="flex items-center justify-between gap-4 border-b border-[#c8c8c8]">
           <div className="relative">
             <Search
               size={16}
@@ -199,31 +195,13 @@ export function AccountsTable() {
         </div>
       }
       footer={
-        <div className="flex items-center justify-between px-4 py-4">
-          <span className="text-sm text-muted-foreground">
-            {startItem}-{endItem} {tc("of")} {sorted.length}
-          </span>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              disabled={currentPage <= 1}
-              onClick={() => setPage((p) => p - 1)}
-              className="flex items-center gap-1 rounded-md border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
-            >
-              <ChevronLeft size={14} />
-              {tc("previous")}
-            </button>
-            <button
-              type="button"
-              disabled={currentPage >= totalPages}
-              onClick={() => setPage((p) => p + 1)}
-              className="flex items-center gap-1 rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
-            >
-              {tc("next")}
-              <ChevronRight size={14} />
-            </button>
-          </div>
-        </div>
+        <TablePagination
+          page={currentPage}
+          totalPages={totalPages}
+          totalItems={sorted.length}
+          pageSize={PAGE_SIZE}
+          onPageChange={setPage}
+        />
       }
     >
       <TableHeader>

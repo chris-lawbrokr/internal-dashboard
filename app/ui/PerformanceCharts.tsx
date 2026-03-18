@@ -3,7 +3,6 @@
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import {
   Table,
@@ -12,6 +11,7 @@ import {
   TableRow,
   TableHead,
   TableCell,
+  TablePagination,
 } from "@/components/ui/table/Table";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
@@ -229,7 +229,6 @@ const funnels = Array.from({ length: 10 }, () => ({
 export function FunnelsTable() {
   const [page, setPage] = useState(1);
   const tp = useTranslations("performance");
-  const tc = useTranslations("common");
   const pageSize = 6;
   const totalPages = Math.ceil(funnels.length / pageSize);
   const currentPage = Math.min(page, totalPages);
@@ -241,47 +240,16 @@ export function FunnelsTable() {
   return (
     <Table
       toolbar={
-        <div className="p-4 pb-0">
-          <h3 className="text-base font-semibold">{tp("funnels")}</h3>
-        </div>
+        <h3 className="text-base font-semibold">{tp("funnels")}</h3>
       }
       footer={
-        <div className="flex items-center justify-between text-sm px-4 pb-4">
-          <div className="flex items-center gap-2 text-muted-foreground">
-            {tc("rowsPerPage")}
-            <select
-              aria-label={tc("rowsPerPage")}
-              className="border rounded px-1 py-0.5 text-sm cursor-pointer"
-              defaultValue={99}
-            >
-              <option value={99}>99</option>
-            </select>
-            <span>
-              <strong>
-                1-{Math.min(currentPage * pageSize, funnels.length)}
-              </strong>{" "}
-              {tc("of")} <strong>{funnels.length}</strong>
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              disabled={currentPage <= 1}
-              onClick={() => setPage((p) => p - 1)}
-              className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
-            >
-              <ChevronLeft size={14} /> {tc("previous")}
-            </button>
-            <button
-              type="button"
-              disabled={currentPage >= totalPages}
-              onClick={() => setPage((p) => p + 1)}
-              className="flex items-center gap-1 text-sm font-medium hover:text-foreground disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
-            >
-              {tc("next")} <ChevronRight size={14} />
-            </button>
-          </div>
-        </div>
+        <TablePagination
+          page={currentPage}
+          totalPages={totalPages}
+          totalItems={funnels.length}
+          pageSize={pageSize}
+          onPageChange={setPage}
+        />
       }
     >
       <TableHeader>

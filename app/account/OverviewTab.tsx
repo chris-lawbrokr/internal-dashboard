@@ -11,14 +11,13 @@ import {
   TableRow,
   TableHead,
   TableCell,
+  TablePagination,
 } from "@/components/ui/table/Table";
 import {
   Search,
   Filter,
   Lock,
   Eye,
-  ChevronLeft,
-  ChevronRight,
 } from "lucide-react";
 
 const ROLE_STYLES: Record<
@@ -165,10 +164,6 @@ export function OverviewTab() {
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE,
   );
-  const startItem =
-    filteredUsers.length === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
-  const endItem = Math.min(currentPage * PAGE_SIZE, filteredUsers.length);
-
   return (
     <>
       {/* Health Gauges */}
@@ -233,7 +228,7 @@ export function OverviewTab() {
           <Table
             wrapperClassName="p-4 shadow-[0_1px_2px_0_rgba(29,41,61,0.05)]"
             toolbar={
-              <div className="flex items-center justify-between gap-4 p-4 pb-0">
+              <div className="flex items-center justify-between gap-4">
                 <div className="relative">
                   <Search
                     size={16}
@@ -260,29 +255,13 @@ export function OverviewTab() {
               </div>
             }
             footer={
-              <div className="flex items-center justify-between text-sm px-4 pb-4">
-                <span className="text-muted-foreground">
-                  {startItem}-{endItem} {tc("of")} {filteredUsers.length}
-                </span>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    disabled={currentPage <= 1}
-                    onClick={() => setPage((p) => p - 1)}
-                    className="flex items-center gap-1 rounded-md border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
-                  >
-                    <ChevronLeft size={14} /> {tc("previous")}
-                  </button>
-                  <button
-                    type="button"
-                    disabled={currentPage >= totalPages}
-                    onClick={() => setPage((p) => p + 1)}
-                    className="flex items-center gap-1 rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
-                  >
-                    {tc("next")} <ChevronRight size={14} />
-                  </button>
-                </div>
-              </div>
+              <TablePagination
+                page={currentPage}
+                totalPages={totalPages}
+                totalItems={filteredUsers.length}
+                pageSize={PAGE_SIZE}
+                onPageChange={setPage}
+              />
             }
           >
             <TableHeader>

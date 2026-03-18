@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 function cn(...values: Array<string | undefined | null | false>): string {
@@ -50,9 +50,9 @@ export const Table = React.forwardRef<
     return (
       <div className={cn("relative w-full min-w-0 rounded-xl bg-card text-card-foreground shadow-[0_1px_2px_0_rgba(29,41,61,0.05)]", wrapperClassName)}>
         {toolbar != null
-          ? toolbar
+          ? <div className="p-4 pb-0">{toolbar}</div>
           : (title || onSearchChange) && (
-              <div className="flex items-center justify-between gap-4 p-4 pb-0">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 pb-0 overflow-x-auto">
                 {title && (
                   <h3 className="text-base font-semibold px-2">{title}</h3>
                 )}
@@ -82,73 +82,21 @@ export const Table = React.forwardRef<
           />
         </div>
         {footer != null
-          ? footer
+          ? <div className="px-4 pb-4">{footer}</div>
           : onPageChange &&
             totalPages != null &&
             page != null &&
-            totalPages > 1 && (
-              <div className="flex items-center px-4 pb-4">
-                {totalItems != null && pageSize != null && (
-                  <span className="text-sm px-2">
-                    {t("showing")}{" "}
-                    <span className="font-bold">
-                      {(page - 1) * pageSize + 1}-
-                      {Math.min(page * pageSize, totalItems)}
-                    </span>{" "}
-                    {t("of")}{" "}
-                    <span className="font-bold">{totalItems}</span>
-                  </span>
-                )}
-                <div className="flex items-center ml-auto border rounded-xl">
-                  <button
-                    type="button"
-                    aria-label="Previous page"
-                    disabled={page <= 1}
-                    onClick={() => onPageChange(page - 1)}
-                    className="h-8 w-8 flex items-center justify-center text-sm text-muted-foreground hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer border-r"
-                  >
-                    <ChevronLeft size={16} />
-                  </button>
-                  {(() => {
-                    const maxVisible = 10;
-                    let start = Math.max(
-                      1,
-                      page - Math.floor(maxVisible / 2),
-                    );
-                    const end = Math.min(
-                      totalPages,
-                      start + maxVisible - 1,
-                    );
-                    start = Math.max(1, end - maxVisible + 1);
-                    return Array.from(
-                      { length: end - start + 1 },
-                      (_, i) => start + i,
-                    );
-                  })().map((p) => (
-                    <button
-                      key={p}
-                      type="button"
-                      onClick={() => onPageChange(p)}
-                      className={cn(
-                        "h-8 w-8 flex items-center justify-center text-sm cursor-pointer border-r",
-                        p === page
-                          ? "bg-primary text-primary-foreground"
-                          : "text-muted-foreground hover:bg-muted",
-                      )}
-                    >
-                      {p}
-                    </button>
-                  ))}
-                  <button
-                    type="button"
-                    aria-label="Next page"
-                    disabled={page >= totalPages}
-                    onClick={() => onPageChange(page + 1)}
-                    className="h-8 w-8 flex items-center justify-center rounded-md text-sm text-muted-foreground hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
-                  >
-                    <ChevronRight size={16} />
-                  </button>
-                </div>
+            totalPages > 1 &&
+            totalItems != null &&
+            pageSize != null && (
+              <div className="px-4 pb-4">
+                <TablePagination
+                  page={page}
+                  totalPages={totalPages}
+                  totalItems={totalItems}
+                  pageSize={pageSize}
+                  onPageChange={onPageChange}
+                />
               </div>
             )}
       </div>
@@ -223,6 +171,61 @@ export const TableCell = React.forwardRef<
   <td ref={ref} className={cn("p-3 align-middle", className)} {...props} />
 ));
 TableCell.displayName = "TableCell";
+
+interface TablePaginationProps {
+  page: number;
+  totalPages: number;
+  totalItems: number;
+  pageSize: number;
+  onPageChange: (page: number) => void;
+  info?: React.ReactNode;
+}
+
+export function TablePagination({
+  page,
+  totalPages,
+  totalItems,
+  pageSize,
+  onPageChange,
+  info,
+}: TablePaginationProps) {
+  const t = useTranslations("table");
+  const tc = useTranslations("common");
+  const start = totalItems === 0 ? 0 : (page - 1) * pageSize + 1;
+  const end = Math.min(page * pageSize, totalItems);
+
+  return (
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm">
+      {info ?? (
+        <span className="text-muted-foreground">
+          {t("showing")}{" "}
+          <span className="font-bold">
+            {start}-{end}
+          </span>{" "}
+          {t("of")} <span className="font-bold">{totalItems}</span>
+        </span>
+      )}
+      <div className="flex gap-2">
+        <button
+          type="button"
+          disabled={page <= 1}
+          onClick={() => onPageChange(page - 1)}
+          className="flex-1 sm:flex-none flex items-center justify-center rounded-md border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+        >
+          {tc("back")}
+        </button>
+        <button
+          type="button"
+          disabled={page >= totalPages}
+          onClick={() => onPageChange(page + 1)}
+          className="flex-1 sm:flex-none flex items-center justify-center rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+        >
+          {tc("next")}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export const TableCaption = React.forwardRef<
   HTMLTableCaptionElement,

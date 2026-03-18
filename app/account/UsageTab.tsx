@@ -9,56 +9,9 @@ import {
   TableRow,
   TableHead,
   TableCell,
+  TablePagination,
 } from "@/components/ui/table/Table";
-import { ChevronLeft, ChevronRight, Check, X } from "lucide-react";
-
-// ── Shared pagination component ──────────────────────────────────────
-
-function Pagination({
-  page,
-  totalPages,
-  total,
-  pageSize,
-  onPageChange,
-}: {
-  page: number;
-  totalPages: number;
-  total: number;
-  pageSize: number;
-  onPageChange: (p: number) => void;
-}) {
-  const start = total === 0 ? 0 : (page - 1) * pageSize + 1;
-  const end = Math.min(page * pageSize, total);
-  return (
-    <div className="flex items-center justify-between text-sm px-4 pb-4">
-      <div className="flex items-center gap-2 text-muted-foreground">
-        Rows per page
-        <span className="border rounded px-1.5 py-0.5 text-xs">{pageSize}</span>
-        <span>
-          <strong>{start}-{end}</strong> of <strong>{total}</strong>
-        </span>
-      </div>
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          disabled={page <= 1}
-          onClick={() => onPageChange(page - 1)}
-          className="flex items-center gap-1 rounded-md border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
-        >
-          <ChevronLeft size={14} /> Previous
-        </button>
-        <button
-          type="button"
-          disabled={page >= totalPages}
-          onClick={() => onPageChange(page + 1)}
-          className="flex items-center gap-1 rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
-        >
-          Next <ChevronRight size={14} />
-        </button>
-      </div>
-    </div>
-  );
-}
+import { Check, X } from "lucide-react";
 
 // ── Status badge ─────────────────────────────────────────────────────
 
@@ -180,15 +133,13 @@ function TableSection({
   return (
     <Table
       toolbar={
-        <div className="p-4 pb-0">
-          <h3 className="text-lg font-bold text-[#070043]">{title}</h3>
-        </div>
+        <h3 className="text-lg font-bold text-[#070043]">{title}</h3>
       }
       footer={
-        <Pagination
+        <TablePagination
           page={currentPage}
           totalPages={totalPages}
-          total={rows.length}
+          totalItems={rows.length}
           pageSize={pageSize}
           onPageChange={setPage}
         />
@@ -228,15 +179,13 @@ function AccountUsersTable() {
   return (
     <Table
       toolbar={
-        <div className="p-4 pb-0">
-          <h3 className="text-lg font-bold text-[#070043]">Account Users</h3>
-        </div>
+        <h3 className="text-lg font-bold text-[#070043]">Account Users</h3>
       }
       footer={
-        <Pagination
+        <TablePagination
           page={currentPage}
           totalPages={totalPages}
-          total={accountUsers.length}
+          totalItems={accountUsers.length}
           pageSize={pageSize}
           onPageChange={setPage}
         />
