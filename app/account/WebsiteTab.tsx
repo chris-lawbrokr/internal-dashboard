@@ -20,9 +20,27 @@ interface LawbrokrLink {
   status: LinkStatus;
 }
 
+const websitePaths = [
+  "/home/landingpage/pagename",
+  "/home/landingpage/pagename",
+  "/home/landingpage/pagename",
+  "/home/landingpage/pagename",
+  "/home/landingpage/pagename",
+  "/home/landingpage/pagename",
+];
+
+const lawbrokrPaths = [
+  "/practiceareas/personalinjury",
+  "/practiceareas/personalinjury/slipandfall",
+  "/practiceareas/personalinjury/dogbite",
+  "/practiceareas/personalinjury/carcrash",
+  "/practiceareas",
+  "/practiceareas/personalinjury/workplaceaccident",
+];
+
 const links: LawbrokrLink[] = Array.from({ length: 100 }, (_, i) => ({
-  websiteUrl: "www.lawfirmname.com/homepage",
-  lawbrokrUrl: "www.lawfirm.lawbrokr.com/practiceareas",
+  websiteUrl: `www.lawfirmname.com${websitePaths[i % websitePaths.length]}`,
+  lawbrokrUrl: `www.lawfirm.lawbrokr.com${lawbrokrPaths[i % lawbrokrPaths.length]}`,
   status: (
     ["Active", "Active", "Review", "Broken", "Active", "Active"] as LinkStatus[]
   )[i % 6],
@@ -39,21 +57,21 @@ function StatusBadge({ status }: { status: LinkStatus }) {
   const config = {
     Active: {
       icon: <Check size={12} />,
-      className: "border-green-200 bg-green-50 text-green-700",
+      className: "border-[#bcbc95] bg-[#ededc7] text-[#626444]",
     },
     Review: {
       icon: <AlertCircle size={12} />,
-      className: "border-yellow-200 bg-yellow-50 text-yellow-700",
+      className: "border-[#daad75] bg-[#fff2cf] text-[#A56737]",
     },
     Broken: {
       icon: <X size={12} />,
-      className: "border-red-200 bg-red-50 text-red-700",
+      className: "border-[#eaa289] bg-[#ffd9c5] text-[#b13c33]",
     },
   }[status];
 
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-medium ${config.className}`}
+      className={`inline-flex items-center gap-1 rounded-lg border px-2.5 py-0.5 text-xs font-medium ${config.className}`}
     >
       {config.icon}
       {t(statusKeyMap[status])}
@@ -82,7 +100,7 @@ function StatusCard({
 
 export function WebsiteTab() {
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const pageSize = 10;
   const t = useTranslations("website");
   const tc = useTranslations("common");
 
@@ -98,50 +116,51 @@ export function WebsiteTab() {
       {/* Top stat cards – row 1 */}
       <div className="grid grid-cols-1 gap-4 @xl:grid-cols-4">
         <StatusCard label={t("websiteStatus")}>
-          <span className="inline-flex items-center gap-1.5 self-start rounded-md border px-2 py-0.5 text-xs font-medium border-green-200 bg-green-50 text-green-700">
-            <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
+          <span className="inline-flex items-center gap-1.5 self-start rounded-lg border px-2 py-1 text-xs font-bold border-[#bcbc95] bg-[#ededc7] text-[#626444]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#626444]" />
             {t("live")}
           </span>
         </StatusCard>
 
         <StatusCard label={t("sourceAttribution")}>
-          <span className="inline-flex items-center gap-1.5 self-start rounded-md border px-2 py-0.5 text-xs font-medium border-green-200 bg-green-50 text-green-700">
-            <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
+          <span className="inline-flex items-center gap-1.5 self-start rounded-lg border px-2 py-1 text-xs font-bold border-[#bcbc95] bg-[#ededc7] text-[#626444]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#626444]" />
             {t("enabled")}
           </span>
         </StatusCard>
 
         <StatusCard label={t("linkStatus")}>
-          <span className="inline-flex items-center gap-1.5 self-start rounded-md border px-2 py-0.5 text-xs font-medium border-red-200 bg-red-50 text-red-700">
-            <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
+          <span className="inline-flex items-center gap-1.5 self-start rounded-lg border px-2 py-1 text-xs font-bold border-[#eaa289] bg-[#ffd9c5] text-[#b13c33]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#b13c33]" />
             {t("down")}
           </span>
         </StatusCard>
 
         <StatusCard label={t("activeIntegrations")} className="row-span-2">
-          <span className="inline-flex items-center gap-1.5 self-start rounded-md border border-foreground px-2 py-0.5 text-xs font-medium">
+          <span className="inline-flex items-center bg-[#E1DFF6] gap-1.5 self-start rounded-md border border-foreground px-2 py-1 text-xs font-bold border border-[#E1DFF6]">
             Scorpion
           </span>
         </StatusCard>
 
         <StatusCard label={t("sslStatus")}>
-          <span className="inline-flex items-center gap-1.5 self-start rounded-md border px-2 py-0.5 text-xs font-medium border-green-200 bg-green-50 text-green-700">
-            <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
+          <span className="inline-flex items-center gap-1.5 self-start rounded-lg border px-2 py-1 text-xs font-bold border-[#bcbc95] bg-[#ededc7] text-[#626444]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#626444]" />
             {t("enabled")}
           </span>
         </StatusCard>
 
         <StatusCard label={t("websiteLoadTime")}>
-          <span className="text-2xl font-bold text-yellow-600">
+          <span className="text-2xl font-bold">
             {t("seconds", { count: 8 })}
           </span>
         </StatusCard>
 
         <StatusCard label={t("liveLawbrokrLinks")}>
           <span className="text-2xl font-bold">39</span>
-          <span className="inline-flex items-center gap-1 text-sm text-red-500">
-            <ArrowDown size={14} />
-            10%{" "}
+          <span className="inline-flex items-center gap-1 text-sm">
+            <span className="text-[#b13c33]">
+              <ArrowDown size={14} className="inline" /> 10%
+            </span>{" "}
             <span className="text-muted-foreground">{t("vsLastMonth")}</span>
           </span>
         </StatusCard>
@@ -156,27 +175,27 @@ export function WebsiteTab() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b">
-                  <th className="text-left py-2 px-2 font-medium text-muted-foreground">
+                  <th className="text-left py-2 pl-5 pr-10 font-medium text-muted-foreground">
                     {t("websiteUrl")}
                   </th>
-                  <th className="text-left py-2 px-2 font-medium text-muted-foreground">
+                  <th className="text-left py-2 pl-5 pr-10 font-medium text-muted-foreground">
                     {t("lawbrokrUrl")}
                   </th>
-                  <th className="text-right py-2 px-2 font-medium text-muted-foreground">
+                  <th className="text-right py-2 pl-5 pr-10 font-medium text-muted-foreground">
                     {t("status")}
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {paginatedLinks.map((link, i) => (
-                  <tr key={i} className="border-b last:border-0">
-                    <td className="py-3 px-2 text-muted-foreground">
+                  <tr key={i} className="h-14 border-b last:border-0">
+                    <td className="py-0 pl-5 pr-10 text-muted-foreground">
                       {link.websiteUrl}
                     </td>
-                    <td className="py-3 px-2 text-muted-foreground">
+                    <td className="py-0 pl-5 pr-10 text-muted-foreground">
                       {link.lawbrokrUrl}
                     </td>
-                    <td className="py-3 px-2 text-right">
+                    <td className="py-0 pl-5 pr-10 text-right">
                       <StatusBadge status={link.status} />
                     </td>
                   </tr>
@@ -186,36 +205,17 @@ export function WebsiteTab() {
           </div>
 
           <div className="flex items-center justify-between text-sm">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              {tc("rowsPerPage")}
-              <select
-                aria-label={tc("rowsPerPage")}
-                value={pageSize}
-                onChange={(e) => {
-                  setPageSize(Number(e.target.value));
-                  setPage(1);
-                }}
-                className="border rounded px-1 py-0.5 text-sm cursor-pointer"
-              >
-                <option value={5}>5</option>
-                <option value={10}>10</option>
-                <option value={25}>25</option>
-                <option value={99}>99</option>
-              </select>
-              <span>
-                <strong>
-                  {links.length === 0 ? 0 : (currentPage - 1) * pageSize + 1}-
-                  {Math.min(currentPage * pageSize, links.length)}
-                </strong>{" "}
-                {tc("of")} <strong>{links.length}</strong>
-              </span>
-            </div>
+            <span className="text-muted-foreground">
+              {links.length === 0 ? 0 : (currentPage - 1) * pageSize + 1}-
+              {Math.min(currentPage * pageSize, links.length)} {tc("of")}{" "}
+              {links.length}
+            </span>
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 disabled={currentPage <= 1}
                 onClick={() => setPage((p) => p - 1)}
-                className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+                className="flex items-center gap-1 rounded-md border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
               >
                 <ChevronLeft size={14} /> {tc("previous")}
               </button>
@@ -223,7 +223,7 @@ export function WebsiteTab() {
                 type="button"
                 disabled={currentPage >= totalPages}
                 onClick={() => setPage((p) => p + 1)}
-                className="flex items-center gap-1 text-sm font-medium hover:text-foreground disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+                className="flex items-center gap-1 rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
               >
                 {tc("next")} <ChevronRight size={14} />
               </button>
