@@ -228,7 +228,7 @@ export function OverviewTab() {
           <Table
             wrapperClassName="p-4 shadow-[0_1px_2px_0_rgba(29,41,61,0.05)]"
             toolbar={
-              <div className="flex items-center justify-between gap-4">
+              <div className="flex flex-col @md/table:flex-row @md/table:items-center justify-between gap-4">
                 <div className="relative">
                   <Search
                     size={16}
@@ -242,12 +242,12 @@ export function OverviewTab() {
                       setSearch(e.target.value);
                       setPage(1);
                     }}
-                    className="h-9 w-48 rounded-md border border-input bg-background pl-8 pr-3 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="h-9 w-full @md/table:w-48 rounded-md border border-input bg-background pl-8 pr-3 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   />
                 </div>
                 <button
                   type="button"
-                  className="flex items-center gap-1.5 rounded-md border border-[#3b2559] px-3 h-9 text-sm hover:bg-muted cursor-pointer"
+                  className="flex items-center justify-center gap-1.5 rounded-md border border-[#3b2559] px-3 h-9 text-sm hover:bg-muted cursor-pointer"
                 >
                   <Filter size={14} />
                   {tc("filter")}

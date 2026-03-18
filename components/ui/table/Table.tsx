@@ -48,32 +48,39 @@ export const Table = React.forwardRef<
   ) => {
     const t = useTranslations("table");
     return (
-      <div className={cn("relative w-full min-w-0 rounded-xl bg-card text-card-foreground shadow-[0_1px_2px_0_rgba(29,41,61,0.05)]", wrapperClassName)}>
-        {toolbar != null
-          ? <div className="p-4 pb-0">{toolbar}</div>
-          : (title || onSearchChange) && (
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 pb-0 overflow-x-auto">
-                {title && (
-                  <h3 className="text-base font-semibold px-2">{title}</h3>
-                )}
-                {onSearchChange && (
-                  <div className="relative ml-auto">
-                    <Search
-                      size={16}
-                      className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground"
-                    />
-                    <input
-                      type="text"
-                      aria-label={searchPlaceholder}
-                      placeholder={searchPlaceholder}
-                      value={searchValue ?? ""}
-                      onChange={(e) => onSearchChange(e.target.value)}
-                      className="h-8 w-48 rounded-md border border-input bg-background pl-8 pr-3 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    />
-                  </div>
-                )}
-              </div>
-            )}
+      <div
+        className={cn(
+          "relative w-full min-w-0 rounded-xl bg-card text-card-foreground shadow-[0_1px_2px_0_rgba(29,41,61,0.05)] @container/table",
+          wrapperClassName,
+        )}
+      >
+        {toolbar != null ? (
+          <div className="p-4 pb-0">{toolbar}</div>
+        ) : (
+          (title || onSearchChange) && (
+            <div className="flex flex-col @md/table:flex-row @md/table:items-center justify-between gap-4 p-4 pb-0">
+              {title && (
+                <h3 className="text-base font-semibold px-2">{title}</h3>
+              )}
+              {onSearchChange && (
+                <div className="relative @md/table:ml-auto">
+                  <Search
+                    size={16}
+                    className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+                  />
+                  <input
+                    type="text"
+                    aria-label={searchPlaceholder}
+                    placeholder={searchPlaceholder}
+                    value={searchValue ?? ""}
+                    onChange={(e) => onSearchChange(e.target.value)}
+                    className="h-8 w-full @md/table:w-48 rounded-md border border-input bg-background pl-8 pr-3 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  />
+                </div>
+              )}
+            </div>
+          )
+        )}
         <div className="overflow-auto p-4">
           <table
             ref={ref}
@@ -81,24 +88,26 @@ export const Table = React.forwardRef<
             {...props}
           />
         </div>
-        {footer != null
-          ? <div className="px-4 pb-4">{footer}</div>
-          : onPageChange &&
-            totalPages != null &&
-            page != null &&
-            totalPages > 1 &&
-            totalItems != null &&
-            pageSize != null && (
-              <div className="px-4 pb-4">
-                <TablePagination
-                  page={page}
-                  totalPages={totalPages}
-                  totalItems={totalItems}
-                  pageSize={pageSize}
-                  onPageChange={onPageChange}
-                />
-              </div>
-            )}
+        {footer != null ? (
+          <div className="p-4 pt-2">{footer}</div>
+        ) : (
+          onPageChange &&
+          totalPages != null &&
+          page != null &&
+          totalPages > 1 &&
+          totalItems != null &&
+          pageSize != null && (
+            <div className="p-4 pt-2">
+              <TablePagination
+                page={page}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                pageSize={pageSize}
+                onPageChange={onPageChange}
+              />
+            </div>
+          )
+        )}
       </div>
     );
   },
@@ -195,7 +204,7 @@ export function TablePagination({
   const end = Math.min(page * pageSize, totalItems);
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm">
+    <div className="flex flex-col @md/table:flex-row @md/table:items-center @md/table:justify-between gap-3 text-sm">
       {info ?? (
         <span className="text-muted-foreground">
           {t("showing")}{" "}
@@ -210,7 +219,7 @@ export function TablePagination({
           type="button"
           disabled={page <= 1}
           onClick={() => onPageChange(page - 1)}
-          className="flex-1 sm:flex-none flex items-center justify-center rounded-md border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+          className="flex-1 @md/table:flex-none flex items-center justify-center rounded-md border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
         >
           {tc("back")}
         </button>
@@ -218,7 +227,7 @@ export function TablePagination({
           type="button"
           disabled={page >= totalPages}
           onClick={() => onPageChange(page + 1)}
-          className="flex-1 sm:flex-none flex items-center justify-center rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+          className="flex-1 @md/table:flex-none flex items-center justify-center rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
         >
           {tc("next")}
         </button>

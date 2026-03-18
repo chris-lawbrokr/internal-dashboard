@@ -907,7 +907,7 @@ export function DateRangePickerWithPresets({
       >
         <CalendarIcon className="h-3.5 w-3.5" />
         {label}
-        <ChevronDown className="h-3.5 w-3.5" />
+        <ChevronDown className="h-3.5 w-3.5 ml-auto" />
       </button>
 
       {open && (

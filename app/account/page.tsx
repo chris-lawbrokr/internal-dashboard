@@ -27,20 +27,22 @@ export default function Dashboard() {
 
         <div className="flex-1 min-w-0 p-6 overflow-y-auto overflow-x-hidden @container flex flex-col gap-6 bg-[#fbfbfb]">
           {/* Header */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Link
-                href="/"
-                className="flex items-center gap-1.5 rounded-xl border border-[#c8c8c8] px-3 py-1.5 text-sm hover:bg-muted cursor-pointer"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                {t("back")}
-              </Link>
+          <div className="flex flex-col gap-4">
+            <Link
+              href="/"
+              className="self-start flex items-center gap-1.5 rounded-xl border border-[#c8c8c8] px-3 py-1.5 text-sm hover:bg-muted cursor-pointer"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              {t("back")}
+            </Link>
+            <div className="flex flex-col @xl:flex-row @xl:items-center justify-between gap-4">
               <h1 className="text-2xl font-bold text-[#070043]">
                 Smith Law Firm
               </h1>
+              <div className="w-full @xl:w-auto [&>div]:w-full @xl:[&>div]:w-auto [&_button]:w-full @xl:[&_button]:w-auto">
+                <DateRangePickerWithPresets defaultPreset="90d" />
+              </div>
             </div>
-            <DateRangePickerWithPresets defaultPreset="90d" />
           </div>
 
           {/* Tabs */}

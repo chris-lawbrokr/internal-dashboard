@@ -143,7 +143,7 @@ export function AccountsTable() {
     <Table
       wrapperClassName="shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.05)]"
       toolbar={
-        <div className="flex items-center justify-between gap-4 border-b border-[#c8c8c8]">
+        <div className="flex flex-col @md/table:flex-row @md/table:items-center justify-between gap-4 border-b border-[#c8c8c8]">
           <div className="relative">
             <Search
               size={16}
@@ -158,7 +158,7 @@ export function AccountsTable() {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              className="h-9 w-56 rounded-md border border-input pl-9 pr-8 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="h-9 w-full @md/table:w-56 rounded-md border border-input pl-9 pr-8 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
             {search && (
               <button
@@ -177,7 +177,7 @@ export function AccountsTable() {
           <div className="flex items-center gap-2">
             <button
               type="button"
-              className="flex items-center gap-1.5 rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted cursor-pointer"
+              className="flex-1 @md/table:flex-none flex items-center gap-1.5 rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted cursor-pointer"
             >
               <SlidersHorizontal size={14} />
               {tc("filters")}
@@ -186,7 +186,7 @@ export function AccountsTable() {
 
             <button
               type="button"
-              className="flex items-center gap-1.5 rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted cursor-pointer"
+              className="flex-1 @md/table:flex-none flex items-center gap-1.5 rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted cursor-pointer"
             >
               {tc("actions")}
               <ChevronDown size={14} />
