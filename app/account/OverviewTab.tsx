@@ -5,6 +5,14 @@ import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import { GaugeChart } from "@/app/ui/GaugeChart";
 import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table/Table";
+import {
   Search,
   Filter,
   Lock,
@@ -221,104 +229,96 @@ export function OverviewTab() {
         </Card>
 
         {/* Users Table */}
-        <Card className="flex-1 min-w-0 @[1100px]:basis-1/2 p-4">
-          <CardContent className="flex flex-col gap-4">
-            <div className="flex items-center justify-between gap-4">
-              <div className="relative">
-                <Search
-                  size={16}
-                  className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground"
-                />
-                <input
-                  type="text"
-                  placeholder={tc("search")}
-                  value={search}
-                  onChange={(e) => {
-                    setSearch(e.target.value);
-                    setPage(1);
-                  }}
-                  className="h-9 w-48 rounded-md border border-input bg-background pl-8 pr-3 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                />
-              </div>
-              <button
-                type="button"
-                className="flex items-center gap-1.5 rounded-md border border-[#3b2559] px-3 h-9 text-sm hover:bg-muted cursor-pointer"
-              >
-                <Filter size={14} />
-                {tc("filter")}
-              </button>
-            </div>
-
-            <div className="overflow-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-[#c8c8c8]">
-                    <th className="text-left py-2 px-2 font-medium text-muted-foreground">
-                      {tc("users")}
-                    </th>
-                    <th className="text-left py-2 px-2 font-medium text-muted-foreground">
-                      {tc("userRole")}
-                    </th>
-                    <th className="text-left py-2 px-2 font-medium text-muted-foreground">
-                      {tc("email")}
-                    </th>
-                    <th className="text-left py-2 px-2 font-medium text-muted-foreground">
-                      {t("dateAdded")}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {paginatedUsers.map((user, i) => (
-                    <tr
-                      key={`${user.name}-${i}`}
-                      className="border-b border-[#f2f2f2] last:border-0"
-                    >
-                      <td className="py-3 px-2">
-                        <div className="flex items-center gap-2">
-                          <div className="w-7 h-7 rounded-full bg-[#e1dff6] text-[#777] flex items-center justify-center text-xs font-medium shrink-0">
-                            PH
-                          </div>
-                          <span className="font-medium">{user.name}</span>
-                        </div>
-                      </td>
-                      <td className="py-3 px-2">
-                        <RoleBadge role={user.role} />
-                      </td>
-                      <td className="py-3 px-2 text-[#777]">{user.email}</td>
-                      <td className="py-3 px-2 font-medium">
-                        {user.dateAdded}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">
-                {startItem}-{endItem} {tc("of")} {filteredUsers.length}
-              </span>
-              <div className="flex items-center gap-2">
+        <div className="flex-1 min-w-0 @[1100px]:basis-1/2">
+          <Table
+            wrapperClassName="p-4 shadow-[0_1px_2px_0_rgba(29,41,61,0.05)]"
+            toolbar={
+              <div className="flex items-center justify-between gap-4 p-4 pb-0">
+                <div className="relative">
+                  <Search
+                    size={16}
+                    className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+                  />
+                  <input
+                    type="text"
+                    placeholder={tc("search")}
+                    value={search}
+                    onChange={(e) => {
+                      setSearch(e.target.value);
+                      setPage(1);
+                    }}
+                    className="h-9 w-48 rounded-md border border-input bg-background pl-8 pr-3 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  />
+                </div>
                 <button
                   type="button"
-                  disabled={currentPage <= 1}
-                  onClick={() => setPage((p) => p - 1)}
-                  className="flex items-center gap-1 rounded-md border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+                  className="flex items-center gap-1.5 rounded-md border border-[#3b2559] px-3 h-9 text-sm hover:bg-muted cursor-pointer"
                 >
-                  <ChevronLeft size={14} /> {tc("previous")}
-                </button>
-                <button
-                  type="button"
-                  disabled={currentPage >= totalPages}
-                  onClick={() => setPage((p) => p + 1)}
-                  className="flex items-center gap-1 rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
-                >
-                  {tc("next")} <ChevronRight size={14} />
+                  <Filter size={14} />
+                  {tc("filter")}
                 </button>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            }
+            footer={
+              <div className="flex items-center justify-between text-sm px-4 pb-4">
+                <span className="text-muted-foreground">
+                  {startItem}-{endItem} {tc("of")} {filteredUsers.length}
+                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    disabled={currentPage <= 1}
+                    onClick={() => setPage((p) => p - 1)}
+                    className="flex items-center gap-1 rounded-md border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+                  >
+                    <ChevronLeft size={14} /> {tc("previous")}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={currentPage >= totalPages}
+                    onClick={() => setPage((p) => p + 1)}
+                    className="flex items-center gap-1 rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+                  >
+                    {tc("next")} <ChevronRight size={14} />
+                  </button>
+                </div>
+              </div>
+            }
+          >
+            <TableHeader>
+              <TableRow className="border-b border-[#c8c8c8]">
+                <TableHead className="py-2 px-2">{tc("users")}</TableHead>
+                <TableHead className="py-2 px-2">{tc("userRole")}</TableHead>
+                <TableHead className="py-2 px-2">{tc("email")}</TableHead>
+                <TableHead className="py-2 px-2">{t("dateAdded")}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {paginatedUsers.map((user, i) => (
+                <TableRow
+                  key={`${user.name}-${i}`}
+                  className="border-b border-[#f2f2f2] last:border-0"
+                >
+                  <TableCell className="py-3 px-2">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-full bg-[#e1dff6] text-[#777] flex items-center justify-center text-xs font-medium shrink-0">
+                        PH
+                      </div>
+                      <span className="font-medium">{user.name}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell className="py-3 px-2">
+                    <RoleBadge role={user.role} />
+                  </TableCell>
+                  <TableCell className="py-3 px-2 text-[#777]">{user.email}</TableCell>
+                  <TableCell className="py-3 px-2 font-medium">
+                    {user.dateAdded}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </div>
 
       {/* Tags Section */}

@@ -3,6 +3,14 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table/Table";
+import {
   Search,
   X,
   Check,
@@ -136,181 +144,178 @@ export function AccountsTable() {
   const endItem = Math.min(currentPage * PAGE_SIZE, sorted.length);
 
   return (
-    <div className="rounded-xl bg-card text-card-foreground shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.05)] min-w-0">
-      {/* Toolbar */}
-      <div className="flex items-center justify-between gap-4 p-4 border-b border-[#c8c8c8]">
-        <div className="relative">
-          <Search
-            size={16}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-          />
-          <input
-            type="text"
-            aria-label={t("searchAccounts")}
-            placeholder={t("searchAccounts")}
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-            className="h-9 w-56 rounded-md border border-input pl-9 pr-8 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          />
-          {search && (
-            <button
-              type="button"
-              onClick={() => {
-                setSearch("");
+    <Table
+      wrapperClassName="shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.05)]"
+      toolbar={
+        <div className="flex items-center justify-between gap-4 p-4 border-b border-[#c8c8c8]">
+          <div className="relative">
+            <Search
+              size={16}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+            />
+            <input
+              type="text"
+              aria-label={t("searchAccounts")}
+              placeholder={t("searchAccounts")}
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
                 setPage(1);
               }}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
-              aria-label="Clear search"
-            >
-              <X size={14} />
-            </button>
-          )}
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            className="flex items-center gap-1.5 rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted cursor-pointer"
-          >
-            <SlidersHorizontal size={14} />
-            {tc("filters")}
-            <ChevronDown size={14} />
-          </button>
-
-          <button
-            type="button"
-            className="flex items-center gap-1.5 rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted cursor-pointer"
-          >
-            {tc("actions")}
-            <ChevronDown size={14} />
-          </button>
-        </div>
-      </div>
-
-      {/* Table */}
-      <div className="overflow-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-[#c8c8c8]">
-              <th className="h-10 px-3 text-left font-medium text-muted-foreground">
-                {t("accountName")}
-              </th>
-              <th className="h-10 px-3 text-left font-medium text-muted-foreground">
-                {tc("website")}
-              </th>
-              <th className="h-10 px-3 text-left font-medium text-muted-foreground">
-                <button
-                  type="button"
-                  className="flex items-center gap-1 cursor-pointer"
-                  onClick={() => handleSort("totalVisits")}
-                >
-                  {t("totalVisitsShort")}
-                  <ArrowUpDown size={14} />
-                </button>
-              </th>
-              <th className="h-10 px-3 text-left font-medium text-muted-foreground">
-                <button
-                  type="button"
-                  className="flex items-center gap-1 cursor-pointer"
-                  onClick={() => handleSort("totalResponses")}
-                >
-                  {t("totalResponsesShort")}
-                  <ArrowUpDown size={14} />
-                </button>
-              </th>
-              <th className="h-10 px-3 text-left font-medium text-muted-foreground">
-                <button
-                  type="button"
-                  className="flex items-center gap-1 cursor-pointer"
-                  onClick={() => handleSort("conversionRate")}
-                >
-                  {t("conversionRateShort")}
-                  <ArrowUpDown size={14} />
-                </button>
-              </th>
-              <th className="h-10 px-3 text-left font-medium text-muted-foreground">
-                {tc("status")}
-              </th>
-              <th className="h-10 px-3 text-center font-medium text-muted-foreground">
-                {t("onboarding")}
-              </th>
-              <th className="h-10 px-3 text-center font-medium text-muted-foreground">
-                {t("performanceCol")}
-              </th>
-              <th className="h-10 px-3 text-center font-medium text-muted-foreground">
-                {tc("website")}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginated.map((account) => (
-              <tr
-                key={account.id}
-                className="border-b border-[#f2f2f2] transition-colors hover:bg-muted/50"
+              className="h-9 w-56 rounded-md border border-input pl-9 pr-8 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            />
+            {search && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearch("");
+                  setPage(1);
+                }}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
+                aria-label="Clear search"
               >
-                <td className="p-3 font-medium">{account.name}</td>
-                <td className="p-3 font-medium">{account.website}</td>
-                <td className="p-3 font-medium">
-                  {account.totalVisits.toLocaleString()}
-                </td>
-                <td className="p-3 font-medium">
-                  {account.totalResponses.toLocaleString()}
-                </td>
-                <td className="p-3 font-medium">
-                  {account.conversionRate.toLocaleString()}
-                </td>
-                <td className="p-3">
-                  <StatusBadge status={account.status} />
-                </td>
-                <td className="p-3 text-center">
-                  <div className="flex justify-center">
-                    <StatusIconCell icon={account.onboarding} />
-                  </div>
-                </td>
-                <td className="p-3 text-center">
-                  <div className="flex justify-center">
-                    <StatusIconCell icon={account.performance} />
-                  </div>
-                </td>
-                <td className="p-3 text-center">
-                  <div className="flex justify-center">
-                    <StatusIconCell icon={account.websiteHealth} />
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                <X size={14} />
+              </button>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              className="flex items-center gap-1.5 rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted cursor-pointer"
+            >
+              <SlidersHorizontal size={14} />
+              {tc("filters")}
+              <ChevronDown size={14} />
+            </button>
 
-      {/* Pagination */}
-      <div className="flex items-center justify-between px-4 py-4">
-        <span className="text-sm text-muted-foreground">
-          {startItem}-{endItem} {tc("of")} {sorted.length}
-        </span>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            disabled={currentPage <= 1}
-            onClick={() => setPage((p) => p - 1)}
-            className="flex items-center gap-1 rounded-md border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
-          >
-            <ChevronLeft size={14} />
-            {tc("previous")}
-          </button>
-          <button
-            type="button"
-            disabled={currentPage >= totalPages}
-            onClick={() => setPage((p) => p + 1)}
-            className="flex items-center gap-1 rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
-          >
-            {tc("next")}
-            <ChevronRight size={14} />
-          </button>
+            <button
+              type="button"
+              className="flex items-center gap-1.5 rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted cursor-pointer"
+            >
+              {tc("actions")}
+              <ChevronDown size={14} />
+            </button>
+          </div>
         </div>
-      </div>
-    </div>
+      }
+      footer={
+        <div className="flex items-center justify-between px-4 py-4">
+          <span className="text-sm text-muted-foreground">
+            {startItem}-{endItem} {tc("of")} {sorted.length}
+          </span>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              disabled={currentPage <= 1}
+              onClick={() => setPage((p) => p - 1)}
+              className="flex items-center gap-1 rounded-md border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+            >
+              <ChevronLeft size={14} />
+              {tc("previous")}
+            </button>
+            <button
+              type="button"
+              disabled={currentPage >= totalPages}
+              onClick={() => setPage((p) => p + 1)}
+              className="flex items-center gap-1 rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+            >
+              {tc("next")}
+              <ChevronRight size={14} />
+            </button>
+          </div>
+        </div>
+      }
+    >
+      <TableHeader>
+        <TableRow className="border-b border-[#c8c8c8]">
+          <TableHead>
+            {t("accountName")}
+          </TableHead>
+          <TableHead>
+            {tc("website")}
+          </TableHead>
+          <TableHead>
+            <button
+              type="button"
+              className="flex items-center gap-1 cursor-pointer"
+              onClick={() => handleSort("totalVisits")}
+            >
+              {t("totalVisitsShort")}
+              <ArrowUpDown size={14} />
+            </button>
+          </TableHead>
+          <TableHead>
+            <button
+              type="button"
+              className="flex items-center gap-1 cursor-pointer"
+              onClick={() => handleSort("totalResponses")}
+            >
+              {t("totalResponsesShort")}
+              <ArrowUpDown size={14} />
+            </button>
+          </TableHead>
+          <TableHead>
+            <button
+              type="button"
+              className="flex items-center gap-1 cursor-pointer"
+              onClick={() => handleSort("conversionRate")}
+            >
+              {t("conversionRateShort")}
+              <ArrowUpDown size={14} />
+            </button>
+          </TableHead>
+          <TableHead>
+            {tc("status")}
+          </TableHead>
+          <TableHead className="text-center">
+            {t("onboarding")}
+          </TableHead>
+          <TableHead className="text-center">
+            {t("performanceCol")}
+          </TableHead>
+          <TableHead className="text-center">
+            {tc("website")}
+          </TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {paginated.map((account) => (
+          <TableRow
+            key={account.id}
+            className="border-b border-[#f2f2f2]"
+          >
+            <TableCell className="font-medium">{account.name}</TableCell>
+            <TableCell className="font-medium">{account.website}</TableCell>
+            <TableCell className="font-medium">
+              {account.totalVisits.toLocaleString()}
+            </TableCell>
+            <TableCell className="font-medium">
+              {account.totalResponses.toLocaleString()}
+            </TableCell>
+            <TableCell className="font-medium">
+              {account.conversionRate.toLocaleString()}
+            </TableCell>
+            <TableCell>
+              <StatusBadge status={account.status} />
+            </TableCell>
+            <TableCell className="text-center">
+              <div className="flex justify-center">
+                <StatusIconCell icon={account.onboarding} />
+              </div>
+            </TableCell>
+            <TableCell className="text-center">
+              <div className="flex justify-center">
+                <StatusIconCell icon={account.performance} />
+              </div>
+            </TableCell>
+            <TableCell className="text-center">
+              <div className="flex justify-center">
+                <StatusIconCell icon={account.websiteHealth} />
+              </div>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }

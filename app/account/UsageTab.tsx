@@ -2,6 +2,14 @@
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table/Table";
 import { ChevronLeft, ChevronRight, Check, X } from "lucide-react";
 
 // ── Shared pagination component ──────────────────────────────────────
@@ -22,7 +30,7 @@ function Pagination({
   const start = total === 0 ? 0 : (page - 1) * pageSize + 1;
   const end = Math.min(page * pageSize, total);
   return (
-    <div className="flex items-center justify-between text-sm pt-3">
+    <div className="flex items-center justify-between text-sm px-4 pb-4">
       <div className="flex items-center gap-2 text-muted-foreground">
         Rows per page
         <span className="border rounded px-1.5 py-0.5 text-xs">{pageSize}</span>
@@ -170,31 +178,13 @@ function TableSection({
   const paginated = rows.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   return (
-    <Card className="p-4">
-      <CardContent className="flex flex-col gap-3">
-        <h3 className="text-lg font-bold text-[#070043]">{title}</h3>
-        <div className="overflow-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-[#c8c8c8]">
-                {headers.map((h) => (
-                  <th key={h} className="text-left py-2 px-2 font-medium text-muted-foreground whitespace-nowrap">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {paginated.map((row, i) => (
-                <tr key={i} className="border-b border-[#f2f2f2] last:border-0">
-                  {row.map((cell, j) => (
-                    <td key={j} className="py-2.5 px-2 whitespace-nowrap">
-                      {headers[j] === "Status" ? <StatusBadge status={cell} /> : cell}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    <Table
+      toolbar={
+        <div className="p-4 pb-0">
+          <h3 className="text-lg font-bold text-[#070043]">{title}</h3>
         </div>
+      }
+      footer={
         <Pagination
           page={currentPage}
           totalPages={totalPages}
@@ -202,8 +192,27 @@ function TableSection({
           pageSize={pageSize}
           onPageChange={setPage}
         />
-      </CardContent>
-    </Card>
+      }
+    >
+      <TableHeader>
+        <TableRow className="border-b border-[#c8c8c8]">
+          {headers.map((h) => (
+            <TableHead key={h} className="py-2 px-2 whitespace-nowrap">{h}</TableHead>
+          ))}
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {paginated.map((row, i) => (
+          <TableRow key={i} className="border-b border-[#f2f2f2] last:border-0">
+            {row.map((cell, j) => (
+              <TableCell key={j} className="py-2.5 px-2 whitespace-nowrap">
+                {headers[j] === "Status" ? <StatusBadge status={cell} /> : cell}
+              </TableCell>
+            ))}
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }
 
@@ -217,57 +226,13 @@ function AccountUsersTable() {
   const paginated = accountUsers.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   return (
-    <Card className="p-4">
-      <CardContent className="flex flex-col gap-3">
-        <h3 className="text-lg font-bold text-[#070043]">Account Users</h3>
-        <div className="overflow-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-[#c8c8c8]">
-                <th className="text-left py-2 px-2 font-medium text-muted-foreground whitespace-nowrap">User Name</th>
-                <th className="text-left py-2 px-2 font-medium text-muted-foreground whitespace-nowrap">Role</th>
-                <th className="text-left py-2 px-2 font-medium text-muted-foreground whitespace-nowrap">Email</th>
-                <th className="text-left py-2 px-2 font-medium text-muted-foreground whitespace-nowrap">Phone</th>
-                <th className="text-left py-2 px-2 font-medium text-muted-foreground whitespace-nowrap">Last Visit</th>
-                <th className="text-left py-2 px-2 font-medium text-muted-foreground whitespace-nowrap">Latest Interactions</th>
-                <th className="text-center py-2 px-2 font-medium text-muted-foreground whitespace-nowrap">Lead Notifications</th>
-                <th className="text-center py-2 px-2 font-medium text-muted-foreground whitespace-nowrap">Integration Notifications</th>
-                <th className="text-center py-2 px-2 font-medium text-muted-foreground whitespace-nowrap">Platform Notifications</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginated.map((user, i) => (
-                <tr key={i} className="border-b border-[#f2f2f2] last:border-0">
-                  <td className="py-3 px-2 whitespace-nowrap">{user.name}</td>
-                  <td className="py-3 px-2 whitespace-nowrap">{user.role}</td>
-                  <td className="py-3 px-2 whitespace-nowrap">{user.email}</td>
-                  <td className="py-3 px-2 whitespace-nowrap">{user.phone}</td>
-                  <td className="py-3 px-2 whitespace-nowrap">{user.lastVisit}</td>
-                  <td className="py-3 px-2 whitespace-nowrap">
-                    <span className="inline-flex items-center rounded-md border border-[#c4c0e8] bg-[#e1dff6] text-[#250d53] px-2 py-0.5 text-xs font-medium">
-                      {user.latestInteractions}
-                    </span>
-                  </td>
-                  <td className="py-3 px-2">
-                    <div className="flex justify-center">
-                      <CheckIcon checked={user.leadNotifications} />
-                    </div>
-                  </td>
-                  <td className="py-3 px-2">
-                    <div className="flex justify-center">
-                      <CheckIcon checked={user.integrationNotifications} />
-                    </div>
-                  </td>
-                  <td className="py-3 px-2">
-                    <div className="flex justify-center">
-                      <CheckIcon checked={user.platformNotifications} />
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    <Table
+      toolbar={
+        <div className="p-4 pb-0">
+          <h3 className="text-lg font-bold text-[#070043]">Account Users</h3>
         </div>
+      }
+      footer={
         <Pagination
           page={currentPage}
           totalPages={totalPages}
@@ -275,8 +240,53 @@ function AccountUsersTable() {
           pageSize={pageSize}
           onPageChange={setPage}
         />
-      </CardContent>
-    </Card>
+      }
+    >
+      <TableHeader>
+        <TableRow className="border-b border-[#c8c8c8]">
+          <TableHead className="py-2 px-2 whitespace-nowrap">User Name</TableHead>
+          <TableHead className="py-2 px-2 whitespace-nowrap">Role</TableHead>
+          <TableHead className="py-2 px-2 whitespace-nowrap">Email</TableHead>
+          <TableHead className="py-2 px-2 whitespace-nowrap">Phone</TableHead>
+          <TableHead className="py-2 px-2 whitespace-nowrap">Last Visit</TableHead>
+          <TableHead className="py-2 px-2 whitespace-nowrap">Latest Interactions</TableHead>
+          <TableHead className="text-center py-2 px-2 whitespace-nowrap">Lead Notifications</TableHead>
+          <TableHead className="text-center py-2 px-2 whitespace-nowrap">Integration Notifications</TableHead>
+          <TableHead className="text-center py-2 px-2 whitespace-nowrap">Platform Notifications</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {paginated.map((user, i) => (
+          <TableRow key={i} className="border-b border-[#f2f2f2] last:border-0">
+            <TableCell className="py-3 px-2 whitespace-nowrap">{user.name}</TableCell>
+            <TableCell className="py-3 px-2 whitespace-nowrap">{user.role}</TableCell>
+            <TableCell className="py-3 px-2 whitespace-nowrap">{user.email}</TableCell>
+            <TableCell className="py-3 px-2 whitespace-nowrap">{user.phone}</TableCell>
+            <TableCell className="py-3 px-2 whitespace-nowrap">{user.lastVisit}</TableCell>
+            <TableCell className="py-3 px-2 whitespace-nowrap">
+              <span className="inline-flex items-center rounded-md border border-[#c4c0e8] bg-[#e1dff6] text-[#250d53] px-2 py-0.5 text-xs font-medium">
+                {user.latestInteractions}
+              </span>
+            </TableCell>
+            <TableCell className="py-3 px-2">
+              <div className="flex justify-center">
+                <CheckIcon checked={user.leadNotifications} />
+              </div>
+            </TableCell>
+            <TableCell className="py-3 px-2">
+              <div className="flex justify-center">
+                <CheckIcon checked={user.integrationNotifications} />
+              </div>
+            </TableCell>
+            <TableCell className="py-3 px-2">
+              <div className="flex justify-center">
+                <CheckIcon checked={user.platformNotifications} />
+              </div>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }
 

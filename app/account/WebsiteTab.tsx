@@ -4,6 +4,14 @@ import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table/Table";
+import {
   Check,
   AlertCircle,
   X,
@@ -167,44 +175,14 @@ export function WebsiteTab() {
       </div>
 
       {/* Lawbrokr Links table */}
-      <Card className="p-4">
-        <CardContent className="flex flex-col gap-4">
-          <h2 className="text-lg font-semibold">{t("lawbrokrLinks")}</h2>
-
-          <div className="overflow-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-left py-2 pl-5 pr-10 font-medium text-muted-foreground">
-                    {t("websiteUrl")}
-                  </th>
-                  <th className="text-left py-2 pl-5 pr-10 font-medium text-muted-foreground">
-                    {t("lawbrokrUrl")}
-                  </th>
-                  <th className="text-right py-2 pl-5 pr-10 font-medium text-muted-foreground">
-                    {t("status")}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedLinks.map((link, i) => (
-                  <tr key={i} className="h-14 border-b last:border-0">
-                    <td className="py-0 pl-5 pr-10 text-muted-foreground">
-                      {link.websiteUrl}
-                    </td>
-                    <td className="py-0 pl-5 pr-10 text-muted-foreground">
-                      {link.lawbrokrUrl}
-                    </td>
-                    <td className="py-0 pl-5 pr-10 text-right">
-                      <StatusBadge status={link.status} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      <Table
+        toolbar={
+          <div className="p-4 pb-0">
+            <h2 className="text-lg font-semibold">{t("lawbrokrLinks")}</h2>
           </div>
-
-          <div className="flex items-center justify-between text-sm">
+        }
+        footer={
+          <div className="flex items-center justify-between text-sm px-4 pb-4">
             <span className="text-muted-foreground">
               {links.length === 0 ? 0 : (currentPage - 1) * pageSize + 1}-
               {Math.min(currentPage * pageSize, links.length)} {tc("of")}{" "}
@@ -229,8 +207,37 @@ export function WebsiteTab() {
               </button>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        }
+      >
+        <TableHeader>
+          <TableRow>
+            <TableHead className="py-2 pl-5 pr-10">
+              {t("websiteUrl")}
+            </TableHead>
+            <TableHead className="py-2 pl-5 pr-10">
+              {t("lawbrokrUrl")}
+            </TableHead>
+            <TableHead className="text-right py-2 pl-5 pr-10">
+              {t("status")}
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {paginatedLinks.map((link, i) => (
+            <TableRow key={i} className="h-14">
+              <TableCell className="py-0 pl-5 pr-10 text-muted-foreground">
+                {link.websiteUrl}
+              </TableCell>
+              <TableCell className="py-0 pl-5 pr-10 text-muted-foreground">
+                {link.lawbrokrUrl}
+              </TableCell>
+              <TableCell className="py-0 pl-5 pr-10 text-right">
+                <StatusBadge status={link.status} />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </>
   );
 }

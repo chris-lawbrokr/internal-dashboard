@@ -5,6 +5,14 @@ import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table/Table";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -231,42 +239,14 @@ export function FunnelsTable() {
   );
 
   return (
-    <Card className="p-4">
-      <CardContent className="flex flex-col gap-2">
-        <h3 className="text-base font-semibold">{tp("funnels")}</h3>
-        <div className="overflow-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b">
-                <th className="text-left py-2 px-2 font-medium text-muted-foreground">
-                  {tp("funnelName")}
-                </th>
-                <th className="text-left py-2 px-2 font-medium text-muted-foreground">
-                  {tp("totalVisits")}
-                </th>
-                <th className="text-left py-2 px-2 font-medium text-muted-foreground">
-                  {tp("totalConversions")}
-                </th>
-                <th className="text-left py-2 px-2 font-medium text-muted-foreground">
-                  {tp("conversionRate")}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginated.map((funnel, i) => (
-                <tr key={i} className="border-b last:border-0">
-                  <td className="py-3 px-2 font-medium">{funnel.name}</td>
-                  <td className="py-3 px-2">
-                    {funnel.visits.toLocaleString()}
-                  </td>
-                  <td className="py-3 px-2">{funnel.conversions}</td>
-                  <td className="py-3 px-2">{funnel.rate}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    <Table
+      toolbar={
+        <div className="p-4 pb-0">
+          <h3 className="text-base font-semibold">{tp("funnels")}</h3>
         </div>
-        <div className="flex items-center justify-between text-sm">
+      }
+      footer={
+        <div className="flex items-center justify-between text-sm px-4 pb-4">
           <div className="flex items-center gap-2 text-muted-foreground">
             {tc("rowsPerPage")}
             <select
@@ -302,7 +282,36 @@ export function FunnelsTable() {
             </button>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      }
+    >
+      <TableHeader>
+        <TableRow>
+          <TableHead className="py-2 px-2">
+            {tp("funnelName")}
+          </TableHead>
+          <TableHead className="py-2 px-2">
+            {tp("totalVisits")}
+          </TableHead>
+          <TableHead className="py-2 px-2">
+            {tp("totalConversions")}
+          </TableHead>
+          <TableHead className="py-2 px-2">
+            {tp("conversionRate")}
+          </TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {paginated.map((funnel, i) => (
+          <TableRow key={i}>
+            <TableCell className="py-3 px-2 font-medium">{funnel.name}</TableCell>
+            <TableCell className="py-3 px-2">
+              {funnel.visits.toLocaleString()}
+            </TableCell>
+            <TableCell className="py-3 px-2">{funnel.conversions}</TableCell>
+            <TableCell className="py-3 px-2">{funnel.rate}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }
