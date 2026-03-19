@@ -6,10 +6,10 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 
 import { DateRangePickerWithPresets } from "@/components/ui/datepicker";
-import { OverviewTab } from "./OverviewTab";
-import { PerformanceTab } from "./PerformanceTab";
-import { WebsiteTab } from "./WebsiteTab";
-import { UsageTab } from "./UsageTab";
+import { OverviewTab } from "./tabs/OverviewTab";
+import { PerformanceTab } from "./tabs/PerformanceTab";
+import { WebsiteTab } from "./tabs/WebsiteTab";
+import { UsageTab } from "./tabs/UsageTab";
 
 const tabKeys = ["overview", "performance", "website", "usage"] as const;
 
