@@ -81,12 +81,14 @@ export const Table = React.forwardRef<
             </div>
           )
         )}
-        <div className="overflow-auto p-4">
-          <table
-            ref={ref}
-            className={cn("w-full caption-bottom text-sm", className)}
-            {...props}
-          />
+        <div className="px-4 py-4">
+          <div className="overflow-auto">
+            <table
+              ref={ref}
+              className={cn("w-full caption-bottom text-sm", className)}
+              {...props}
+            />
+          </div>
         </div>
         {footer != null ? (
           <div className="p-4 pt-2">{footer}</div>

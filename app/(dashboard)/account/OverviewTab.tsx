@@ -221,7 +221,7 @@ export function OverviewTab() {
         {/* Users Table */}
         <div className="flex-1 min-w-0 @[1100px]:basis-1/2">
           <Table
-            wrapperClassName="p-4 shadow-[0_1px_2px_0_rgba(29,41,61,0.05)]"
+            wrapperClassName="shadow-[0_1px_2px_0_rgba(29,41,61,0.05)]"
             toolbar={
               <div className="flex flex-col @md/table:flex-row @md/table:items-center justify-between gap-4">
                 <div className="relative">
@@ -299,7 +299,7 @@ export function OverviewTab() {
 
       {/* Tags Section */}
       <div className="grid grid-cols-1 @xl:grid-cols-2 gap-4">
-        <Card className="p-6">
+        <Card className="p-4">
           <CardContent className="flex flex-col gap-3">
             <h3 className="text-base font-medium text-[#777]">
               {t("practiceAreas")}
@@ -314,7 +314,7 @@ export function OverviewTab() {
             </div>
           </CardContent>
         </Card>
-        <Card className="p-6">
+        <Card className="p-4">
           <CardContent className="flex flex-col gap-3">
             <h3 className="text-base font-medium text-[#777]">
               {t("integrations")}
@@ -329,7 +329,7 @@ export function OverviewTab() {
             </div>
           </CardContent>
         </Card>
-        <Card className="p-6">
+        <Card className="p-4">
           <CardContent className="flex flex-col gap-3">
             <h3 className="text-base font-medium text-[#777]">
               {t("techStack")}
@@ -344,7 +344,7 @@ export function OverviewTab() {
             </div>
           </CardContent>
         </Card>
-        <Card className="p-6">
+        <Card className="p-4">
           <CardContent className="flex flex-col gap-3">
             <h3 className="text-base font-medium text-[#777]">
               {t("lawbrokrFeatures")}

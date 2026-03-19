@@ -34,8 +34,14 @@ function StatusBadge({ status }: { status: string }) {
 
 function CheckIcon({ checked }: { checked: boolean }) {
   return (
-    <div className={`size-6 shrink-0 rounded-full border flex items-center justify-center ${checked ? "bg-[#ededc7] border-[#bcbc95] text-[#626444]" : "bg-[#ffd9c5] border-[#eaa289] text-[#b13c33]"}`}>
-      {checked ? <Check size={14} strokeWidth={2.5} /> : <X size={14} strokeWidth={2.5} />}
+    <div
+      className={`size-6 shrink-0 rounded-full border flex items-center justify-center ${checked ? "bg-[#ededc7] border-[#bcbc95] text-[#626444]" : "bg-[#ffd9c5] border-[#eaa289] text-[#b13c33]"}`}
+    >
+      {checked ? (
+        <Check size={14} strokeWidth={2.5} />
+      ) : (
+        <X size={14} strokeWidth={2.5} />
+      )}
     </div>
   );
 }
@@ -128,13 +134,14 @@ function TableSection({
   const [page, setPage] = useState(1);
   const totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
   const currentPage = Math.min(page, totalPages);
-  const paginated = rows.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+  const paginated = rows.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize,
+  );
 
   return (
     <Table
-      toolbar={
-        <h3 className="text-lg font-bold text-[#070043]">{title}</h3>
-      }
+      toolbar={<h3 className="text-lg font-bold text-[#070043]">{title}</h3>}
       footer={
         <TablePagination
           page={currentPage}
@@ -148,7 +155,9 @@ function TableSection({
       <TableHeader>
         <TableRow className="border-b border-[#c8c8c8]">
           {headers.map((h) => (
-            <TableHead key={h} className="py-2 px-2 whitespace-nowrap">{h}</TableHead>
+            <TableHead key={h} className="py-2 px-2 whitespace-nowrap">
+              {h}
+            </TableHead>
           ))}
         </TableRow>
       </TableHeader>
@@ -174,7 +183,10 @@ function AccountUsersTable() {
   const pageSize = 10;
   const totalPages = Math.max(1, Math.ceil(accountUsers.length / pageSize));
   const currentPage = Math.min(page, totalPages);
-  const paginated = accountUsers.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+  const paginated = accountUsers.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize,
+  );
 
   return (
     <Table
@@ -193,25 +205,47 @@ function AccountUsersTable() {
     >
       <TableHeader>
         <TableRow className="border-b border-[#c8c8c8]">
-          <TableHead className="py-2 px-2 whitespace-nowrap">User Name</TableHead>
+          <TableHead className="py-2 px-2 whitespace-nowrap">
+            User Name
+          </TableHead>
           <TableHead className="py-2 px-2 whitespace-nowrap">Role</TableHead>
           <TableHead className="py-2 px-2 whitespace-nowrap">Email</TableHead>
           <TableHead className="py-2 px-2 whitespace-nowrap">Phone</TableHead>
-          <TableHead className="py-2 px-2 whitespace-nowrap">Last Visit</TableHead>
-          <TableHead className="py-2 px-2 whitespace-nowrap">Latest Interactions</TableHead>
-          <TableHead className="text-center py-2 px-2 whitespace-nowrap">Lead Notifications</TableHead>
-          <TableHead className="text-center py-2 px-2 whitespace-nowrap">Integration Notifications</TableHead>
-          <TableHead className="text-center py-2 px-2 whitespace-nowrap">Platform Notifications</TableHead>
+          <TableHead className="py-2 px-2 whitespace-nowrap">
+            Last Visit
+          </TableHead>
+          <TableHead className="py-2 px-2 whitespace-nowrap">
+            Latest Interactions
+          </TableHead>
+          <TableHead className="text-center py-2 px-2 whitespace-nowrap">
+            Lead Notifications
+          </TableHead>
+          <TableHead className="text-center py-2 px-2 whitespace-nowrap">
+            Integration Notifications
+          </TableHead>
+          <TableHead className="text-center py-2 px-2 whitespace-nowrap">
+            Platform Notifications
+          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {paginated.map((user, i) => (
           <TableRow key={i} className="border-b border-[#f2f2f2] last:border-0">
-            <TableCell className="py-3 px-2 whitespace-nowrap">{user.name}</TableCell>
-            <TableCell className="py-3 px-2 whitespace-nowrap">{user.role}</TableCell>
-            <TableCell className="py-3 px-2 whitespace-nowrap">{user.email}</TableCell>
-            <TableCell className="py-3 px-2 whitespace-nowrap">{user.phone}</TableCell>
-            <TableCell className="py-3 px-2 whitespace-nowrap">{user.lastVisit}</TableCell>
+            <TableCell className="py-3 px-2 whitespace-nowrap">
+              {user.name}
+            </TableCell>
+            <TableCell className="py-3 px-2 whitespace-nowrap">
+              {user.role}
+            </TableCell>
+            <TableCell className="py-3 px-2 whitespace-nowrap">
+              {user.email}
+            </TableCell>
+            <TableCell className="py-3 px-2 whitespace-nowrap">
+              {user.phone}
+            </TableCell>
+            <TableCell className="py-3 px-2 whitespace-nowrap">
+              {user.lastVisit}
+            </TableCell>
             <TableCell className="py-3 px-2 whitespace-nowrap">
               <span className="inline-flex items-center rounded-md border border-[#c4c0e8] bg-[#e1dff6] text-[#250d53] px-2 py-0.5 text-xs font-medium">
                 {user.latestInteractions}
@@ -249,15 +283,26 @@ export function UsageTab() {
         {/* Onboarding Checklist */}
         <Card className="flex-1 p-6">
           <CardContent className="flex flex-col gap-0">
-            <h3 className="text-lg font-bold text-[#070043] mb-4">Onboarding Checklist</h3>
+            <h3 className="text-lg font-bold text-[#070043] mb-4">
+              Onboarding Checklist
+            </h3>
             {[
               { label: "Account status is active", checked: true },
               { label: "A funnel with a workflow is live", checked: false },
-              { label: "At least one Lawbrokr URL is live on website", checked: true },
-              { label: "At least one integration is connected", checked: false },
+              {
+                label: "At least one Lawbrokr URL is live on website",
+                checked: true,
+              },
+              {
+                label: "At least one integration is connected",
+                checked: false,
+              },
               { label: "At least one team member added", checked: true },
             ].map((item, i) => (
-              <div key={i} className="flex items-center justify-between gap-3 py-3 border-t border-[#e8e8e8]">
+              <div
+                key={i}
+                className="flex items-center justify-between gap-3 py-3 border-t border-[#e8e8e8]"
+              >
                 <span className="text-sm">{item.label}</span>
                 <CheckIcon checked={item.checked} />
               </div>
@@ -324,34 +369,89 @@ export function UsageTab() {
       {/* Funnels */}
       <TableSection
         title="Funnels"
-        headers={["Funnel Name", "Funnel URL", "Visits", "Responses", "Conversion Rate", "Workflows", "Created At", "Status"]}
+        headers={[
+          "Funnel Name",
+          "Funnel URL",
+          "Visits",
+          "Responses",
+          "Conversion Rate",
+          "Workflows",
+          "Created At",
+          "Status",
+        ]}
         rows={funnels.map((f) => [
-          f.name, f.url, String(f.visits), String(f.responses), f.conversionRate, String(f.workflows), f.createdAt, f.status,
+          f.name,
+          f.url,
+          String(f.visits),
+          String(f.responses),
+          f.conversionRate,
+          String(f.workflows),
+          f.createdAt,
+          f.status,
         ])}
       />
 
       {/* Workflows */}
       <TableSection
         title="Workflows"
-        headers={["Workflow Name", "Workflow URL", "Questions", "Visits", "Responses", "Conversion Rate", "Completion Time", "Created At", "Status"]}
+        headers={[
+          "Workflow Name",
+          "Workflow URL",
+          "Questions",
+          "Visits",
+          "Responses",
+          "Conversion Rate",
+          "Completion Time",
+          "Created At",
+          "Status",
+        ]}
         rows={workflows.map((w) => [
-          w.name, w.url, String(w.questions), String(w.visits), String(w.responses), w.conversionRate, w.completionTime, w.createdAt, w.status,
+          w.name,
+          w.url,
+          String(w.questions),
+          String(w.visits),
+          String(w.responses),
+          w.conversionRate,
+          w.completionTime,
+          w.createdAt,
+          w.status,
         ])}
       />
 
       {/* Landing Pages */}
       <TableSection
         title="Landing Pages"
-        headers={["Landing Page Name", "Landing Page URL", "Created At", "Status"]}
+        headers={[
+          "Landing Page Name",
+          "Landing Page URL",
+          "Created At",
+          "Status",
+        ]}
         rows={landingPages.map((l) => [l.name, l.url, l.createdAt, l.status])}
       />
 
       {/* Ad Campaigns */}
       <TableSection
         title="Ad Campaigns"
-        headers={["Campaign Name", "Campaign URL", "Impressions", "Conversions", "CTR", "Amount Spent", "Created At", "Status"]}
+        headers={[
+          "Campaign Name",
+          "Campaign URL",
+          "Impressions",
+          "Conversions",
+          "CTR",
+          "Amount Spent",
+          "Created At",
+          "Status",
+        ]}
         rows={adCampaigns.map((a) => [
-          a.name, a.url, String(a.impressions), String(a.conversions), a.ctr, a.amountSpent, a.createdAt, a.status,
+          a.name,
+          a.url,
+          String(a.impressions),
+          String(a.conversions),
+          a.ctr,
+          a.amountSpent,
+          a.createdAt,
+          a.status,
         ])}
       />
 
@@ -360,17 +460,41 @@ export function UsageTab() {
         <div className="flex-1 min-w-0">
           <TableSection
             title="Clips"
-            headers={["Clips Name", "Clicks", "Responses", "Conversion", "Created At", "Status"]}
+            headers={[
+              "Clips Name",
+              "Clicks",
+              "Responses",
+              "Conversion",
+              "Created At",
+              "Status",
+            ]}
             rows={clips.map((c) => [
-              c.name, String(c.clicks), String(c.responses), c.conversion, c.createdAt, c.status,
+              c.name,
+              String(c.clicks),
+              String(c.responses),
+              c.conversion,
+              c.createdAt,
+              c.status,
             ])}
           />
         </div>
         <div className="flex-1 min-w-0">
           <TableSection
             title="Automations"
-            headers={["Automation Name", "Type", "Sent", "Created At", "Status"]}
-            rows={automations.map((a) => [a.name, a.type, String(a.sent), a.createdAt, a.status])}
+            headers={[
+              "Automation Name",
+              "Type",
+              "Sent",
+              "Created At",
+              "Status",
+            ]}
+            rows={automations.map((a) => [
+              a.name,
+              a.type,
+              String(a.sent),
+              a.createdAt,
+              a.status,
+            ])}
           />
         </div>
       </div>
