@@ -14,15 +14,16 @@ import {
   TablePagination,
 } from "@/components/ui/table/Table";
 import { Search, Filter, Lock, Eye } from "lucide-react";
+import { chartColors } from "@/lib/chart-colors";
 
 const ROLE_STYLES: Record<
   string,
   { bg: string; text: string; border: string }
 > = {
-  Admin: { bg: "#e1dff6", text: "#250d53", border: "#c4c0e8" },
-  Internal: { bg: "#fff2cf", text: "#946a22", border: "#daad75" },
-  Agency: { bg: "#D8E6F4", text: "#637C93", border: "#93A8BA" },
-  Support: { bg: "#ffe2de", text: "#ab626f", border: "#eaa289" },
+  Admin: { bg: "var(--color-status-neutral-bg)", text: "var(--color-brand-dark)", border: "var(--color-status-neutral-border)" },
+  Internal: { bg: "var(--color-status-warning-bg)", text: "var(--color-status-warning-text)", border: "var(--color-status-warning-border)" },
+  Agency: { bg: "var(--color-status-info-bg)", text: "var(--color-status-info-text)", border: "var(--color-status-info-border)" },
+  Support: { bg: "var(--color-status-support-bg)", text: "var(--color-status-support-text)", border: "var(--color-status-error-border)" },
 };
 
 const ROLE_ICONS: Record<string, React.ComponentType<{ size: number }>> = {
@@ -167,21 +168,21 @@ export function OverviewTab() {
           title={t("onboardingHealth")}
           label={t("good")}
           value={75}
-          color="#D3D3AD"
+          color={chartColors.sage}
           href="#"
         />
         <GaugeChart
           title={t("performanceHealth")}
           label={t("fair")}
           value={50}
-          color="#ECC58E"
+          color={chartColors.goldLight}
           href="#"
         />
         <GaugeChart
           title={t("websiteHealth")}
           label={t("poor")}
           value={25}
-          color="#E2816B"
+          color={chartColors.coral}
           href="#"
         />
       </div>
@@ -206,12 +207,12 @@ export function OverviewTab() {
               ].map((item, i) => (
                 <div
                   key={i}
-                  className="flex flex-col gap-1 py-4 px-4 border-b border-[#e8e8e8] last:border-b-0 @lg:[&:nth-last-child(2)]:border-b-0"
+                  className="flex flex-col gap-1 py-4 px-4 border-b border-border-light last:border-b-0 @lg:[&:nth-last-child(2)]:border-b-0"
                 >
-                  <p className="text-sm font-bold text-[#070043]">
+                  <p className="text-sm font-bold text-foreground">
                     {item.label}
                   </p>
-                  <p className="text-sm text-[#777]">{item.value}</p>
+                  <p className="text-sm text-muted-foreground">{item.value}</p>
                 </div>
               ))}
             </div>
@@ -242,7 +243,7 @@ export function OverviewTab() {
                 </div>
                 <button
                   type="button"
-                  className="flex items-center justify-center gap-1.5 rounded-md border border-[#3b2559] px-3 h-9 text-sm hover:bg-muted cursor-pointer"
+                  className="flex items-center justify-center gap-1.5 rounded-md border border-primary px-3 h-9 text-sm hover:bg-muted cursor-pointer"
                 >
                   <Filter size={14} />
                   {tc("filter")}
@@ -260,7 +261,7 @@ export function OverviewTab() {
             }
           >
             <TableHeader>
-              <TableRow className="border-b border-[#c8c8c8]">
+              <TableRow className="border-b border-border">
                 <TableHead className="py-2 px-2">{tc("users")}</TableHead>
                 <TableHead className="py-2 px-2">{tc("userRole")}</TableHead>
                 <TableHead className="py-2 px-2">{tc("email")}</TableHead>
@@ -271,11 +272,11 @@ export function OverviewTab() {
               {paginatedUsers.map((user, i) => (
                 <TableRow
                   key={`${user.name}-${i}`}
-                  className="border-b border-[#f2f2f2] last:border-0"
+                  className="border-b border-background last:border-0"
                 >
                   <TableCell className="py-3 px-2">
                     <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-full bg-[#e1dff6] text-[#777] flex items-center justify-center text-xs font-medium shrink-0">
+                      <div className="w-7 h-7 rounded-full bg-status-neutral-bg text-muted-foreground flex items-center justify-center text-xs font-medium shrink-0">
                         PH
                       </div>
                       <span className="font-medium">{user.name}</span>
@@ -284,7 +285,7 @@ export function OverviewTab() {
                   <TableCell className="py-3 px-2">
                     <RoleBadge role={user.role} />
                   </TableCell>
-                  <TableCell className="py-3 px-2 text-[#777]">
+                  <TableCell className="py-3 px-2 text-muted-foreground">
                     {user.email}
                   </TableCell>
                   <TableCell className="py-3 px-2 font-medium">
@@ -301,60 +302,60 @@ export function OverviewTab() {
       <div className="grid grid-cols-1 @xl:grid-cols-2 gap-4">
         <Card className="p-4">
           <CardContent className="flex flex-col gap-3">
-            <h3 className="text-base font-medium text-[#777]">
+            <h3 className="text-base font-medium text-muted-foreground">
               {t("practiceAreas")}
             </h3>
             <div className="flex flex-wrap gap-2">
               <TagBadge
                 label="Practice area"
-                bg="#d8e6f4"
-                text="#637c93"
-                border="#b0cde4"
+                bg="var(--color-status-info-bg)"
+                text="var(--color-status-info-text)"
+                border="var(--color-status-info-border)"
               />
             </div>
           </CardContent>
         </Card>
         <Card className="p-4">
           <CardContent className="flex flex-col gap-3">
-            <h3 className="text-base font-medium text-[#777]">
+            <h3 className="text-base font-medium text-muted-foreground">
               {t("integrations")}
             </h3>
             <div className="flex flex-wrap gap-2">
               <TagBadge
                 label="Integration"
-                bg="#ededc7"
-                text="#626444"
-                border="#bcbc95"
+                bg="var(--color-status-success-bg)"
+                text="var(--color-status-success-text)"
+                border="var(--color-status-success-border)"
               />
             </div>
           </CardContent>
         </Card>
         <Card className="p-4">
           <CardContent className="flex flex-col gap-3">
-            <h3 className="text-base font-medium text-[#777]">
+            <h3 className="text-base font-medium text-muted-foreground">
               {t("techStack")}
             </h3>
             <div className="flex flex-wrap gap-2">
               <TagBadge
                 label="Tech platform"
-                bg="#e1dff6"
-                text="#250d53"
-                border="#c4c0e8"
+                bg="var(--color-status-neutral-bg)"
+                text="var(--color-brand-dark)"
+                border="var(--color-status-neutral-border)"
               />
             </div>
           </CardContent>
         </Card>
         <Card className="p-4">
           <CardContent className="flex flex-col gap-3">
-            <h3 className="text-base font-medium text-[#777]">
+            <h3 className="text-base font-medium text-muted-foreground">
               {t("lawbrokrFeatures")}
             </h3>
             <div className="flex flex-wrap gap-2">
               <TagBadge
                 label="Feature"
-                bg="#e1dff6"
-                text="#250d53"
-                border="#c4c0e8"
+                bg="var(--color-status-neutral-bg)"
+                text="var(--color-brand-dark)"
+                border="var(--color-status-neutral-border)"
               />
             </div>
           </CardContent>

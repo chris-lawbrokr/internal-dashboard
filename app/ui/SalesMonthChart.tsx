@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { Card, CardContent } from "@/components/ui/card";
+import { chartColors } from "@/lib/chart-colors";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -11,7 +12,7 @@ export function SalesMonthChart() {
       type: "bar",
       toolbar: { show: false },
     },
-    colors: ["#312e81", "#6366f1", "#312e81", "#6366f1", "#312e81", "#a5b4fc", "#312e81"],
+    colors: [chartColors.indigo, chartColors.indigoMedium, chartColors.indigo, chartColors.indigoMedium, chartColors.indigo, chartColors.indigoLight, chartColors.indigo],
     plotOptions: {
       bar: {
         columnWidth: "55%",
@@ -21,7 +22,7 @@ export function SalesMonthChart() {
     },
     xaxis: {
       categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-      labels: { style: { fontSize: "10px", colors: "#9ca3af" } },
+      labels: { style: { fontSize: "10px", colors: chartColors.label } },
       axisBorder: { show: false },
       axisTicks: { show: false },
     },

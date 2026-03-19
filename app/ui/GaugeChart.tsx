@@ -55,7 +55,7 @@ export function GaugeChart({ title, label, value, color, href }: GaugeChartProps
             <path
               d={trackPath}
               fill="none"
-              stroke="#e8e8e8"
+              stroke="var(--color-border-light)"
               strokeWidth={strokeWidth}
               strokeLinecap="butt"
             />

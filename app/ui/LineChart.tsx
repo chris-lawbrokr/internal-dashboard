@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
+import { chartColors } from "@/lib/chart-colors";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -14,7 +15,7 @@ export function LineChart() {
       toolbar: { show: false },
       sparkline: { enabled: false },
     },
-    colors: ["#3b2559", "#c9955e"],
+    colors: [chartColors.primary, chartColors.tan],
     stroke: {
       curve: "smooth",
       width: 2,
@@ -30,15 +31,15 @@ export function LineChart() {
     },
     xaxis: {
       categories: ["Jan 19", "Feb 19", "Mar 19", "Apr 19", "May 19", "Jun 19", "Jul 19"],
-      labels: { style: { fontSize: "11px", colors: "#777777" } },
+      labels: { style: { fontSize: "11px", colors: chartColors.mutedForeground } },
       axisBorder: { show: false },
       axisTicks: { show: false },
     },
     yaxis: {
-      labels: { style: { fontSize: "11px", colors: "#777777" } },
+      labels: { style: { fontSize: "11px", colors: chartColors.mutedForeground } },
     },
     grid: {
-      borderColor: "#f2f2f2",
+      borderColor: chartColors.background,
       strokeDashArray: 4,
     },
     legend: { show: false },
@@ -63,13 +64,13 @@ export function LineChart() {
     <div>
       <div className="flex items-center gap-4 mb-2">
         <div className="flex items-center gap-1.5">
-          <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#3b2559]" />
+          <span className="inline-block h-2.5 w-2.5 rounded-full bg-primary" />
           <span className="text-xs text-muted-foreground">
             {t("visits")}: <span className="font-semibold text-foreground">4,268</span>
           </span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#c9955e]" />
+          <span className="inline-block h-2.5 w-2.5 rounded-full bg-chart-tan" />
           <span className="text-xs text-muted-foreground">
             {t("responses")}: <span className="font-semibold text-foreground">426</span>
           </span>

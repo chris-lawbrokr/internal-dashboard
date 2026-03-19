@@ -6,6 +6,7 @@ import { feature } from "topojson-client";
 import type { Topology, GeometryCollection } from "topojson-specification";
 import type { FeatureCollection, Geometry } from "geojson";
 import { Card, CardContent } from "@/components/ui/card";
+import { chartColors } from "@/lib/chart-colors";
 
 const GEO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/land-110m.json";
 
@@ -73,8 +74,8 @@ export function CountrySessionsChart() {
               <path
                 key={i}
                 d={d}
-                fill="#e0e7ff"
-                stroke="#c7d2fe"
+                fill={chartColors.indigoLightest}
+                stroke={chartColors.indigoStroke}
                 strokeWidth={0.5}
               />
             ))}
@@ -88,9 +89,9 @@ export function CountrySessionsChart() {
                     cx={coords[0]}
                     cy={coords[1]}
                     r={r}
-                    fill="#4f46e5"
+                    fill={chartColors.indigoDark}
                     fillOpacity={0.7}
-                    stroke="#312e81"
+                    stroke={chartColors.indigo}
                     strokeWidth={0.5}
                   />
                   <title>{`${point.name}: ${point.sessions.toLocaleString()} sessions`}</title>

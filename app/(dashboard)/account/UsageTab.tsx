@@ -17,9 +17,9 @@ import { Check, X } from "lucide-react";
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, { bg: string; text: string; border: string }> = {
-    Active: { bg: "#ededc7", text: "#626444", border: "#bcbc95" },
-    Inactive: { bg: "#ffd9c5", text: "#b13c33", border: "#eaa289" },
-    Review: { bg: "#fff2cf", text: "#946a22", border: "#daad75" },
+    Active: { bg: "var(--color-status-success-bg)", text: "var(--color-status-success-text)", border: "var(--color-status-success-border)" },
+    Inactive: { bg: "var(--color-status-error-bg)", text: "var(--color-status-error-text)", border: "var(--color-status-error-border)" },
+    Review: { bg: "var(--color-status-warning-bg)", text: "var(--color-status-warning-text)", border: "var(--color-status-warning-border)" },
   };
   const s = styles[status] || styles.Active;
   return (
@@ -35,7 +35,7 @@ function StatusBadge({ status }: { status: string }) {
 function CheckIcon({ checked }: { checked: boolean }) {
   return (
     <div
-      className={`size-6 shrink-0 rounded-full border flex items-center justify-center ${checked ? "bg-[#ededc7] border-[#bcbc95] text-[#626444]" : "bg-[#ffd9c5] border-[#eaa289] text-[#b13c33]"}`}
+      className={`size-6 shrink-0 rounded-full border flex items-center justify-center ${checked ? "bg-status-success-bg border-status-success-border text-status-success-text" : "bg-status-error-bg border-status-error-border text-status-error-text"}`}
     >
       {checked ? (
         <Check size={14} strokeWidth={2.5} />
@@ -141,7 +141,7 @@ function TableSection({
 
   return (
     <Table
-      toolbar={<h3 className="text-lg font-bold text-[#070043]">{title}</h3>}
+      toolbar={<h3 className="text-lg font-bold text-foreground">{title}</h3>}
       footer={
         <TablePagination
           page={currentPage}
@@ -153,7 +153,7 @@ function TableSection({
       }
     >
       <TableHeader>
-        <TableRow className="border-b border-[#c8c8c8]">
+        <TableRow className="border-b border-border">
           {headers.map((h) => (
             <TableHead key={h} className="py-2 px-2 whitespace-nowrap">
               {h}
@@ -163,7 +163,7 @@ function TableSection({
       </TableHeader>
       <TableBody>
         {paginated.map((row, i) => (
-          <TableRow key={i} className="border-b border-[#f2f2f2] last:border-0">
+          <TableRow key={i} className="border-b border-background last:border-0">
             {row.map((cell, j) => (
               <TableCell key={j} className="py-2.5 px-2 whitespace-nowrap">
                 {headers[j] === "Status" ? <StatusBadge status={cell} /> : cell}
@@ -191,7 +191,7 @@ function AccountUsersTable() {
   return (
     <Table
       toolbar={
-        <h3 className="text-lg font-bold text-[#070043]">Account Users</h3>
+        <h3 className="text-lg font-bold text-foreground">Account Users</h3>
       }
       footer={
         <TablePagination
@@ -204,7 +204,7 @@ function AccountUsersTable() {
       }
     >
       <TableHeader>
-        <TableRow className="border-b border-[#c8c8c8]">
+        <TableRow className="border-b border-border">
           <TableHead className="py-2 px-2 whitespace-nowrap">
             User Name
           </TableHead>
@@ -230,7 +230,7 @@ function AccountUsersTable() {
       </TableHeader>
       <TableBody>
         {paginated.map((user, i) => (
-          <TableRow key={i} className="border-b border-[#f2f2f2] last:border-0">
+          <TableRow key={i} className="border-b border-background last:border-0">
             <TableCell className="py-3 px-2 whitespace-nowrap">
               {user.name}
             </TableCell>
@@ -247,7 +247,7 @@ function AccountUsersTable() {
               {user.lastVisit}
             </TableCell>
             <TableCell className="py-3 px-2 whitespace-nowrap">
-              <span className="inline-flex items-center rounded-md border border-[#c4c0e8] bg-[#e1dff6] text-[#250d53] px-2 py-0.5 text-xs font-medium">
+              <span className="inline-flex items-center rounded-md border border-status-neutral-border bg-status-neutral-bg text-brand-dark px-2 py-0.5 text-xs font-medium">
                 {user.latestInteractions}
               </span>
             </TableCell>
@@ -283,7 +283,7 @@ export function UsageTab() {
         {/* Onboarding Checklist */}
         <Card className="flex-1 p-6">
           <CardContent className="flex flex-col gap-0">
-            <h3 className="text-lg font-bold text-[#070043] mb-4">
+            <h3 className="text-lg font-bold text-foreground mb-4">
               Onboarding Checklist
             </h3>
             {[
@@ -301,7 +301,7 @@ export function UsageTab() {
             ].map((item, i) => (
               <div
                 key={i}
-                className="flex items-center justify-between gap-3 py-3 border-t border-[#e8e8e8]"
+                className="flex items-center justify-between gap-3 py-3 border-t border-border-light"
               >
                 <span className="text-sm">{item.label}</span>
                 <CheckIcon checked={item.checked} />
@@ -316,17 +316,17 @@ export function UsageTab() {
           <div className="flex-1 flex flex-col @lg:flex-row gap-4">
             <Card className="flex-1 p-5">
               <CardContent className="flex flex-col justify-center gap-2">
-                <p className="text-sm text-[#777]">Account Status</p>
-                <span className="inline-flex items-center gap-1.5 self-start rounded-lg border px-2 py-1 text-xs font-bold border-[#bcbc95] bg-[#ededc7] text-[#626444]">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#626444]" />
+                <p className="text-sm text-muted-foreground">Account Status</p>
+                <span className="inline-flex items-center gap-1.5 self-start rounded-lg border px-2 py-1 text-xs font-bold border-status-success-border bg-status-success-bg text-status-success-text">
+                  <span className="h-1.5 w-1.5 rounded-full bg-status-success-text" />
                   Active
                 </span>
               </CardContent>
             </Card>
             <Card className="flex-1 p-5">
               <CardContent className="flex flex-col justify-center gap-2">
-                <p className="text-sm text-[#777]">Subscription Type</p>
-                <p className="text-2xl font-bold text-[#070043]">Annual</p>
+                <p className="text-sm text-muted-foreground">Subscription Type</p>
+                <p className="text-2xl font-bold text-foreground">Annual</p>
               </CardContent>
             </Card>
           </div>
@@ -334,14 +334,14 @@ export function UsageTab() {
           <div className="flex-1 flex flex-col @lg:flex-row gap-4">
             <Card className="flex-1 p-5">
               <CardContent className="flex flex-col justify-center gap-2">
-                <p className="text-sm text-[#777]">Account Created</p>
-                <p className="text-xl font-bold text-[#070043]">Feb. 1, 2026</p>
+                <p className="text-sm text-muted-foreground">Account Created</p>
+                <p className="text-xl font-bold text-foreground">Feb. 1, 2026</p>
               </CardContent>
             </Card>
             <Card className="flex-1 p-5">
               <CardContent className="flex flex-col justify-center gap-2">
-                <p className="text-sm text-[#777]">Next Payment Due</p>
-                <p className="text-xl font-bold text-[#070043]">Feb. 1, 2027</p>
+                <p className="text-sm text-muted-foreground">Next Payment Due</p>
+                <p className="text-xl font-bold text-foreground">Feb. 1, 2027</p>
               </CardContent>
             </Card>
           </div>
@@ -349,14 +349,14 @@ export function UsageTab() {
           <div className="flex-1 flex flex-col @lg:flex-row gap-4">
             <Card className="flex-1 p-5">
               <CardContent className="flex flex-col justify-center gap-2">
-                <p className="text-sm text-[#777]">Live Funnels</p>
-                <p className="text-2xl font-bold text-[#070043]">12</p>
+                <p className="text-sm text-muted-foreground">Live Funnels</p>
+                <p className="text-2xl font-bold text-foreground">12</p>
               </CardContent>
             </Card>
             <Card className="flex-1 p-5">
               <CardContent className="flex flex-col justify-center gap-2">
-                <p className="text-sm text-[#777]">Live Workflows</p>
-                <p className="text-2xl font-bold text-[#070043]">29</p>
+                <p className="text-sm text-muted-foreground">Live Workflows</p>
+                <p className="text-2xl font-bold text-foreground">29</p>
               </CardContent>
             </Card>
           </div>

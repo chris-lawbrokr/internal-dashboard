@@ -67,8 +67,8 @@ function StatusBadge({ status }: { status: "Active" | "Inactive" }) {
     <span
       className={`inline-flex items-center rounded-md px-2 py-1 text-sm font-medium border ${
         status === "Active"
-          ? "bg-[#ededc7] text-[#626444] border-[#bcbc95]"
-          : "bg-[#ffd9c5] text-[#b13c33] border-[#eaa289]"
+          ? "bg-status-success-bg text-status-success-text border-status-success-border"
+          : "bg-status-error-bg text-status-error-text border-status-error-border"
       }`}
     >
       {status}
@@ -78,9 +78,9 @@ function StatusBadge({ status }: { status: "Active" | "Inactive" }) {
 
 function StatusIconCell({ icon }: { icon: StatusIcon }) {
   const styles = {
-    check: "bg-[#ededc7] border-[#bcbc95] text-[#626444]",
-    warning: "bg-[#fff2cf] border-[#daad75] text-[#A56737]",
-    error: "bg-[#ffd9c5] border-[#eaa289] text-[#b13c33]",
+    check: "bg-status-success-bg border-status-success-border text-status-success-text",
+    warning: "bg-status-warning-bg border-status-warning-border text-status-caution-text",
+    error: "bg-status-error-bg border-status-error-border text-status-error-text",
   };
 
   const icons = {
@@ -177,7 +177,7 @@ export function AccountsTable() {
           <div className="flex items-center gap-2">
             <button
               type="button"
-              className="flex-1 @md/table:flex-none flex items-center gap-1.5 rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted cursor-pointer"
+              className="flex-1 @md/table:flex-none flex items-center gap-1.5 rounded-md border border-primary px-3 py-1.5 text-sm hover:bg-muted cursor-pointer"
             >
               <SlidersHorizontal size={14} />
               {tc("filters")}
@@ -186,7 +186,7 @@ export function AccountsTable() {
 
             <button
               type="button"
-              className="flex-1 @md/table:flex-none flex items-center gap-1.5 rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted cursor-pointer"
+              className="flex-1 @md/table:flex-none flex items-center gap-1.5 rounded-md border border-primary px-3 py-1.5 text-sm hover:bg-muted cursor-pointer"
             >
               {tc("actions")}
               <ChevronDown size={14} />
@@ -205,7 +205,7 @@ export function AccountsTable() {
       }
     >
       <TableHeader>
-        <TableRow className="border-b border-[#c8c8c8]">
+        <TableRow className="border-b border-border">
           <TableHead>{t("accountName")}</TableHead>
           <TableHead>{tc("website")}</TableHead>
           <TableHead>
@@ -246,7 +246,7 @@ export function AccountsTable() {
       </TableHeader>
       <TableBody>
         {paginated.map((account) => (
-          <TableRow key={account.id} className="border-b border-[#f2f2f2]">
+          <TableRow key={account.id} className="border-b border-background">
             <TableCell className="font-medium">{account.name}</TableCell>
             <TableCell className="font-medium">{account.website}</TableCell>
             <TableCell className="font-medium">

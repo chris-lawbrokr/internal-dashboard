@@ -94,7 +94,7 @@ export const CardLink = React.forwardRef<
   <a
     ref={ref}
     className={cn(
-      "text-sm font-medium leading-[14px] text-[#070043] text-right hover:underline cursor-pointer",
+      "text-sm font-medium leading-[14px] text-foreground text-right hover:underline cursor-pointer",
       className,
     )}
     {...props}

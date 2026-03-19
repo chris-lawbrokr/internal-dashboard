@@ -23,13 +23,13 @@ export default function Dashboard() {
           <div className="flex flex-col gap-4">
             <Link
               href="/"
-              className="self-start flex items-center gap-1.5 rounded-xl border border-[#c8c8c8] px-3 py-1.5 text-sm hover:bg-muted cursor-pointer"
+              className="self-start flex items-center gap-1.5 rounded-xl border border-border px-3 py-1.5 text-sm hover:bg-muted cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" />
               {t("back")}
             </Link>
             <div className="flex flex-col @xl:flex-row @xl:items-center justify-between gap-4">
-              <h1 className="text-2xl font-bold text-[#070043]">
+              <h1 className="text-2xl font-bold text-foreground">
                 Smith Law Firm
               </h1>
               <div className="w-full @xl:w-auto [&>div]:w-full @xl:[&>div]:w-auto [&>div>button]:w-full @xl:[&>div>button]:w-auto">
@@ -56,7 +56,7 @@ export default function Dashboard() {
               className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none h-3.5 w-3.5"
             />
           </div>
-          <div className="hidden @xl:flex gap-6 border-b border-[#c8c8c8]">
+          <div className="hidden @xl:flex gap-6 border-b border-border">
             {tabKeys.map((tabKey) => (
               <button
                 key={tabKey}
@@ -64,8 +64,8 @@ export default function Dashboard() {
                 onClick={() => setActiveTab(tabKey)}
                 className={`pb-2 text-base font-medium border-b-2 -mb-px transition-colors cursor-pointer ${
                   activeTab === tabKey
-                    ? "border-[#3b2559] text-[#070043]"
-                    : "border-transparent text-[#777] hover:text-[#070043]"
+                    ? "border-primary text-foreground"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {t(tabKey)}

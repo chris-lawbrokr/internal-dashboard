@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { chartColors } from "@/lib/chart-colors";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -9,7 +10,7 @@ interface SparklineChartProps {
   color?: string;
 }
 
-export function SparklineChart({ data, color = "#3b2559" }: SparklineChartProps) {
+export function SparklineChart({ data, color = chartColors.primary }: SparklineChartProps) {
   const options: ApexCharts.ApexOptions = {
     chart: {
       type: "line",

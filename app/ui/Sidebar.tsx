@@ -80,27 +80,27 @@ export function Sidebar({
       {/* Collapsed icon strip — mobile only */}
       {showCollapsed && (
         <div className="shrink-0 h-full bg-white flex flex-col items-center py-5 px-2 gap-6 shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.1)]">
-          <div className="h-8 w-8 rounded-full bg-[#e1dff6] text-[#777] flex items-center justify-center text-xs font-semibold">
+          <div className="h-8 w-8 rounded-full bg-status-neutral-bg text-muted-foreground flex items-center justify-center text-xs font-semibold">
             PA
           </div>
           <button
             type="button"
-            className="text-[#777] hover:text-[#070043] cursor-pointer"
+            className="text-muted-foreground hover:text-foreground cursor-pointer"
             aria-label={t("logout")}
           >
             <LogOut size={18} />
           </button>
-          <div className="flex flex-col items-center gap-4 border-t border-b border-[#c8c8c8] py-4 w-full">
+          <div className="flex flex-col items-center gap-4 border-t border-b border-border py-4 w-full">
             <button
               type="button"
-              className="text-[#777] hover:text-[#070043] cursor-pointer"
+              className="text-muted-foreground hover:text-foreground cursor-pointer"
               aria-label="Settings"
             >
               <Settings size={20} />
             </button>
             <button
               type="button"
-              className="text-[#777] hover:text-[#070043] cursor-pointer"
+              className="text-muted-foreground hover:text-foreground cursor-pointer"
               aria-label="Notifications"
             >
               <Bell size={20} />
@@ -116,7 +116,7 @@ export function Sidebar({
                 <Link
                   key={item.id}
                   href={item.href}
-                  className={`p-1.5 rounded-lg transition-colors ${isActive ? "text-[#250d53]" : "text-[#777] hover:text-[#070043]"}`}
+                  className={`p-1.5 rounded-lg transition-colors ${isActive ? "text-brand-dark" : "text-muted-foreground hover:text-foreground"}`}
                   aria-label={t(item.labelKey)}
                   title={t(item.labelKey)}
                 >
@@ -127,7 +127,7 @@ export function Sidebar({
           </nav>
           <button
             type="button"
-            className="text-[#777] hover:text-[#070043] cursor-pointer mt-auto"
+            className="text-muted-foreground hover:text-foreground cursor-pointer mt-auto"
             aria-label="Open sidebar"
             onClick={onToggle}
           >
@@ -143,40 +143,40 @@ export function Sidebar({
         <div className="flex flex-col h-full w-[160px] gap-7">
           <div className="flex flex-col gap-5 items-start w-full">
             <div className="flex flex-col gap-2 items-center w-full">
-              <div className="h-8 w-8 rounded-full bg-[#e1dff6] text-[#777] flex items-center justify-center text-sm font-semibold">
+              <div className="h-8 w-8 rounded-full bg-status-neutral-bg text-muted-foreground flex items-center justify-center text-sm font-semibold">
                 PA
               </div>
               <div className="flex flex-col items-center w-full text-center">
-                <span className="text-base leading-7 text-[#070043] whitespace-nowrap">
+                <span className="text-base leading-7 text-foreground whitespace-nowrap">
                   Penelope Anthony
                 </span>
-                <span className="text-xs leading-6 text-[#777] whitespace-nowrap">
+                <span className="text-xs leading-6 text-muted-foreground whitespace-nowrap">
                   name@company.com
                 </span>
               </div>
             </div>
             <button
               type="button"
-              className="flex items-center gap-1.5 justify-center w-full bg-[#fbfbfb] border border-[#c8c8c8] rounded-xl px-3 py-1.5 shadow-[0px_1px_0.5px_0px_rgba(37,13,83,0.02)] hover:bg-muted cursor-pointer"
+              className="flex items-center gap-1.5 justify-center w-full bg-surface border border-border rounded-xl px-3 py-1.5 shadow-[0px_1px_0.5px_0px_rgba(37,13,83,0.02)] hover:bg-muted cursor-pointer"
             >
-              <LogOut size={14} className="text-[#777]" />
-              <span className="text-xs font-medium text-[#777] whitespace-nowrap">
+              <LogOut size={14} className="text-muted-foreground" />
+              <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">
                 {t("logout")}
               </span>
             </button>
           </div>
 
-          <div className="flex items-center justify-center gap-4 border-t border-b border-[#c8c8c8] py-4 w-full">
+          <div className="flex items-center justify-center gap-4 border-t border-b border-border py-4 w-full">
             <button
               type="button"
-              className="text-[#777] hover:text-[#070043] cursor-pointer"
+              className="text-muted-foreground hover:text-foreground cursor-pointer"
               aria-label="Notifications"
             >
               <Bell size={20} />
             </button>
             <button
               type="button"
-              className="text-[#777] hover:text-[#070043] cursor-pointer"
+              className="text-muted-foreground hover:text-foreground cursor-pointer"
               aria-label="Settings"
             >
               <Settings size={20} />
@@ -196,7 +196,7 @@ export function Sidebar({
                   onClick={() => {
                     if (isMobile && open) onToggle();
                   }}
-                  className={`flex items-center gap-1.5 rounded-xl px-2 py-1.5 text-base transition-colors whitespace-nowrap ${isActive ? "bg-[#fbfbfb] font-bold text-[#250d53]" : "text-[#777]"}`}
+                  className={`flex items-center gap-1.5 rounded-xl px-2 py-1.5 text-base transition-colors whitespace-nowrap ${isActive ? "bg-surface font-bold text-brand-dark" : "text-muted-foreground"}`}
                 >
                   <item.icon size={20} />
                   {t(item.labelKey)}
@@ -218,7 +218,7 @@ export function Sidebar({
             {isMobile && (
               <button
                 type="button"
-                className="text-[#777] hover:text-[#070043] cursor-pointer"
+                className="text-muted-foreground hover:text-foreground cursor-pointer"
                 aria-label="Close sidebar"
                 onClick={onToggle}
               >

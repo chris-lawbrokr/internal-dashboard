@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { GaugeChart } from "@/app/ui/GaugeChart";
+import { chartColors } from "@/lib/chart-colors";
 
 const meta: Meta<typeof GaugeChart> = {
   title: "App/UI/GaugeChart",
@@ -25,7 +26,7 @@ export const Default: Story = {
     title: "Onboarding Health",
     label: "Good",
     value: 75,
-    color: "#7c3aed",
+    color: chartColors.purpleDark,
   },
 };
 
@@ -34,7 +35,7 @@ export const WithLink: Story = {
     title: "Performance Health",
     label: "Fair",
     value: 50,
-    color: "#a855f7",
+    color: chartColors.purpleMedium,
     href: "#",
   },
 };
@@ -44,7 +45,7 @@ export const Low: Story = {
     title: "Website Health",
     label: "Poor",
     value: 25,
-    color: "#d8b4fe",
+    color: chartColors.purpleLight,
   },
 };
 
@@ -53,7 +54,7 @@ export const Full: Story = {
     title: "System Health",
     label: "Excellent",
     value: 100,
-    color: "#22c55e",
+    color: chartColors.green,
   },
 };
 
@@ -62,16 +63,16 @@ export const Empty: Story = {
     title: "No Data",
     label: "N/A",
     value: 0,
-    color: "#9ca3af",
+    color: chartColors.label,
   },
 };
 
 export const AllVariants: Story = {
   render: () => (
     <div className="flex gap-4">
-      <GaugeChart title="Onboarding Health" label="Good" value={75} color="#7c3aed" href="#" />
-      <GaugeChart title="Performance Health" label="Fair" value={50} color="#a855f7" href="#" />
-      <GaugeChart title="Website Health" label="Poor" value={25} color="#d8b4fe" href="#" />
+      <GaugeChart title="Onboarding Health" label="Good" value={75} color={chartColors.purpleDark} href="#" />
+      <GaugeChart title="Performance Health" label="Fair" value={50} color={chartColors.purpleMedium} href="#" />
+      <GaugeChart title="Website Health" label="Poor" value={25} color={chartColors.purpleLight} href="#" />
     </div>
   ),
 };

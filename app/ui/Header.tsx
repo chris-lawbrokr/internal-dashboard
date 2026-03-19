@@ -11,7 +11,7 @@ export function Header({ onMenuClick, sidebarOpen = true }: HeaderProps) {
   const t = useTranslations("nav");
 
   return (
-    <div className="w-full px-4 py-2 bg-[#3b2559] text-white/80 text-sm shrink-0 flex items-center gap-4">
+    <div className="w-full px-4 py-2 bg-primary text-white/80 text-sm shrink-0 flex items-center gap-4">
       <button
         type="button"
         aria-label={t("toggleSidebar")}

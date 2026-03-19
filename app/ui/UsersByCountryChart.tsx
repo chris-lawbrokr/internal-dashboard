@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { Card, CardContent } from "@/components/ui/card";
+import { chartColors } from "@/lib/chart-colors";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -11,7 +12,7 @@ export function UsersByCountryChart() {
       type: "bar",
       toolbar: { show: false },
     },
-    colors: ["#d97706"],
+    colors: [chartColors.amber],
     plotOptions: {
       bar: {
         columnWidth: "55%",
@@ -20,15 +21,15 @@ export function UsersByCountryChart() {
     },
     xaxis: {
       categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-      labels: { style: { fontSize: "10px", colors: "#9ca3af" } },
+      labels: { style: { fontSize: "10px", colors: chartColors.label } },
       axisBorder: { show: false },
       axisTicks: { show: false },
     },
     yaxis: {
-      labels: { style: { fontSize: "10px", colors: "#9ca3af" } },
+      labels: { style: { fontSize: "10px", colors: chartColors.label } },
     },
     grid: {
-      borderColor: "#f3f4f6",
+      borderColor: chartColors.grid,
       strokeDashArray: 4,
       yaxis: { lines: { show: true } },
       xaxis: { lines: { show: false } },

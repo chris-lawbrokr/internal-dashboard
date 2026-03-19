@@ -64,15 +64,15 @@ function StatusBadge({ status }: { status: LinkStatus }) {
   const config = {
     Active: {
       icon: <Check size={12} />,
-      className: "border-[#bcbc95] bg-[#ededc7] text-[#626444]",
+      className: "border-status-success-border bg-status-success-bg text-status-success-text",
     },
     Review: {
       icon: <AlertCircle size={12} />,
-      className: "border-[#daad75] bg-[#fff2cf] text-[#A56737]",
+      className: "border-status-warning-border bg-status-warning-bg text-status-caution-text",
     },
     Broken: {
       icon: <X size={12} />,
-      className: "border-[#eaa289] bg-[#ffd9c5] text-[#b13c33]",
+      className: "border-status-error-border bg-status-error-bg text-status-error-text",
     },
   }[status];
 
@@ -122,35 +122,35 @@ export function WebsiteTab() {
       {/* Top stat cards – row 1 */}
       <div className="grid grid-cols-1 gap-4 @xl:grid-cols-4">
         <StatusCard label={t("websiteStatus")}>
-          <span className="inline-flex items-center gap-1.5 self-start rounded-lg border px-2 py-1 text-xs font-bold border-[#bcbc95] bg-[#ededc7] text-[#626444]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#626444]" />
+          <span className="inline-flex items-center gap-1.5 self-start rounded-lg border px-2 py-1 text-xs font-bold border-status-success-border bg-status-success-bg text-status-success-text">
+            <span className="h-1.5 w-1.5 rounded-full bg-status-success-text" />
             {t("live")}
           </span>
         </StatusCard>
 
         <StatusCard label={t("sourceAttribution")}>
-          <span className="inline-flex items-center gap-1.5 self-start rounded-lg border px-2 py-1 text-xs font-bold border-[#bcbc95] bg-[#ededc7] text-[#626444]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#626444]" />
+          <span className="inline-flex items-center gap-1.5 self-start rounded-lg border px-2 py-1 text-xs font-bold border-status-success-border bg-status-success-bg text-status-success-text">
+            <span className="h-1.5 w-1.5 rounded-full bg-status-success-text" />
             {t("enabled")}
           </span>
         </StatusCard>
 
         <StatusCard label={t("linkStatus")}>
-          <span className="inline-flex items-center gap-1.5 self-start rounded-lg border px-2 py-1 text-xs font-bold border-[#eaa289] bg-[#ffd9c5] text-[#b13c33]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#b13c33]" />
+          <span className="inline-flex items-center gap-1.5 self-start rounded-lg border px-2 py-1 text-xs font-bold border-status-error-border bg-status-error-bg text-status-error-text">
+            <span className="h-1.5 w-1.5 rounded-full bg-status-error-text" />
             {t("down")}
           </span>
         </StatusCard>
 
         <StatusCard label={t("activeIntegrations")} className="row-span-2">
-          <span className="inline-flex items-center bg-[#E1DFF6] gap-1.5 self-start rounded-md border border-[#A18DBE] px-2 py-1 text-xs font-bold">
+          <span className="inline-flex items-center bg-status-neutral-bg gap-1.5 self-start rounded-md border border-border-purple px-2 py-1 text-xs font-bold">
             Scorpion
           </span>
         </StatusCard>
 
         <StatusCard label={t("sslStatus")}>
-          <span className="inline-flex items-center gap-1.5 self-start rounded-lg border px-2 py-1 text-xs font-bold border-[#bcbc95] bg-[#ededc7] text-[#626444]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#626444]" />
+          <span className="inline-flex items-center gap-1.5 self-start rounded-lg border px-2 py-1 text-xs font-bold border-status-success-border bg-status-success-bg text-status-success-text">
+            <span className="h-1.5 w-1.5 rounded-full bg-status-success-text" />
             {t("enabled")}
           </span>
         </StatusCard>
@@ -164,7 +164,7 @@ export function WebsiteTab() {
         <StatusCard label={t("liveLawbrokrLinks")}>
           <span className="text-2xl font-bold">39</span>
           <span className="inline-flex items-center gap-1 text-sm">
-            <span className="text-[#b13c33]">
+            <span className="text-status-error-text">
               <ArrowDown size={14} className="inline" /> 10%
             </span>{" "}
             <span className="text-muted-foreground">{t("vsLastMonth")}</span>

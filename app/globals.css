@@ -48,6 +48,67 @@
   --font-mono: var(--font-geist-mono);
 }
 
+@theme {
+  /* Brand / UI */
+  --color-brand-dark: #250d53;
+  --color-surface: #fbfbfb;
+  --color-border-light: #e8e8e8;
+  --color-border-purple: #a18dbe;
+
+  /* Status: Success / Active */
+  --color-status-success-bg: #ededc7;
+  --color-status-success-text: #626444;
+  --color-status-success-border: #bcbc95;
+
+  /* Status: Warning / Review */
+  --color-status-warning-bg: #fff2cf;
+  --color-status-warning-text: #946a22;
+  --color-status-warning-border: #daad75;
+  --color-status-caution-text: #a56737;
+
+  /* Status: Error / Inactive */
+  --color-status-error-bg: #ffd9c5;
+  --color-status-error-text: #b13c33;
+  --color-status-error-border: #eaa289;
+
+  /* Status: Neutral */
+  --color-status-neutral-bg: #e1dff6;
+  --color-status-neutral-border: #c4c0e8;
+
+  /* Status: Info */
+  --color-status-info-bg: #d8e6f4;
+  --color-status-info-text: #637c93;
+  --color-status-info-border: #b0cde4;
+
+  /* Status: Support */
+  --color-status-support-bg: #ffe2de;
+  --color-status-support-text: #ab626f;
+
+  /* Chart */
+  --color-chart-indigo: #312e81;
+  --color-chart-indigo-medium: #6366f1;
+  --color-chart-indigo-light: #a5b4fc;
+  --color-chart-indigo-lightest: #e0e7ff;
+  --color-chart-indigo-dark: #4f46e5;
+  --color-chart-indigo-stroke: #c7d2fe;
+  --color-chart-gray: #374151;
+  --color-chart-label: #9ca3af;
+  --color-chart-grid: #f3f4f6;
+  --color-chart-purple: #a78bfa;
+  --color-chart-purple-dark: #7c3aed;
+  --color-chart-purple-medium: #a855f7;
+  --color-chart-purple-light: #d8b4fe;
+  --color-chart-purple-track: #ede9fe;
+  --color-chart-green: #22c55e;
+  --color-chart-amber: #d97706;
+  --color-chart-tan: #c9955e;
+  --color-chart-gold: #e8b86d;
+  --color-chart-gold-light: #ecc58e;
+  --color-chart-sage: #d3d3ad;
+  --color-chart-coral: #e2816b;
+  --color-chart-lavender: #b6b2d3;
+}
+
 @layer base {
   * {
     @apply border-border;

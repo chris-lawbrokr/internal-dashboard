@@ -35,7 +35,7 @@ export default function Dashboard() {
                     </p>
                     <p className="text-2xl font-bold">4,268</p>
                     <p className="text-xs text-muted-foreground">
-                      <span className="text-[#bcbc95]">&#8593; 10%</span>{" "}
+                      <span className="text-status-success-border">&#8593; 10%</span>{" "}
                       {t("vsLastMonth")}
                     </p>
                   </div>
@@ -55,7 +55,7 @@ export default function Dashboard() {
                     </p>
                     <p className="text-2xl font-bold">426</p>
                     <p className="text-xs text-muted-foreground">
-                      <span className="text-[#bcbc95]">&#8593; 10%</span>{" "}
+                      <span className="text-status-success-border">&#8593; 10%</span>{" "}
                       {t("vsLastMonth")}
                     </p>
                   </div>
@@ -83,9 +83,9 @@ export default function Dashboard() {
                   <p className="text-sm text-muted-foreground">
                     {t("conversionRate")}
                   </p>
-                  <p className="text-3xl font-bold text-[#070043]">10%</p>
+                  <p className="text-3xl font-bold text-foreground">10%</p>
                   <p className="text-xs text-muted-foreground">
-                    <span className="text-[#bcbc95]">&#8593; 10%</span>{" "}
+                    <span className="text-status-success-border">&#8593; 10%</span>{" "}
                     {t("vsLastMonth")}
                   </p>
                 </div>
