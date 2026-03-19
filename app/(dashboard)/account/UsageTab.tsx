@@ -268,7 +268,7 @@ export function UsageTab() {
         {/* Account Info – right side cards */}
         <div className="flex-1 flex flex-col gap-4">
           {/* Row 1: Account Status + Subscription Type */}
-          <div className="flex-1 flex gap-4">
+          <div className="flex-1 flex flex-col @lg:flex-row gap-4">
             <Card className="flex-1 p-5">
               <CardContent className="flex flex-col justify-center gap-2">
                 <p className="text-sm text-[#777]">Account Status</p>
@@ -286,7 +286,7 @@ export function UsageTab() {
             </Card>
           </div>
           {/* Row 2: Account Created + Next Payment Due */}
-          <div className="flex-1 flex gap-4">
+          <div className="flex-1 flex flex-col @lg:flex-row gap-4">
             <Card className="flex-1 p-5">
               <CardContent className="flex flex-col justify-center gap-2">
                 <p className="text-sm text-[#777]">Account Created</p>
@@ -301,7 +301,7 @@ export function UsageTab() {
             </Card>
           </div>
           {/* Row 3: Live Funnels + Live Workflows */}
-          <div className="flex-1 flex gap-4">
+          <div className="flex-1 flex flex-col @lg:flex-row gap-4">
             <Card className="flex-1 p-5">
               <CardContent className="flex flex-col justify-center gap-2">
                 <p className="text-sm text-[#777]">Live Funnels</p>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState as useLocalState } from "react";
+import { useEffect, useRef, useState as useLocalState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -41,16 +41,23 @@ export function Sidebar({
   const pathname = usePathname();
   const t = useTranslations("nav");
   const [isMobile, setIsMobile] = useLocalState(false);
+  const openRef = useRef(open);
+  openRef.current = open;
 
   useEffect(() => {
     const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
-    setIsMobile(mql.matches);
-    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    const apply = (mobile: boolean) => {
+      setIsMobile(mobile);
+      if (mobile && openRef.current) onToggle();
+    };
+    apply(mql.matches);
+    const handler = (e: MediaQueryListEvent) => apply(e.matches);
     mql.addEventListener("change", handler);
     return () => mql.removeEventListener("change", handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const showCollapsed = isMobile && !open;
+  const showCollapsed = isMobile;
 
   return (
     <>
@@ -147,6 +154,7 @@ export function Sidebar({
                   <Link
                     key={item.id}
                     href={item.href}
+                    onClick={() => { if (isMobile && open) onToggle(); }}
                     className={`flex items-center gap-1.5 rounded-xl px-2 py-1.5 text-base transition-colors whitespace-nowrap ${isActive ? "bg-[#fbfbfb] font-bold text-[#250d53]" : "text-[#777]"}`}
                   >
                     <item.icon size={20} />

@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Sidebar } from "@/app/ui/Sidebar";
 import { Card, CardContent } from "@/components/ui/card";
 import { AccountsTable } from "@/app/ui/AccountsTable";
 import { PieChart } from "@/app/ui/PieChart";
@@ -11,20 +9,16 @@ import { SparklineChart } from "@/app/ui/SparklineChart";
 import { DateRangePickerWithPresets } from "@/components/ui/datepicker";
 
 export default function Dashboard() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
   const t = useTranslations("dashboard");
 
   return (
-    <div className="h-screen w-full overflow-hidden flex">
-      <Sidebar open={sidebarOpen} onToggle={() => setSidebarOpen((o) => !o)} />
-
-      <div className="flex-1 min-w-0 p-6 overflow-y-auto overflow-x-hidden @container flex flex-col gap-6 bg-[#fbfbfb]">
+    <>
           {/* Welcome + Date Filter */}
           <div className="flex flex-col @xl:flex-row @xl:items-center justify-between gap-4">
             <h1 className="text-2xl font-bold">
               {t("welcome", { name: "Penelope" })}
             </h1>
-            <div className="w-full @xl:w-auto [&>div]:w-full @xl:[&>div]:w-auto [&_button]:w-full @xl:[&_button]:w-auto">
+            <div className="w-full @xl:w-auto [&>div]:w-full @xl:[&>div]:w-auto [&>div>button]:w-full @xl:[&>div>button]:w-auto">
               <DateRangePickerWithPresets defaultPreset="90d" />
             </div>
           </div>
@@ -103,10 +97,7 @@ export default function Dashboard() {
           </div>
 
           {/* Accounts Table */}
-          <div className="min-w-[320px]">
-            <AccountsTable />
-          </div>
-      </div>
-    </div>
+          <AccountsTable />
+    </>
   );
 }

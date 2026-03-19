@@ -5,8 +5,6 @@ import { ArrowLeft, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 
-import { Sidebar } from "@/app/ui/Sidebar";
-import { Card, CardContent } from "@/components/ui/card";
 import { DateRangePickerWithPresets } from "@/components/ui/datepicker";
 import { OverviewTab } from "./OverviewTab";
 import { PerformanceTab } from "./PerformanceTab";
@@ -17,15 +15,10 @@ const tabKeys = ["overview", "performance", "website", "usage"] as const;
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<string>("overview");
-  const [sidebarOpen, setSidebarOpen] = useState(true);
   const t = useTranslations("account");
-  const tc = useTranslations("common");
 
   return (
-    <div className="h-screen w-full overflow-hidden flex">
-      <Sidebar open={sidebarOpen} onToggle={() => setSidebarOpen((o) => !o)} />
-
-        <div className="flex-1 min-w-0 p-6 overflow-y-auto overflow-x-hidden @container flex flex-col gap-6 bg-[#fbfbfb]">
+    <>
           {/* Header */}
           <div className="flex flex-col gap-4">
             <Link
@@ -39,7 +32,7 @@ export default function Dashboard() {
               <h1 className="text-2xl font-bold text-[#070043]">
                 Smith Law Firm
               </h1>
-              <div className="w-full @xl:w-auto [&>div]:w-full @xl:[&>div]:w-auto [&_button]:w-full @xl:[&_button]:w-auto">
+              <div className="w-full @xl:w-auto [&>div]:w-full @xl:[&>div]:w-auto [&>div>button]:w-full @xl:[&>div>button]:w-auto">
                 <DateRangePickerWithPresets defaultPreset="90d" />
               </div>
             </div>
@@ -84,7 +77,6 @@ export default function Dashboard() {
           {activeTab === "performance" && <PerformanceTab />}
           {activeTab === "website" && <WebsiteTab />}
           {activeTab === "usage" && <UsageTab />}
-        </div>
-    </div>
+    </>
   );
 }

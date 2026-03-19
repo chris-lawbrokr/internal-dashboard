@@ -143,7 +143,7 @@ export function AccountsTable() {
     <Table
       wrapperClassName="shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.05)]"
       toolbar={
-        <div className="flex flex-col @md/table:flex-row @md/table:items-center justify-between gap-4 border-b border-[#c8c8c8]">
+        <div className="flex flex-col @md/table:flex-row @md/table:items-center justify-between">
           <div className="relative">
             <Search
               size={16}
@@ -206,12 +206,8 @@ export function AccountsTable() {
     >
       <TableHeader>
         <TableRow className="border-b border-[#c8c8c8]">
-          <TableHead>
-            {t("accountName")}
-          </TableHead>
-          <TableHead>
-            {tc("website")}
-          </TableHead>
+          <TableHead>{t("accountName")}</TableHead>
+          <TableHead>{tc("website")}</TableHead>
           <TableHead>
             <button
               type="button"
@@ -242,26 +238,15 @@ export function AccountsTable() {
               <ArrowUpDown size={14} />
             </button>
           </TableHead>
-          <TableHead>
-            {tc("status")}
-          </TableHead>
-          <TableHead className="text-center">
-            {t("onboarding")}
-          </TableHead>
-          <TableHead className="text-center">
-            {t("performanceCol")}
-          </TableHead>
-          <TableHead className="text-center">
-            {tc("website")}
-          </TableHead>
+          <TableHead>{tc("status")}</TableHead>
+          <TableHead className="text-center">{t("onboarding")}</TableHead>
+          <TableHead className="text-center">{t("performanceCol")}</TableHead>
+          <TableHead className="text-center">{tc("website")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {paginated.map((account) => (
-          <TableRow
-            key={account.id}
-            className="border-b border-[#f2f2f2]"
-          >
+          <TableRow key={account.id} className="border-b border-[#f2f2f2]">
             <TableCell className="font-medium">{account.name}</TableCell>
             <TableCell className="font-medium">{account.website}</TableCell>
             <TableCell className="font-medium">

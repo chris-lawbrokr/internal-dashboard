@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { PerformanceTab } from "@/app/account/PerformanceTab";
+import { PerformanceTab } from "@/app/(dashboard)/account/PerformanceTab";
 
 const meta: Meta<typeof PerformanceTab> = {
   title: "App/Account/PerformanceTab",

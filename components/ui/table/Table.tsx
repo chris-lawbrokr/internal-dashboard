@@ -204,7 +204,7 @@ export function TablePagination({
   const end = Math.min(page * pageSize, totalItems);
 
   return (
-    <div className="flex flex-col @md/table:flex-row @md/table:items-center @md/table:justify-between gap-3 text-sm">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm">
       {info ?? (
         <span className="text-muted-foreground">
           {t("showing")}{" "}
@@ -219,7 +219,7 @@ export function TablePagination({
           type="button"
           disabled={page <= 1}
           onClick={() => onPageChange(page - 1)}
-          className="flex-1 @md/table:flex-none flex items-center justify-center rounded-md border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+          className="flex-1 sm:flex-none flex items-center justify-center rounded-md border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
         >
           {tc("back")}
         </button>
@@ -227,7 +227,7 @@ export function TablePagination({
           type="button"
           disabled={page >= totalPages}
           onClick={() => onPageChange(page + 1)}
-          className="flex-1 @md/table:flex-none flex items-center justify-center rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+          className="flex-1 sm:flex-none flex items-center justify-center rounded-md border border-[#3b2559] px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
         >
           {tc("next")}
         </button>

@@ -13,12 +13,7 @@ import {
   TableCell,
   TablePagination,
 } from "@/components/ui/table/Table";
-import {
-  Search,
-  Filter,
-  Lock,
-  Eye,
-} from "lucide-react";
+import { Search, Filter, Lock, Eye } from "lucide-react";
 
 const ROLE_STYLES: Record<
   string,
@@ -194,7 +189,7 @@ export function OverviewTab() {
       {/* Company Info + Users Table */}
       <div className="flex flex-col gap-4 @[1100px]:flex-row">
         {/* Company Info */}
-        <Card className="flex-1 min-w-0 @[1100px]:basis-1/2 p-6">
+        <Card className="flex-1 min-w-0 @[1100px]:basis-1/2 p-4 md:p-8">
           <CardContent className="h-full">
             <div className="grid grid-cols-1 @lg:grid-cols-2 h-full">
               {[
@@ -289,7 +284,9 @@ export function OverviewTab() {
                   <TableCell className="py-3 px-2">
                     <RoleBadge role={user.role} />
                   </TableCell>
-                  <TableCell className="py-3 px-2 text-[#777]">{user.email}</TableCell>
+                  <TableCell className="py-3 px-2 text-[#777]">
+                    {user.email}
+                  </TableCell>
                   <TableCell className="py-3 px-2 font-medium">
                     {user.dateAdded}
                   </TableCell>
