@@ -12,7 +12,7 @@
   --secondary: #f2f2f2;
   --secondary-foreground: #070043;
   --muted: #f2f2f2;
-  --muted-foreground: #777777;
+  --muted-foreground: #444444;
   --accent: #f2f2f2;
   --accent-foreground: #070043;
   --destructive: #dc2626;
@@ -58,18 +58,18 @@
   /* Status: Success / Active */
   --color-status-success-bg: #ededc7;
   --color-status-success-text: #626444;
-  --color-status-success-border: #bcbc95;
+  --color-status-success-border: #626444;
 
   /* Status: Warning / Review */
   --color-status-warning-bg: #fff2cf;
-  --color-status-warning-text: #946a22;
+  --color-status-warning-text: #a56737;
   --color-status-warning-border: #daad75;
-  --color-status-caution-text: #a56737;
+  --color-status-caution-text: #8c5a34;
 
   /* Status: Error / Inactive */
   --color-status-error-bg: #ffd9c5;
-  --color-status-error-text: #b13c33;
-  --color-status-error-border: #eaa289;
+  --color-status-error-text: #9e3328;
+  --color-status-error-border: #b86c52;
 
   /* Status: Neutral */
   --color-status-neutral-bg: #e1dff6;
@@ -77,12 +77,12 @@
 
   /* Status: Info */
   --color-status-info-bg: #d8e6f4;
-  --color-status-info-text: #637c93;
+  --color-status-info-text: #506273;
   --color-status-info-border: #b0cde4;
 
   /* Status: Support */
   --color-status-support-bg: #ffe2de;
-  --color-status-support-text: #ab626f;
+  --color-status-support-text: #b13c33;
 
   /* Chart */
   --color-chart-indigo: #312e81;

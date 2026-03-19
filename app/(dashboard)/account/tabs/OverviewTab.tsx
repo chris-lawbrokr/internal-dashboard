@@ -192,6 +192,7 @@ export function OverviewTab() {
                   />
                   <input
                     type="text"
+                    aria-label={tc("search")}
                     placeholder={tc("search")}
                     value={search}
                     onChange={(e) => {
