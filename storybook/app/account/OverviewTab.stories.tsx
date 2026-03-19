@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { OverviewTab } from "@/app/(dashboard)/account/OverviewTab";
+import { OverviewTab } from "@/app/(dashboard)/account/tabs/OverviewTab";
 
 const meta: Meta<typeof OverviewTab> = {
   title: "App/Account/OverviewTab",
