@@ -236,7 +236,7 @@ export function Calendar({
   }, [monthDropdownOpen, yearDropdownOpen]);
 
   return (
-    <div className="w-full min-w-[252px] md:w-[252px]">
+    <div className="w-[252px]">
       {/* Header */}
       <div className="flex items-center justify-between mb-2 px-1">
         {showNav === "left" || showNav === "both" ? (
@@ -909,7 +909,7 @@ export function DateRangePickerWithPresets({
       </button>
 
       {open && (
-        <div className="absolute left-0 right-0 md:left-auto md:right-0 md:w-auto z-50 mt-2 rounded-lg border border-border bg-popover p-2 md:p-4 shadow-lg">
+        <div className="absolute right-0 w-[268px] md:w-auto z-50 mt-2 rounded-lg border border-border bg-popover p-2 md:p-4 shadow-lg">
           {/* Header: range display + action icons */}
           <div className="flex items-center mb-2 pb-2 border-b border-border">
             <span className="flex-1 text-sm text-muted-foreground truncate">
