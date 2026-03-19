@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { UsersTable } from "@/app/ui/UsersTable";
+import { UsersTable } from "@/app/(dashboard)/ui/UsersTable";
 
 const meta: Meta<typeof UsersTable> = {
   title: "App/UI/UsersTable",

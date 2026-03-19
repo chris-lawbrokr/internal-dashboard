@@ -1,4 +1,4 @@
-import { AppShell } from "@/app/ui/AppShell";
+import { AppShell } from "@/app/(dashboard)/ui/AppShell";
 
 export default function DashboardLayout({
   children,

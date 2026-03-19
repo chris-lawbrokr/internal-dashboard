@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Sidebar } from "@/app/ui/Sidebar";
+import { Sidebar } from "@/app/(dashboard)/ui/Sidebar";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(() =>

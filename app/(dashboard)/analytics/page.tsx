@@ -2,10 +2,10 @@
 
 import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
-import { AccountsTable } from "@/app/ui/AccountsTable";
-import { PieChart } from "@/app/ui/PieChart";
-import { LineChart } from "@/app/ui/LineChart";
-import { SparklineChart } from "@/app/ui/SparklineChart";
+import { AccountsTable } from "@/app/(dashboard)/ui/AccountsTable";
+import { PieChart } from "@/app/(dashboard)/ui/PieChart";
+import { LineChart } from "@/app/(dashboard)/ui/LineChart";
+import { SparklineChart } from "@/app/(dashboard)/ui/SparklineChart";
 import { DateRangePickerWithPresets } from "@/components/ui/datepicker";
 
 export default function Dashboard() {

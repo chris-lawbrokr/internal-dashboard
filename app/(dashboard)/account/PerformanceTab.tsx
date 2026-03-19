@@ -4,11 +4,11 @@ import { useTranslations } from "next-intl";
 import {
   ConversionRatesOverPeriodsChart,
   FunnelsTable,
-} from "@/app/ui/PerformanceCharts";
+} from "@/app/(dashboard)/account/ui/PerformanceCharts";
 import { Card, CardContent } from "@/components/ui/card";
-import { LineChart } from "@/app/ui/LineChart";
-import { SparklineChart } from "@/app/ui/SparklineChart";
-import { PieChart } from "@/app/ui/PieChart";
+import { LineChart } from "@/app/(dashboard)/ui/LineChart";
+import { SparklineChart } from "@/app/(dashboard)/ui/SparklineChart";
+import { PieChart } from "@/app/(dashboard)/ui/PieChart";
 
 export function PerformanceTab() {
   const t = useTranslations("dashboard");

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { Header } from "@/app/ui/Header";
+import { Header } from "@/app/(dashboard)/ui/Header";
 
 const meta: Meta<typeof Header> = {
   title: "App/UI/Header",

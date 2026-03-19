@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { UsersWeekChart } from "@/app/ui/UsersWeekChart";
+import { UsersWeekChart } from "@/app/(dashboard)/ui/UsersWeekChart";
 
 const meta: Meta<typeof UsersWeekChart> = {
   title: "App/UI/UsersWeekChart",
