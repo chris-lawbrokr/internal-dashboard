@@ -912,11 +912,12 @@ export function DateRangePickerWithPresets({
         <div className="absolute right-0 w-[268px] md:w-auto z-50 mt-2 rounded-lg border border-border bg-popover p-2 md:p-4 shadow-lg">
           {/* Header: range display + action icons */}
           <div className="flex items-center mb-2 pb-2 border-b border-border">
-            <span className="flex-1 text-sm text-muted-foreground truncate">
+            <span className="hidden md:block flex-1 text-sm text-muted-foreground truncate">
               {startDate ? formatShort(startDate) : t("start")}
               {" — "}
               {endDate ? formatShort(endDate) : t("end")}
             </span>
+            <span className="flex-1 md:hidden min-w-0" />
             {/* Presets dropdown */}
             <div className="relative shrink-0">
               <button

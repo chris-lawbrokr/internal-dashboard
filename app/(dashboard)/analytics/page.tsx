@@ -18,7 +18,7 @@ export default function Dashboard() {
             <h1 className="text-2xl font-bold">
               {t("welcome", { name: "Penelope" })}
             </h1>
-            <div className="w-full @xl:w-auto [&>div]:w-full @xl:[&>div]:w-auto [&>div>button]:w-full @xl:[&>div>button]:w-auto">
+            <div className="w-full @xl:w-auto [&>div]:w-full @xl:[&>div]:w-auto [&>div>button:first-child]:w-full @xl:[&>div>button:first-child]:w-auto">
               <DateRangePickerWithPresets defaultPreset="90d" />
             </div>
           </div>
