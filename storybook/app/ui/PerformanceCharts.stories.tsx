@@ -5,7 +5,7 @@ import {
   ConversionRateCard,
   ConversionRatesOverPeriodsChart,
   FunnelsTable,
-} from "@/app/(dashboard)/account/ui/PerformanceCharts";
+} from "@/app/(dashboard)/ui/PerformanceCharts";
 
 const meta: Meta = {
   title: "App/UI/PerformanceCharts",

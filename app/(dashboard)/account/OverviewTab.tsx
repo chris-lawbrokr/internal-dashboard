@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
-import { GaugeChart } from "@/app/(dashboard)/account/ui/GaugeChart";
+import { GaugeChart } from "@/app/(dashboard)/ui/GaugeChart";
 import {
   Table,
   TableHeader,

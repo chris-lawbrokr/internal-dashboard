@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import {
   ConversionRatesOverPeriodsChart,
   FunnelsTable,
-} from "@/app/(dashboard)/account/ui/PerformanceCharts";
+} from "@/app/(dashboard)/ui/PerformanceCharts";
 import { Card, CardContent } from "@/components/ui/card";
 import { LineChart } from "@/app/(dashboard)/ui/LineChart";
 import { SparklineChart } from "@/app/(dashboard)/ui/SparklineChart";
