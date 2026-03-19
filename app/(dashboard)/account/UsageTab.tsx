@@ -34,7 +34,7 @@ function StatusBadge({ status }: { status: string }) {
 
 function CheckIcon({ checked }: { checked: boolean }) {
   return (
-    <div className={`size-6 rounded-full border flex items-center justify-center ${checked ? "bg-[#ededc7] border-[#bcbc95] text-[#626444]" : "bg-[#ffd9c5] border-[#eaa289] text-[#b13c33]"}`}>
+    <div className={`size-6 shrink-0 rounded-full border flex items-center justify-center ${checked ? "bg-[#ededc7] border-[#bcbc95] text-[#626444]" : "bg-[#ffd9c5] border-[#eaa289] text-[#b13c33]"}`}>
       {checked ? <Check size={14} strokeWidth={2.5} /> : <X size={14} strokeWidth={2.5} />}
     </div>
   );
@@ -257,7 +257,7 @@ export function UsageTab() {
               { label: "At least one integration is connected", checked: false },
               { label: "At least one team member added", checked: true },
             ].map((item, i) => (
-              <div key={i} className="flex items-center justify-between py-3 border-t border-[#e8e8e8]">
+              <div key={i} className="flex items-center justify-between gap-3 py-3 border-t border-[#e8e8e8]">
                 <span className="text-sm">{item.label}</span>
                 <CheckIcon checked={item.checked} />
               </div>

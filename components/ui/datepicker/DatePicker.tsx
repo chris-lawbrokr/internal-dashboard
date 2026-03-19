@@ -236,7 +236,7 @@ export function Calendar({
   }, [monthDropdownOpen, yearDropdownOpen]);
 
   return (
-    <div className="w-[252px]">
+    <div className="w-full md:w-[252px]">
       {/* Header */}
       <div className="flex items-center justify-between mb-2 px-1">
         {showNav === "left" || showNav === "both" ? (
@@ -802,9 +802,7 @@ export function DateRangePickerWithPresets({
   const t = useTranslations("datepicker");
 
   const defaultStart =
-    defaultPreset === "all"
-      ? null
-      : subDays(defaultPreset === "30d" ? 30 : 90);
+    defaultPreset === "all" ? null : subDays(defaultPreset === "30d" ? 30 : 90);
   const defaultEnd = defaultPreset === "all" ? null : today();
 
   const [open, setOpen] = React.useState(false);
@@ -911,7 +909,7 @@ export function DateRangePickerWithPresets({
       </button>
 
       {open && (
-        <div className="absolute right-0 z-50 mt-2 rounded-lg border border-border bg-popover p-2 md:p-4 shadow-lg">
+        <div className="absolute left-0 right-0 md:left-auto md:right-0 md:w-auto z-50 mt-2 rounded-lg border border-border bg-popover p-2 md:p-4 shadow-lg">
           {/* Header: range display + action icons */}
           <div className="flex items-center gap-1 mb-2 pb-2 border-b border-border">
             <span className="flex-1 text-sm text-muted-foreground truncate">
