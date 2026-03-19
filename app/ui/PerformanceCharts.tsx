@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
-import { chartColors } from "@/lib/chart-colors";
+
 import {
   Table,
   TableHeader,
@@ -28,7 +28,7 @@ export function StatCard({ title, value, change, sparkData }: StatCardProps) {
   const tp = useTranslations("performance");
   const options: ApexCharts.ApexOptions = {
     chart: { type: "line", sparkline: { enabled: true } },
-    colors: [chartColors.gray],
+    colors: ["var(--color-chart-gray)"],
     stroke: { curve: "smooth", width: 2 },
     tooltip: { enabled: false },
   };
@@ -61,7 +61,7 @@ export function VisitsResponsesChart() {
   const tc = useTranslations("charts");
   const options: ApexCharts.ApexOptions = {
     chart: { type: "area", toolbar: { show: false } },
-    colors: [chartColors.indigo, chartColors.gold],
+    colors: ["var(--color-chart-indigo)", "var(--color-chart-gold)"],
     stroke: { curve: "smooth", width: 2 },
     fill: {
       type: "gradient",
@@ -82,17 +82,17 @@ export function VisitsResponsesChart() {
         "Jun 26",
         "Jun 27",
       ],
-      labels: { style: { fontSize: "11px", colors: chartColors.label } },
+      labels: { style: { fontSize: "11px", colors: "var(--color-chart-label)" } },
       axisBorder: { show: false },
       axisTicks: { show: false },
     },
     yaxis: {
       labels: {
-        style: { fontSize: "11px", colors: chartColors.label },
+        style: { fontSize: "11px", colors: "var(--color-chart-label)" },
         formatter: (val: number) => `$${(val / 1000).toFixed(0)},000`,
       },
     },
-    grid: { borderColor: chartColors.grid, strokeDashArray: 4 },
+    grid: { borderColor: "var(--color-chart-grid)", strokeDashArray: 4 },
     legend: {
       show: true,
       position: "top",
@@ -132,11 +132,11 @@ export function ConversionRateCard() {
   const tp = useTranslations("performance");
   const options: ApexCharts.ApexOptions = {
     chart: { type: "radialBar" },
-    colors: [chartColors.purple],
+    colors: ["var(--color-chart-purple)"],
     plotOptions: {
       radialBar: {
         hollow: { size: "65%" },
-        track: { background: chartColors.purpleTrack, strokeWidth: "100%" },
+        track: { background: "var(--color-chart-purple-track)", strokeWidth: "100%" },
         dataLabels: {
           name: { show: false },
           value: { show: false },
@@ -176,7 +176,7 @@ export function ConversionRatesOverPeriodsChart() {
   const tc = useTranslations("charts");
   const options: ApexCharts.ApexOptions = {
     chart: { type: "bar", toolbar: { show: false } },
-    colors: [chartColors.primary, chartColors.lavender],
+    colors: ["var(--color-primary)", "var(--color-chart-lavender)"],
     plotOptions: {
       bar: {
         columnWidth: "70%",
@@ -186,7 +186,7 @@ export function ConversionRatesOverPeriodsChart() {
     },
     xaxis: {
       categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-      labels: { style: { fontSize: "11px", colors: chartColors.label } },
+      labels: { style: { fontSize: "11px", colors: "var(--color-chart-label)" } },
       axisBorder: { show: false },
       axisTicks: { show: false },
     },

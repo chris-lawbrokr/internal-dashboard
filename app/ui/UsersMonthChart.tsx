@@ -2,7 +2,6 @@
 
 import dynamic from "next/dynamic";
 import { Card, CardContent } from "@/components/ui/card";
-import { chartColors } from "@/lib/chart-colors";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -13,7 +12,7 @@ export function UsersMonthChart() {
       sparkline: { enabled: true },
       toolbar: { show: false },
     },
-    colors: [chartColors.indigo],
+    colors: ["var(--color-chart-indigo)"],
     stroke: {
       curve: "smooth",
       width: 2,

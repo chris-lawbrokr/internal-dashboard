@@ -2,7 +2,6 @@
 
 import dynamic from "next/dynamic";
 import { Card, CardContent } from "@/components/ui/card";
-import { chartColors } from "@/lib/chart-colors";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -13,7 +12,7 @@ export function LeadsWeekChart() {
       stacked: true,
       toolbar: { show: false },
     },
-    colors: [chartColors.indigo, chartColors.indigoMedium],
+    colors: ["var(--color-chart-indigo)", "var(--color-chart-indigo-medium)"],
     plotOptions: {
       bar: {
         columnWidth: "50%",
@@ -22,7 +21,7 @@ export function LeadsWeekChart() {
     },
     xaxis: {
       categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-      labels: { style: { fontSize: "10px", colors: chartColors.label } },
+      labels: { style: { fontSize: "10px", colors: "var(--color-chart-label)" } },
       axisBorder: { show: false },
       axisTicks: { show: false },
     },

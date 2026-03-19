@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/table/Table";
 import { Badge, type BadgeVariant } from "@/components/ui/badge/Badge";
 import { Search, Filter, Lock, Eye } from "lucide-react";
-import { chartColors } from "@/lib/chart-colors";
 
 const ROLE_CONFIG: Record<string, { variant: BadgeVariant; icon: React.ComponentType<{ size: number }> }> = {
   Admin: { variant: "neutral", icon: Lock },
@@ -130,21 +129,21 @@ export function OverviewTab() {
           title={t("onboardingHealth")}
           label={t("good")}
           value={75}
-          color={chartColors.sage}
+          color="var(--color-chart-sage)"
           href="#"
         />
         <GaugeChart
           title={t("performanceHealth")}
           label={t("fair")}
           value={50}
-          color={chartColors.goldLight}
+          color="var(--color-chart-gold-light)"
           href="#"
         />
         <GaugeChart
           title={t("websiteHealth")}
           label={t("poor")}
           value={25}
-          color={chartColors.coral}
+          color="var(--color-chart-coral)"
           href="#"
         />
       </div>

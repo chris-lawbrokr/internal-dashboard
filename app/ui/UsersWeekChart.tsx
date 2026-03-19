@@ -2,7 +2,6 @@
 
 import dynamic from "next/dynamic";
 import { Card, CardContent } from "@/components/ui/card";
-import { chartColors } from "@/lib/chart-colors";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -13,7 +12,7 @@ export function UsersWeekChart() {
       stacked: true,
       toolbar: { show: false },
     },
-    colors: [chartColors.indigo, chartColors.indigoMedium, chartColors.indigoLight, chartColors.indigoLightest],
+    colors: ["var(--color-chart-indigo)", "var(--color-chart-indigo-medium)", "var(--color-chart-indigo-light)", "var(--color-chart-indigo-lightest)"],
     plotOptions: {
       bar: {
         columnWidth: "50%",
@@ -22,7 +21,7 @@ export function UsersWeekChart() {
     },
     xaxis: {
       categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-      labels: { style: { fontSize: "10px", colors: chartColors.label } },
+      labels: { style: { fontSize: "10px", colors: "var(--color-chart-label)" } },
       axisBorder: { show: false },
       axisTicks: { show: false },
     },
@@ -56,9 +55,9 @@ export function UsersWeekChart() {
       </div>
       <div className="flex items-center gap-3 mt-1">
         {[
-          { label: "Series 1", color: chartColors.indigo },
-          { label: "Series 2", color: chartColors.indigoMedium },
-          { label: "Series 4", color: chartColors.indigoLightest },
+          { label: "Series 1", color: "var(--color-chart-indigo)" },
+          { label: "Series 2", color: "var(--color-chart-indigo-medium)" },
+          { label: "Series 4", color: "var(--color-chart-indigo-lightest)" },
         ].map((item) => (
           <div key={item.label} className="flex items-center gap-1">
             <span

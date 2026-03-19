@@ -2,7 +2,6 @@
 
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
-import { chartColors } from "@/lib/chart-colors";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -15,7 +14,7 @@ export function LineChart() {
       toolbar: { show: false },
       sparkline: { enabled: false },
     },
-    colors: [chartColors.primary, chartColors.tan],
+    colors: ["var(--color-primary)", "var(--color-chart-tan)"],
     stroke: {
       curve: "smooth",
       width: 2,
@@ -31,15 +30,15 @@ export function LineChart() {
     },
     xaxis: {
       categories: ["Jan 19", "Feb 19", "Mar 19", "Apr 19", "May 19", "Jun 19", "Jul 19"],
-      labels: { style: { fontSize: "11px", colors: chartColors.mutedForeground } },
+      labels: { style: { fontSize: "11px", colors: "var(--color-muted-foreground)" } },
       axisBorder: { show: false },
       axisTicks: { show: false },
     },
     yaxis: {
-      labels: { style: { fontSize: "11px", colors: chartColors.mutedForeground } },
+      labels: { style: { fontSize: "11px", colors: "var(--color-muted-foreground)" } },
     },
     grid: {
-      borderColor: chartColors.background,
+      borderColor: "var(--color-background)",
       strokeDashArray: 4,
     },
     legend: { show: false },

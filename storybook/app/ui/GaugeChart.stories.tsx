@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { GaugeChart } from "@/app/ui/GaugeChart";
-import { chartColors } from "@/lib/chart-colors";
 
 const meta: Meta<typeof GaugeChart> = {
   title: "App/UI/GaugeChart",
@@ -26,7 +25,7 @@ export const Default: Story = {
     title: "Onboarding Health",
     label: "Good",
     value: 75,
-    color: chartColors.purpleDark,
+    color: "var(--color-chart-purple-dark)",
   },
 };
 
@@ -35,7 +34,7 @@ export const WithLink: Story = {
     title: "Performance Health",
     label: "Fair",
     value: 50,
-    color: chartColors.purpleMedium,
+    color: "var(--color-chart-purple-medium)",
     href: "#",
   },
 };
@@ -45,7 +44,7 @@ export const Low: Story = {
     title: "Website Health",
     label: "Poor",
     value: 25,
-    color: chartColors.purpleLight,
+    color: "var(--color-chart-purple-light)",
   },
 };
 
@@ -54,7 +53,7 @@ export const Full: Story = {
     title: "System Health",
     label: "Excellent",
     value: 100,
-    color: chartColors.green,
+    color: "var(--color-chart-green)",
   },
 };
 
@@ -63,16 +62,16 @@ export const Empty: Story = {
     title: "No Data",
     label: "N/A",
     value: 0,
-    color: chartColors.label,
+    color: "var(--color-chart-label)",
   },
 };
 
 export const AllVariants: Story = {
   render: () => (
     <div className="flex gap-4">
-      <GaugeChart title="Onboarding Health" label="Good" value={75} color={chartColors.purpleDark} href="#" />
-      <GaugeChart title="Performance Health" label="Fair" value={50} color={chartColors.purpleMedium} href="#" />
-      <GaugeChart title="Website Health" label="Poor" value={25} color={chartColors.purpleLight} href="#" />
+      <GaugeChart title="Onboarding Health" label="Good" value={75} color="var(--color-chart-purple-dark)" href="#" />
+      <GaugeChart title="Performance Health" label="Fair" value={50} color="var(--color-chart-purple-medium)" href="#" />
+      <GaugeChart title="Website Health" label="Poor" value={25} color="var(--color-chart-purple-light)" href="#" />
     </div>
   ),
 };

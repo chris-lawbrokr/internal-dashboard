@@ -2,7 +2,6 @@
 
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
-import { chartColors } from "@/lib/chart-colors";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -14,7 +13,7 @@ export function PieChart() {
       type: "radialBar",
       sparkline: { enabled: true },
     },
-    colors: [chartColors.purple],
+    colors: ["var(--color-chart-purple)"],
     plotOptions: {
       radialBar: {
         hollow: {
