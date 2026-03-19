@@ -208,13 +208,15 @@ export function ConversionRatesOverPeriodsChart() {
   ];
 
   return (
-    <Card className="p-4">
-      <CardContent className="flex flex-col gap-2">
+    <Card className="p-4 h-full">
+      <CardContent className="flex flex-col gap-2 h-full">
         <h3 className="text-base font-semibold">
           {tp("conversionRatesOverPeriods")}
         </h3>
         <div className="border-t" />
-        <Chart options={options} series={series} type="bar" height={320} />
+        <div className="flex-1 min-h-[320px]">
+          <Chart options={options} series={series} type="bar" height="100%" />
+        </div>
       </CardContent>
     </Card>
   );
