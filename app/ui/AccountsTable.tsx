@@ -104,7 +104,6 @@ export function AccountsTable() {
 
   return (
     <Table
-      wrapperClassName="shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.05)]"
       toolbar={
         <div className="flex flex-col @md/table:flex-row @md/table:items-center justify-between">
           <div className="relative">

@@ -183,7 +183,6 @@ export function OverviewTab() {
         {/* Users Table */}
         <div className="flex-1 min-w-0 @[1100px]:basis-1/2">
           <Table
-            wrapperClassName="shadow-[0_1px_2px_0_rgba(29,41,61,0.05)]"
             toolbar={
               <div className="flex flex-col @md/table:flex-row @md/table:items-center justify-between gap-4">
                 <div className="relative">

@@ -50,7 +50,7 @@ export const Table = React.forwardRef<
     return (
       <div
         className={cn(
-          "relative w-full min-w-0 rounded-xl bg-card text-card-foreground shadow-[0_1px_2px_0_rgba(29,41,61,0.05)] @container/table",
+          "relative w-full min-w-0 rounded-xl bg-card text-card-foreground shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.05)] @container/table",
           wrapperClassName,
         )}
       >
