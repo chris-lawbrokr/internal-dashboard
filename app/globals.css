@@ -62,8 +62,8 @@
 
   /* Status: Warning / Review */
   --color-status-warning-bg: #fff2cf;
-  --color-status-warning-text: #a56737;
-  --color-status-warning-border: #daad75;
+  --color-status-warning-text: #8f5529;
+  --color-status-warning-border: #ae8343;
   --color-status-caution-text: #8c5a34;
 
   /* Status: Error / Inactive */
