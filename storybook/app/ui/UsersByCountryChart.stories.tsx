@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { UsersByCountryChart } from "@/app/(dashboard)/ui/UsersByCountryChart";
+import { UsersByCountryChart } from "@/app/(dashboard)/ui/charts/UsersByCountryChart";
 
 const meta: Meta<typeof UsersByCountryChart> = {
   title: "App/UI/UsersByCountryChart",

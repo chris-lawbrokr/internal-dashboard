@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { LineChart } from "@/app/(dashboard)/ui/LineChart";
+import { LineChart } from "@/app/(dashboard)/ui/charts/LineChart";
 
 const meta: Meta<typeof LineChart> = {
   title: "App/UI/LineChart",

@@ -6,9 +6,9 @@ import {
   FunnelsTable,
 } from "@/app/(dashboard)/ui/PerformanceCharts";
 import { Card, CardContent } from "@/components/ui/card";
-import { LineChart } from "@/app/(dashboard)/ui/LineChart";
-import { SparklineChart } from "@/app/(dashboard)/ui/SparklineChart";
-import { PieChart } from "@/app/(dashboard)/ui/PieChart";
+import { LineChart } from "@/app/(dashboard)/ui/charts/LineChart";
+import { SparklineChart } from "@/app/(dashboard)/ui/charts/SparklineChart";
+import { PieChart } from "@/app/(dashboard)/ui/charts/PieChart";
 
 export function PerformanceTab() {
   const t = useTranslations("dashboard");

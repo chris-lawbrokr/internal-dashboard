@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { GaugeChart } from "@/app/(dashboard)/ui/GaugeChart";
+import { GaugeChart } from "@/app/(dashboard)/ui/charts/GaugeChart";
 
 const meta: Meta<typeof GaugeChart> = {
   title: "App/UI/GaugeChart",

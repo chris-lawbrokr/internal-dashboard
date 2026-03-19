@@ -3,9 +3,9 @@
 import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import { AccountsTable } from "@/app/(dashboard)/ui/AccountsTable";
-import { PieChart } from "@/app/(dashboard)/ui/PieChart";
-import { LineChart } from "@/app/(dashboard)/ui/LineChart";
-import { SparklineChart } from "@/app/(dashboard)/ui/SparklineChart";
+import { PieChart } from "@/app/(dashboard)/ui/charts/PieChart";
+import { LineChart } from "@/app/(dashboard)/ui/charts/LineChart";
+import { SparklineChart } from "@/app/(dashboard)/ui/charts/SparklineChart";
 import { DateRangePickerWithPresets } from "@/components/ui/datepicker";
 
 export default function Dashboard() {
