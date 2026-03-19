@@ -13,24 +13,15 @@ import {
   TableCell,
   TablePagination,
 } from "@/components/ui/table/Table";
+import { Badge, type BadgeVariant } from "@/components/ui/badge/Badge";
 import { Search, Filter, Lock, Eye } from "lucide-react";
 import { chartColors } from "@/lib/chart-colors";
 
-const ROLE_STYLES: Record<
-  string,
-  { bg: string; text: string; border: string }
-> = {
-  Admin: { bg: "var(--color-status-neutral-bg)", text: "var(--color-brand-dark)", border: "var(--color-status-neutral-border)" },
-  Internal: { bg: "var(--color-status-warning-bg)", text: "var(--color-status-warning-text)", border: "var(--color-status-warning-border)" },
-  Agency: { bg: "var(--color-status-info-bg)", text: "var(--color-status-info-text)", border: "var(--color-status-info-border)" },
-  Support: { bg: "var(--color-status-support-bg)", text: "var(--color-status-support-text)", border: "var(--color-status-error-border)" },
-};
-
-const ROLE_ICONS: Record<string, React.ComponentType<{ size: number }>> = {
-  Admin: Lock,
-  Internal: Eye,
-  Agency: Eye,
-  Support: Eye,
+const ROLE_CONFIG: Record<string, { variant: BadgeVariant; icon: React.ComponentType<{ size: number }> }> = {
+  Admin: { variant: "neutral", icon: Lock },
+  Internal: { variant: "warning", icon: Eye },
+  Agency: { variant: "info", icon: Eye },
+  Support: { variant: "support", icon: Eye },
 };
 
 const users = [
@@ -99,41 +90,12 @@ const users = [
 const PAGE_SIZE = 5;
 
 function RoleBadge({ role }: { role: string }) {
-  const style = ROLE_STYLES[role] || ROLE_STYLES.Admin;
-  const Icon = ROLE_ICONS[role] || Eye;
+  const config = ROLE_CONFIG[role] || ROLE_CONFIG.Admin;
+  const Icon = config.icon;
   return (
-    <span
-      className="inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-medium"
-      style={{
-        backgroundColor: style.bg,
-        color: style.text,
-        borderColor: style.border,
-      }}
-    >
-      <Icon size={12} />
+    <Badge variant={config.variant} icon={<Icon size={12} />}>
       {role}
-    </span>
-  );
-}
-
-function TagBadge({
-  label,
-  bg,
-  text,
-  border,
-}: {
-  label: string;
-  bg: string;
-  text: string;
-  border: string;
-}) {
-  return (
-    <span
-      className="inline-flex items-center rounded-md border px-2.5 py-1 text-xs font-medium"
-      style={{ backgroundColor: bg, color: text, borderColor: border }}
-    >
-      {label}
-    </span>
+    </Badge>
   );
 }
 
@@ -306,12 +268,7 @@ export function OverviewTab() {
               {t("practiceAreas")}
             </h3>
             <div className="flex flex-wrap gap-2">
-              <TagBadge
-                label="Practice area"
-                bg="var(--color-status-info-bg)"
-                text="var(--color-status-info-text)"
-                border="var(--color-status-info-border)"
-              />
+              <Badge variant="info" className="px-2.5 py-1">Practice area</Badge>
             </div>
           </CardContent>
         </Card>
@@ -321,12 +278,7 @@ export function OverviewTab() {
               {t("integrations")}
             </h3>
             <div className="flex flex-wrap gap-2">
-              <TagBadge
-                label="Integration"
-                bg="var(--color-status-success-bg)"
-                text="var(--color-status-success-text)"
-                border="var(--color-status-success-border)"
-              />
+              <Badge variant="success" className="px-2.5 py-1">Integration</Badge>
             </div>
           </CardContent>
         </Card>
@@ -336,12 +288,7 @@ export function OverviewTab() {
               {t("techStack")}
             </h3>
             <div className="flex flex-wrap gap-2">
-              <TagBadge
-                label="Tech platform"
-                bg="var(--color-status-neutral-bg)"
-                text="var(--color-brand-dark)"
-                border="var(--color-status-neutral-border)"
-              />
+              <Badge variant="neutral" className="px-2.5 py-1">Tech platform</Badge>
             </div>
           </CardContent>
         </Card>
@@ -351,12 +298,7 @@ export function OverviewTab() {
               {t("lawbrokrFeatures")}
             </h3>
             <div className="flex flex-wrap gap-2">
-              <TagBadge
-                label="Feature"
-                bg="var(--color-status-neutral-bg)"
-                text="var(--color-brand-dark)"
-                border="var(--color-status-neutral-border)"
-              />
+              <Badge variant="neutral" className="px-2.5 py-1">Feature</Badge>
             </div>
           </CardContent>
         </Card>

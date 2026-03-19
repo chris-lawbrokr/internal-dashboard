@@ -11,40 +11,7 @@ import {
   TableCell,
   TablePagination,
 } from "@/components/ui/table/Table";
-import { Check, X } from "lucide-react";
-
-// ── Status badge ─────────────────────────────────────────────────────
-
-function StatusBadge({ status }: { status: string }) {
-  const styles: Record<string, { bg: string; text: string; border: string }> = {
-    Active: { bg: "var(--color-status-success-bg)", text: "var(--color-status-success-text)", border: "var(--color-status-success-border)" },
-    Inactive: { bg: "var(--color-status-error-bg)", text: "var(--color-status-error-text)", border: "var(--color-status-error-border)" },
-    Review: { bg: "var(--color-status-warning-bg)", text: "var(--color-status-warning-text)", border: "var(--color-status-warning-border)" },
-  };
-  const s = styles[status] || styles.Active;
-  return (
-    <span
-      className="inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-medium"
-      style={{ backgroundColor: s.bg, color: s.text, borderColor: s.border }}
-    >
-      {status}
-    </span>
-  );
-}
-
-function CheckIcon({ checked }: { checked: boolean }) {
-  return (
-    <div
-      className={`size-6 shrink-0 rounded-full border flex items-center justify-center ${checked ? "bg-status-success-bg border-status-success-border text-status-success-text" : "bg-status-error-bg border-status-error-border text-status-error-text"}`}
-    >
-      {checked ? (
-        <Check size={14} strokeWidth={2.5} />
-      ) : (
-        <X size={14} strokeWidth={2.5} />
-      )}
-    </div>
-  );
-}
+import { Badge, StatusIcon } from "@/components/ui/badge/Badge";
 
 // ── Data ─────────────────────────────────────────────────────────────
 
@@ -166,7 +133,11 @@ function TableSection({
           <TableRow key={i} className="border-b border-background last:border-0">
             {row.map((cell, j) => (
               <TableCell key={j} className="py-2.5 px-2 whitespace-nowrap">
-                {headers[j] === "Status" ? <StatusBadge status={cell} /> : cell}
+                {headers[j] === "Status" ? (
+                  <Badge variant={cell === "Active" ? "success" : cell === "Inactive" ? "error" : "warning"}>
+                    {cell}
+                  </Badge>
+                ) : cell}
               </TableCell>
             ))}
           </TableRow>
@@ -247,23 +218,21 @@ function AccountUsersTable() {
               {user.lastVisit}
             </TableCell>
             <TableCell className="py-3 px-2 whitespace-nowrap">
-              <span className="inline-flex items-center rounded-md border border-status-neutral-border bg-status-neutral-bg text-brand-dark px-2 py-0.5 text-xs font-medium">
-                {user.latestInteractions}
-              </span>
+              <Badge variant="neutral">{user.latestInteractions}</Badge>
             </TableCell>
             <TableCell className="py-3 px-2">
               <div className="flex justify-center">
-                <CheckIcon checked={user.leadNotifications} />
+                <StatusIcon variant={user.leadNotifications ? "success" : "error"} />
               </div>
             </TableCell>
             <TableCell className="py-3 px-2">
               <div className="flex justify-center">
-                <CheckIcon checked={user.integrationNotifications} />
+                <StatusIcon variant={user.integrationNotifications ? "success" : "error"} />
               </div>
             </TableCell>
             <TableCell className="py-3 px-2">
               <div className="flex justify-center">
-                <CheckIcon checked={user.platformNotifications} />
+                <StatusIcon variant={user.platformNotifications ? "success" : "error"} />
               </div>
             </TableCell>
           </TableRow>
@@ -304,7 +273,7 @@ export function UsageTab() {
                 className="flex items-center justify-between gap-3 py-3 border-t border-border-light"
               >
                 <span className="text-sm">{item.label}</span>
-                <CheckIcon checked={item.checked} />
+                <StatusIcon variant={item.checked ? "success" : "error"} />
               </div>
             ))}
           </CardContent>
@@ -317,10 +286,7 @@ export function UsageTab() {
             <Card className="flex-1 p-5">
               <CardContent className="flex flex-col justify-center gap-2">
                 <p className="text-sm text-muted-foreground">Account Status</p>
-                <span className="inline-flex items-center gap-1.5 self-start rounded-lg border px-2 py-1 text-xs font-bold border-status-success-border bg-status-success-bg text-status-success-text">
-                  <span className="h-1.5 w-1.5 rounded-full bg-status-success-text" />
-                  Active
-                </span>
+                <Badge variant="success" dot className="gap-1.5 self-start rounded-lg px-2 py-1 font-bold">Active</Badge>
               </CardContent>
             </Card>
             <Card className="flex-1 p-5">

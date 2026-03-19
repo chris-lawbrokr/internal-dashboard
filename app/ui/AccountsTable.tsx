@@ -14,14 +14,13 @@ import {
 import {
   Search,
   X,
-  Check,
   ChevronDown,
-  AlertCircle,
   SlidersHorizontal,
   ArrowUpDown,
 } from "lucide-react";
+import { Badge, StatusIcon } from "@/components/ui/badge/Badge";
 
-type StatusIcon = "check" | "warning" | "error";
+type HealthStatus = "success" | "warning" | "error";
 
 interface Account {
   id: number;
@@ -31,9 +30,9 @@ interface Account {
   totalResponses: number;
   conversionRate: number;
   status: "Active" | "Inactive";
-  onboarding: StatusIcon;
-  performance: StatusIcon;
-  websiteHealth: StatusIcon;
+  onboarding: HealthStatus;
+  performance: HealthStatus;
+  websiteHealth: HealthStatus;
 }
 
 function seededRandom(seed: number) {
@@ -41,7 +40,7 @@ function seededRandom(seed: number) {
   return x - Math.floor(x);
 }
 
-const statusIcons: StatusIcon[] = ["check", "warning", "error"];
+const statusIcons: HealthStatus[] = ["success", "warning", "error"];
 
 const fakeAccounts: Account[] = Array.from({ length: 100 }, (_, i) => {
   const r = seededRandom(i + 1);
@@ -61,42 +60,6 @@ const fakeAccounts: Account[] = Array.from({ length: 100 }, (_, i) => {
 });
 
 const PAGE_SIZE = 10;
-
-function StatusBadge({ status }: { status: "Active" | "Inactive" }) {
-  return (
-    <span
-      className={`inline-flex items-center rounded-md px-2 py-1 text-sm font-medium border ${
-        status === "Active"
-          ? "bg-status-success-bg text-status-success-text border-status-success-border"
-          : "bg-status-error-bg text-status-error-text border-status-error-border"
-      }`}
-    >
-      {status}
-    </span>
-  );
-}
-
-function StatusIconCell({ icon }: { icon: StatusIcon }) {
-  const styles = {
-    check: "bg-status-success-bg border-status-success-border text-status-success-text",
-    warning: "bg-status-warning-bg border-status-warning-border text-status-caution-text",
-    error: "bg-status-error-bg border-status-error-border text-status-error-text",
-  };
-
-  const icons = {
-    check: <Check size={14} strokeWidth={2.5} />,
-    warning: <AlertCircle size={14} strokeWidth={2} />,
-    error: <X size={14} strokeWidth={2.5} />,
-  };
-
-  return (
-    <div
-      className={`inline-flex items-center justify-center size-6 rounded-full border ${styles[icon]}`}
-    >
-      {icons[icon]}
-    </div>
-  );
-}
 
 type SortField = "totalVisits" | "totalResponses" | "conversionRate";
 type SortDir = "asc" | "desc";
@@ -259,21 +222,23 @@ export function AccountsTable() {
               {account.conversionRate.toLocaleString()}
             </TableCell>
             <TableCell>
-              <StatusBadge status={account.status} />
+              <Badge variant={account.status === "Active" ? "success" : "error"} className="px-2 py-1 text-sm">
+                {account.status}
+              </Badge>
             </TableCell>
             <TableCell className="text-center">
               <div className="flex justify-center">
-                <StatusIconCell icon={account.onboarding} />
+                <StatusIcon variant={account.onboarding} />
               </div>
             </TableCell>
             <TableCell className="text-center">
               <div className="flex justify-center">
-                <StatusIconCell icon={account.performance} />
+                <StatusIcon variant={account.performance} />
               </div>
             </TableCell>
             <TableCell className="text-center">
               <div className="flex justify-center">
-                <StatusIconCell icon={account.websiteHealth} />
+                <StatusIcon variant={account.websiteHealth} />
               </div>
             </TableCell>
           </TableRow>

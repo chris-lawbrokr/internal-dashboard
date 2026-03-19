@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -12,6 +12,7 @@ import {
   TableCell,
   TablePagination,
 } from "@/components/ui/table/Table";
+import { Badge } from "@/components/ui/badge/Badge";
 import {
   Check,
   AlertCircle,
@@ -53,38 +54,11 @@ const links: LawbrokrLink[] = Array.from({ length: 100 }, (_, i) => ({
   )[i % 6],
 }));
 
-function StatusBadge({ status }: { status: LinkStatus }) {
-  const t = useTranslations("website");
-  const statusKeyMap: Record<LinkStatus, string> = {
-    Active: "active",
-    Review: "review",
-    Broken: "broken",
-  };
-
-  const config = {
-    Active: {
-      icon: <Check size={12} />,
-      className: "border-status-success-border bg-status-success-bg text-status-success-text",
-    },
-    Review: {
-      icon: <AlertCircle size={12} />,
-      className: "border-status-warning-border bg-status-warning-bg text-status-caution-text",
-    },
-    Broken: {
-      icon: <X size={12} />,
-      className: "border-status-error-border bg-status-error-bg text-status-error-text",
-    },
-  }[status];
-
-  return (
-    <span
-      className={`inline-flex items-center gap-1 rounded-lg border px-2.5 py-0.5 text-xs font-medium ${config.className}`}
-    >
-      {config.icon}
-      {t(statusKeyMap[status])}
-    </span>
-  );
-}
+const statusConfig: Record<LinkStatus, { variant: "success" | "caution" | "error"; icon: ReactNode; labelKey: string }> = {
+  Active: { variant: "success", icon: <Check size={12} />, labelKey: "active" },
+  Review: { variant: "caution", icon: <AlertCircle size={12} />, labelKey: "review" },
+  Broken: { variant: "error", icon: <X size={12} />, labelKey: "broken" },
+};
 
 function StatusCard({
   label,
@@ -122,37 +96,23 @@ export function WebsiteTab() {
       {/* Top stat cards – row 1 */}
       <div className="grid grid-cols-1 gap-4 @xl:grid-cols-4">
         <StatusCard label={t("websiteStatus")}>
-          <span className="inline-flex items-center gap-1.5 self-start rounded-lg border px-2 py-1 text-xs font-bold border-status-success-border bg-status-success-bg text-status-success-text">
-            <span className="h-1.5 w-1.5 rounded-full bg-status-success-text" />
-            {t("live")}
-          </span>
+          <Badge variant="success" dot className="gap-1.5 self-start rounded-lg px-2 py-1 font-bold">{t("live")}</Badge>
         </StatusCard>
 
         <StatusCard label={t("sourceAttribution")}>
-          <span className="inline-flex items-center gap-1.5 self-start rounded-lg border px-2 py-1 text-xs font-bold border-status-success-border bg-status-success-bg text-status-success-text">
-            <span className="h-1.5 w-1.5 rounded-full bg-status-success-text" />
-            {t("enabled")}
-          </span>
+          <Badge variant="success" dot className="gap-1.5 self-start rounded-lg px-2 py-1 font-bold">{t("enabled")}</Badge>
         </StatusCard>
 
         <StatusCard label={t("linkStatus")}>
-          <span className="inline-flex items-center gap-1.5 self-start rounded-lg border px-2 py-1 text-xs font-bold border-status-error-border bg-status-error-bg text-status-error-text">
-            <span className="h-1.5 w-1.5 rounded-full bg-status-error-text" />
-            {t("down")}
-          </span>
+          <Badge variant="error" dot className="gap-1.5 self-start rounded-lg px-2 py-1 font-bold">{t("down")}</Badge>
         </StatusCard>
 
         <StatusCard label={t("activeIntegrations")} className="row-span-2">
-          <span className="inline-flex items-center bg-status-neutral-bg gap-1.5 self-start rounded-md border border-border-purple px-2 py-1 text-xs font-bold">
-            Scorpion
-          </span>
+          <Badge variant="neutral" className="gap-1.5 self-start px-2 py-1 font-bold border-border-purple">Scorpion</Badge>
         </StatusCard>
 
         <StatusCard label={t("sslStatus")}>
-          <span className="inline-flex items-center gap-1.5 self-start rounded-lg border px-2 py-1 text-xs font-bold border-status-success-border bg-status-success-bg text-status-success-text">
-            <span className="h-1.5 w-1.5 rounded-full bg-status-success-text" />
-            {t("enabled")}
-          </span>
+          <Badge variant="success" dot className="gap-1.5 self-start rounded-lg px-2 py-1 font-bold">{t("enabled")}</Badge>
         </StatusCard>
 
         <StatusCard label={t("websiteLoadTime")}>
@@ -210,7 +170,7 @@ export function WebsiteTab() {
                 {link.lawbrokrUrl}
               </TableCell>
               <TableCell className="py-0 pl-5 pr-10 text-right">
-                <StatusBadge status={link.status} />
+                <Badge variant={statusConfig[link.status].variant} icon={statusConfig[link.status].icon}>{t(statusConfig[link.status].labelKey)}</Badge>
               </TableCell>
             </TableRow>
           ))}
