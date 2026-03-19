@@ -236,7 +236,7 @@ export function Calendar({
   }, [monthDropdownOpen, yearDropdownOpen]);
 
   return (
-    <div className="w-full md:w-[252px]">
+    <div className="w-full min-w-[252px] md:w-[252px]">
       {/* Header */}
       <div className="flex items-center justify-between mb-2 px-1">
         {showNav === "left" || showNav === "both" ? (
@@ -340,7 +340,7 @@ export function Calendar({
         {weekdays.map((wd) => (
           <div
             key={wd}
-            className="h-8 flex items-center justify-center text-xs text-muted-foreground font-medium"
+            className="h-8 min-w-9 flex items-center justify-center text-xs text-muted-foreground font-medium"
           >
             {wd}
           </div>
@@ -365,7 +365,7 @@ export function Calendar({
               type="button"
               onClick={() => onDateSelect(cellDate)}
               className={cn(
-                "h-9 w-full mx-auto flex items-center justify-center text-sm cursor-pointer",
+                "h-9 min-w-9 w-full mx-auto flex items-center justify-center text-sm cursor-pointer",
                 !cell.isCurrentMonth && "text-muted-foreground/40",
                 cell.isCurrentMonth &&
                   !isSelected &&
@@ -486,7 +486,7 @@ export function DatePicker({
             align === "right" ? "right-0" : "left-0",
           )}
         >
-          <div className="flex items-center gap-1 mb-2 pb-2 border-b border-border">
+          <div className="flex items-center mb-2 pb-2 border-b border-border">
             <span className="hidden md:block flex-1 text-sm text-muted-foreground truncate">
               {value ? formatDate(value) : t("noDateSelected")}
             </span>
@@ -494,7 +494,7 @@ export function DatePicker({
             <button
               type="button"
               onClick={handleToday}
-              className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer"
+              className="h-7 w-7 min-h-7 min-w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
               aria-label={t("today")}
               title={t("today")}
             >
@@ -503,7 +503,7 @@ export function DatePicker({
             <button
               type="button"
               onClick={handleClear}
-              className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer"
+              className="h-7 w-7 min-h-7 min-w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
               aria-label={t("clear")}
               title={t("clear")}
             >
@@ -512,7 +512,7 @@ export function DatePicker({
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer"
+              className="h-7 w-7 min-h-7 min-w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
               aria-label={t("closeDatePicker")}
               title={t("closeDatePicker")}
             >
@@ -667,7 +667,7 @@ export function DateRangePicker({
             align === "right" ? "right-0" : "left-0",
           )}
         >
-          <div className="flex items-center gap-1 mb-2 pb-2 border-b border-border">
+          <div className="flex items-center mb-2 pb-2 border-b border-border">
             <span className="hidden md:block flex-1 text-sm text-muted-foreground truncate">
               {startDate ? formatDate(startDate) : t("start")}
               {" — "}
@@ -677,7 +677,7 @@ export function DateRangePicker({
             <button
               type="button"
               onClick={handleToday}
-              className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
+              className="h-7 w-7 min-h-7 min-w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
               aria-label={t("today")}
               title={t("today")}
             >
@@ -686,7 +686,7 @@ export function DateRangePicker({
             <button
               type="button"
               onClick={handleClear}
-              className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
+              className="h-7 w-7 min-h-7 min-w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
               aria-label={t("clear")}
               title={t("clear")}
             >
@@ -695,7 +695,7 @@ export function DateRangePicker({
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
+              className="h-7 w-7 min-h-7 min-w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
               aria-label={t("closeDatePicker")}
               title={t("closeDatePicker")}
             >
@@ -903,15 +903,15 @@ export function DateRangePickerWithPresets({
           !disabled && "cursor-pointer",
         )}
       >
-        <CalendarIcon className="h-3.5 w-3.5" />
-        {label}
-        <ChevronDown className="h-3.5 w-3.5 ml-auto" />
+        <CalendarIcon className="h-3.5 w-3.5 shrink-0" />
+        <span className="truncate">{label}</span>
+        <ChevronDown className="h-3.5 w-3.5 shrink-0 ml-auto" />
       </button>
 
       {open && (
         <div className="absolute left-0 right-0 md:left-auto md:right-0 md:w-auto z-50 mt-2 rounded-lg border border-border bg-popover p-2 md:p-4 shadow-lg">
           {/* Header: range display + action icons */}
-          <div className="flex items-center gap-1 mb-2 pb-2 border-b border-border">
+          <div className="flex items-center mb-2 pb-2 border-b border-border">
             <span className="flex-1 text-sm text-muted-foreground truncate">
               {startDate ? formatShort(startDate) : t("start")}
               {" — "}
@@ -923,7 +923,7 @@ export function DateRangePickerWithPresets({
                 type="button"
                 onClick={() => setPresetsOpen((o) => !o)}
                 className={cn(
-                  "h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer",
+                  "h-7 w-7 min-h-7 min-w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer",
                   presetsOpen && "bg-muted",
                 )}
                 aria-label="Presets"
@@ -952,7 +952,7 @@ export function DateRangePickerWithPresets({
             <button
               type="button"
               onClick={handleToday}
-              className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
+              className="h-7 w-7 min-h-7 min-w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
               aria-label={t("today")}
               title={t("today")}
             >
@@ -961,7 +961,7 @@ export function DateRangePickerWithPresets({
             <button
               type="button"
               onClick={handleClear}
-              className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
+              className="h-7 w-7 min-h-7 min-w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
               aria-label={t("clear")}
               title={t("clear")}
             >
@@ -973,7 +973,7 @@ export function DateRangePickerWithPresets({
                 setOpen(false);
                 setPresetsOpen(false);
               }}
-              className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
+              className="h-7 w-7 min-h-7 min-w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
               aria-label={t("closeDatePicker")}
               title={t("closeDatePicker")}
             >
