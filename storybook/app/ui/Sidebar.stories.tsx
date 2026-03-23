@@ -22,7 +22,7 @@ type Story = StoryObj<typeof Sidebar>;
 export const Default: Story = {
   render: () => (
     <div className="relative h-[500px]">
-      <Sidebar open={true} onToggle={() => {}} />
+      <Sidebar />
     </div>
   ),
 };
