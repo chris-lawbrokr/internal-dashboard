@@ -25,6 +25,7 @@ interface NavItem {
   labelKey: string;
   href: string;
   icon: LucideIcon;
+  disabled?: boolean;
 }
 
 const navItems: NavItem[] = [
@@ -35,6 +36,7 @@ const navItems: NavItem[] = [
     labelKey: "analytics",
     href: "/analytics",
     icon: BarChart3,
+    disabled: true,
   },
 ];
 
@@ -95,6 +97,18 @@ export function Sidebar() {
             item.href === "/"
               ? pathname === "/"
               : pathname.startsWith(item.href);
+          if (item.disabled) {
+            return (
+              <span
+                key={item.id}
+                className="p-1.5 rounded-lg text-muted-foreground/40 cursor-not-allowed"
+                aria-label={t(item.labelKey)}
+                title={t(item.labelKey)}
+              >
+                <item.icon size={20} />
+              </span>
+            );
+          }
           return (
             <Link
               key={item.id}
@@ -169,6 +183,17 @@ export function Sidebar() {
             item.href === "/"
               ? pathname === "/"
               : pathname.startsWith(item.href);
+          if (item.disabled) {
+            return (
+              <span
+                key={item.id}
+                className="flex items-center gap-1.5 rounded-xl px-2 py-1.5 text-base whitespace-nowrap text-muted-foreground/40 cursor-not-allowed"
+              >
+                <item.icon size={20} />
+                {t(item.labelKey)}
+              </span>
+            );
+          }
           return (
             <Link
               key={item.id}
