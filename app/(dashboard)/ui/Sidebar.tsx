@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState as useLocalState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -38,16 +38,14 @@ const navItems: NavItem[] = [
   },
 ];
 
-export function Sidebar({
-  open,
-  onToggle,
-}: {
-  open: boolean;
-  onToggle: () => void;
-}) {
+export function Sidebar() {
   const pathname = usePathname();
   const t = useTranslations("nav");
-  const [isMobile, setIsMobile] = useLocalState(false);
+  const [open, setOpen] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth >= 768 : true,
+  );
+  const [isMobile, setIsMobile] = useState(false);
+  const onToggle = () => setOpen((o) => !o);
   const openRef = useRef(open);
   openRef.current = open;
 
