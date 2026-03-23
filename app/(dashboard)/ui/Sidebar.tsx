@@ -29,7 +29,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { id: "home", labelKey: "home", href: "/", icon: Home },
-  { id: "account", labelKey: "accounts", href: "/account", icon: Users },
+  { id: "accounts", labelKey: "accounts", href: "/accounts", icon: Users },
   {
     id: "analytics",
     labelKey: "analytics",

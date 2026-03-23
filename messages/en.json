@@ -34,6 +34,20 @@
     "forgotPassword": "Forgot password?",
     "signIn": "Sign in"
   },
+  "accounts": {
+    "title": "Accounts",
+    "searchAccounts": "Search for accounts",
+    "accountName": "Account Name",
+    "website": "Website",
+    "employee": "Employee",
+    "location": "Location",
+    "totalVisits": "Total Visits",
+    "totalResponses": "Total Responses",
+    "conversionRate": "Conversion Rate",
+    "nextPaymentDue": "Next Payment Due",
+    "onboarding": "Onboarding",
+    "performance": "Performance"
+  },
   "account": {
     "back": "Back",
     "overview": "Overview",
