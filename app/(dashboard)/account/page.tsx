@@ -18,9 +18,9 @@ export default function Dashboard() {
   const t = useTranslations("account");
 
   return (
-    <>
+    <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 pb-4">
             <Link
               href="/"
               className="self-start flex items-center gap-1.5 rounded-xl border border-border px-3 py-1.5 text-sm hover:bg-muted cursor-pointer"
@@ -39,7 +39,7 @@ export default function Dashboard() {
           </div>
 
           {/* Tabs – dropdown on mobile, inline tabs on desktop */}
-          <div className="relative @xl:hidden">
+          <div className="relative @xl:hidden pb-4">
             <select
               value={activeTab}
               onChange={(e) => setActiveTab(e.target.value)}
@@ -56,7 +56,7 @@ export default function Dashboard() {
               className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none h-3.5 w-3.5"
             />
           </div>
-          <div className="hidden @xl:flex gap-6 border-b border-border">
+          <div className="hidden @xl:flex gap-6 border-b border-border mb-4">
             {tabKeys.map((tabKey) => (
               <button
                 key={tabKey}
@@ -73,10 +73,12 @@ export default function Dashboard() {
             ))}
           </div>
 
+      <div className="overflow-y-auto min-h-0 flex-1 flex flex-col gap-4 pb-2">
           {activeTab === "overview" && <OverviewTab />}
           {activeTab === "performance" && <PerformanceTab />}
           {activeTab === "website" && <WebsiteTab />}
           {activeTab === "usage" && <UsageTab />}
-    </>
+      </div>
+    </div>
   );
 }
