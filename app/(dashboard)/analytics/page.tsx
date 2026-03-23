@@ -12,9 +12,9 @@ export default function Dashboard() {
   const t = useTranslations("dashboard");
 
   return (
-    <>
+    <div className="flex flex-col h-full">
           {/* Welcome + Date Filter */}
-          <div className="flex flex-col @xl:flex-row @xl:items-center justify-between gap-4">
+          <div className="flex flex-col @xl:flex-row @xl:items-center justify-between gap-4 pb-4">
             <h1 className="text-2xl font-bold">
               {t("welcome", { name: "Penelope" })}
             </h1>
@@ -23,6 +23,7 @@ export default function Dashboard() {
             </div>
           </div>
 
+      <div className="overflow-y-auto min-h-0 flex-1 flex flex-col gap-4 pb-2">
           {/* Stats Row */}
           <div className="flex flex-col gap-4 @xl:flex-row">
             {/* Left: Stacked stat cards */}
@@ -98,6 +99,7 @@ export default function Dashboard() {
 
           {/* Accounts Table */}
           <AccountsTable />
-    </>
+      </div>
+    </div>
   );
 }
