@@ -68,7 +68,7 @@ const fakeAccounts: Account[] = Array.from({ length: 100 }, (_, i) => {
   };
 });
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 20;
 
 type SortField = "totalVisits" | "totalResponses" | "conversionRate";
 type SortDir = "asc" | "desc";
@@ -191,10 +191,18 @@ export default function AccountsPage() {
         >
           <TableHeader>
             <TableRow className="border-b border-border">
-              <TableHead className="whitespace-nowrap">{t("accountName")}</TableHead>
-              <TableHead className="whitespace-nowrap">{t("website")}</TableHead>
-              <TableHead className="whitespace-nowrap">{t("employee")}</TableHead>
-              <TableHead className="whitespace-nowrap">{t("location")}</TableHead>
+              <TableHead className="whitespace-nowrap">
+                {t("accountName")}
+              </TableHead>
+              <TableHead className="whitespace-nowrap">
+                {t("website")}
+              </TableHead>
+              <TableHead className="whitespace-nowrap">
+                {t("employee")}
+              </TableHead>
+              <TableHead className="whitespace-nowrap">
+                {t("location")}
+              </TableHead>
               <TableHead className="whitespace-nowrap">
                 <button
                   type="button"
@@ -225,11 +233,21 @@ export default function AccountsPage() {
                   <ArrowUpDown size={14} />
                 </button>
               </TableHead>
-              <TableHead className="whitespace-nowrap">{t("nextPaymentDue")}</TableHead>
-              <TableHead className="whitespace-nowrap">{tc("status")}</TableHead>
-              <TableHead className="whitespace-nowrap text-center">{t("onboarding")}</TableHead>
-              <TableHead className="whitespace-nowrap text-center">{t("performance")}</TableHead>
-              <TableHead className="whitespace-nowrap text-center">{t("website")}</TableHead>
+              <TableHead className="whitespace-nowrap">
+                {t("nextPaymentDue")}
+              </TableHead>
+              <TableHead className="whitespace-nowrap">
+                {tc("status")}
+              </TableHead>
+              <TableHead className="whitespace-nowrap text-center">
+                {t("onboarding")}
+              </TableHead>
+              <TableHead className="whitespace-nowrap text-center">
+                {t("performance")}
+              </TableHead>
+              <TableHead className="whitespace-nowrap text-center">
+                {t("website")}
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -239,8 +257,12 @@ export default function AccountsPage() {
                 className="border-b border-background cursor-pointer"
                 onClick={() => router.push("/accounts/account")}
               >
-                <TableCell className="font-medium whitespace-nowrap">{account.name}</TableCell>
-                <TableCell className="font-medium whitespace-nowrap">{account.website}</TableCell>
+                <TableCell className="font-medium whitespace-nowrap">
+                  {account.name}
+                </TableCell>
+                <TableCell className="font-medium whitespace-nowrap">
+                  {account.website}
+                </TableCell>
                 <TableCell className="font-medium whitespace-nowrap">
                   {account.employees}
                 </TableCell>
