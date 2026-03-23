@@ -191,11 +191,11 @@ export default function AccountsPage() {
         >
           <TableHeader>
             <TableRow className="border-b border-border">
-              <TableHead>{t("accountName")}</TableHead>
-              <TableHead>{t("website")}</TableHead>
-              <TableHead>{t("employee")}</TableHead>
-              <TableHead>{t("location")}</TableHead>
-              <TableHead>
+              <TableHead className="whitespace-nowrap">{t("accountName")}</TableHead>
+              <TableHead className="whitespace-nowrap">{t("website")}</TableHead>
+              <TableHead className="whitespace-nowrap">{t("employee")}</TableHead>
+              <TableHead className="whitespace-nowrap">{t("location")}</TableHead>
+              <TableHead className="whitespace-nowrap">
                 <button
                   type="button"
                   className="flex items-center gap-1 cursor-pointer"
@@ -205,7 +205,7 @@ export default function AccountsPage() {
                   <ArrowUpDown size={14} />
                 </button>
               </TableHead>
-              <TableHead>
+              <TableHead className="whitespace-nowrap">
                 <button
                   type="button"
                   className="flex items-center gap-1 cursor-pointer"
@@ -215,7 +215,7 @@ export default function AccountsPage() {
                   <ArrowUpDown size={14} />
                 </button>
               </TableHead>
-              <TableHead>
+              <TableHead className="whitespace-nowrap">
                 <button
                   type="button"
                   className="flex items-center gap-1 cursor-pointer"
@@ -225,11 +225,11 @@ export default function AccountsPage() {
                   <ArrowUpDown size={14} />
                 </button>
               </TableHead>
-              <TableHead>{t("nextPaymentDue")}</TableHead>
-              <TableHead>{tc("status")}</TableHead>
-              <TableHead className="text-center">{t("onboarding")}</TableHead>
-              <TableHead className="text-center">{t("performance")}</TableHead>
-              <TableHead className="text-center">{t("website")}</TableHead>
+              <TableHead className="whitespace-nowrap">{t("nextPaymentDue")}</TableHead>
+              <TableHead className="whitespace-nowrap">{tc("status")}</TableHead>
+              <TableHead className="whitespace-nowrap text-center">{t("onboarding")}</TableHead>
+              <TableHead className="whitespace-nowrap text-center">{t("performance")}</TableHead>
+              <TableHead className="whitespace-nowrap text-center">{t("website")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -239,24 +239,24 @@ export default function AccountsPage() {
                 className="border-b border-background cursor-pointer"
                 onClick={() => router.push("/accounts/account")}
               >
-                <TableCell className="font-medium">{account.name}</TableCell>
-                <TableCell className="font-medium">{account.website}</TableCell>
-                <TableCell className="font-medium">
+                <TableCell className="font-medium whitespace-nowrap">{account.name}</TableCell>
+                <TableCell className="font-medium whitespace-nowrap">{account.website}</TableCell>
+                <TableCell className="font-medium whitespace-nowrap">
                   {account.employees}
                 </TableCell>
-                <TableCell className="font-medium">
+                <TableCell className="font-medium whitespace-nowrap">
                   {account.location}
                 </TableCell>
-                <TableCell className="font-medium">
+                <TableCell className="font-medium whitespace-nowrap">
                   {account.totalVisits.toLocaleString()}
                 </TableCell>
-                <TableCell className="font-medium">
+                <TableCell className="font-medium whitespace-nowrap">
                   {account.totalResponses.toLocaleString()}
                 </TableCell>
-                <TableCell className="font-medium">
+                <TableCell className="font-medium whitespace-nowrap">
                   {account.conversionRate.toLocaleString()}
                 </TableCell>
-                <TableCell className="font-medium">
+                <TableCell className="font-medium whitespace-nowrap">
                   {account.nextPaymentDue}
                 </TableCell>
                 <TableCell>
