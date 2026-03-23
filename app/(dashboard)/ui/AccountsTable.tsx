@@ -221,7 +221,10 @@ export function AccountsTable() {
               {account.conversionRate.toLocaleString()}
             </TableCell>
             <TableCell>
-              <Badge variant={account.status === "Active" ? "success" : "error"} className="px-2 py-1 text-sm">
+              <Badge
+                variant={account.status === "Active" ? "success" : "error"}
+                className="px-2 py-1 text-sm"
+              >
                 {account.status}
               </Badge>
             </TableCell>
