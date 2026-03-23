@@ -7,6 +7,7 @@ import { PieChart } from "@/app/(dashboard)/ui/charts/PieChart";
 import { LineChart } from "@/app/(dashboard)/ui/charts/LineChart";
 import { SparklineChart } from "@/app/(dashboard)/ui/charts/SparklineChart";
 import { DateRangePickerWithPresets } from "@/components/ui/datepicker";
+import { DATE_RANGE_MIN, dateRangeMax } from "@/lib/dates";
 
 export default function Dashboard() {
   const t = useTranslations("dashboard");
@@ -19,7 +20,7 @@ export default function Dashboard() {
           {t("welcome", { name: "Penelope" })}
         </h1>
         <div className="w-full @xl:w-auto [&>div]:w-full @xl:[&>div]:w-auto [&>div>button:first-child]:w-full @xl:[&>div>button:first-child]:w-auto">
-          <DateRangePickerWithPresets defaultPreset="90d" />
+          <DateRangePickerWithPresets defaultPreset="90d" minDate={DATE_RANGE_MIN} maxDate={dateRangeMax()} />
         </div>
       </div>
 

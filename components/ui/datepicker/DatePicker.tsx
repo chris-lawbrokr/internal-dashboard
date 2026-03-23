@@ -141,6 +141,8 @@ export interface CalendarProps {
   showNav?: "left" | "right" | "both" | "none";
   startClassName?: string;
   endClassName?: string;
+  minDate?: Date | null;
+  maxDate?: Date | null;
 }
 
 export function Calendar({
@@ -153,6 +155,8 @@ export function Calendar({
   showNav = "both",
   startClassName = "bg-primary text-primary-foreground hover:bg-primary/90",
   endClassName = "bg-primary text-primary-foreground hover:bg-primary/90",
+  minDate = null,
+  maxDate = null,
 }: CalendarProps) {
   const t = useTranslations("datepicker");
   const months: string[] = t.raw("months");
@@ -195,18 +199,24 @@ export function Calendar({
     });
   }
 
+  const canGoPrev = !minDate || year > minDate.getFullYear() || (year === minDate.getFullYear() && month > minDate.getMonth());
+  const canGoNext = !maxDate || year < maxDate.getFullYear() || (year === maxDate.getFullYear() && month < maxDate.getMonth());
+
   function goPrev() {
+    if (!canGoPrev) return;
     if (month === 0) onMonthChange(11, year - 1);
     else onMonthChange(month - 1, year);
   }
 
   function goNext() {
+    if (!canGoNext) return;
     if (month === 11) onMonthChange(0, year + 1);
     else onMonthChange(month + 1, year);
   }
 
-  const currentYear = new Date().getFullYear();
-  const yearRange = Array.from({ length: 21 }, (_, i) => currentYear - 10 + i);
+  const minYear = minDate ? minDate.getFullYear() : new Date().getFullYear() - 10;
+  const maxYear = maxDate ? maxDate.getFullYear() : new Date().getFullYear() + 10;
+  const yearRange = Array.from({ length: maxYear - minYear + 1 }, (_, i) => minYear + i);
 
   const [monthDropdownOpen, setMonthDropdownOpen] = React.useState(false);
   const [yearDropdownOpen, setYearDropdownOpen] = React.useState(false);
@@ -243,7 +253,8 @@ export function Calendar({
           <button
             type="button"
             onClick={goPrev}
-            className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer"
+            disabled={!canGoPrev}
+            className={cn("h-7 w-7 flex items-center justify-center rounded", canGoPrev ? "hover:bg-muted cursor-pointer" : "opacity-30 cursor-not-allowed")}
             aria-label={t("previousMonth")}
           >
             <ChevronLeft className="h-4 w-4" />
@@ -267,22 +278,27 @@ export function Calendar({
             </button>
             {monthDropdownOpen && (
               <div className="absolute top-full left-1/2 -translate-x-1/2 z-50 mt-1 rounded-md border border-border bg-popover shadow-md py-1 max-h-[200px] overflow-y-auto w-[120px]">
-                {months.map((m, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => {
-                      onMonthChange(i, year);
-                      setMonthDropdownOpen(false);
-                    }}
-                    className={cn(
-                      "w-full px-3 py-1.5 text-sm text-left hover:bg-muted cursor-pointer",
-                      i === month && "bg-muted font-medium",
-                    )}
-                  >
-                    {m}
-                  </button>
-                ))}
+                {months.map((m, i) => {
+                  const disabled = (minDate && year === minDate.getFullYear() && i < minDate.getMonth()) || (maxDate && year === maxDate.getFullYear() && i > maxDate.getMonth());
+                  return (
+                    <button
+                      key={i}
+                      type="button"
+                      disabled={!!disabled}
+                      onClick={() => {
+                        onMonthChange(i, year);
+                        setMonthDropdownOpen(false);
+                      }}
+                      className={cn(
+                        "w-full px-3 py-1.5 text-sm text-left",
+                        disabled ? "opacity-30 cursor-not-allowed" : "hover:bg-muted cursor-pointer",
+                        i === month && "bg-muted font-medium",
+                      )}
+                    >
+                      {m}
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -325,7 +341,8 @@ export function Calendar({
           <button
             type="button"
             onClick={goNext}
-            className="h-7 w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer"
+            disabled={!canGoNext}
+            className={cn("h-7 w-7 flex items-center justify-center rounded", canGoNext ? "hover:bg-muted cursor-pointer" : "opacity-30 cursor-not-allowed")}
             aria-label={t("nextMonth")}
           >
             <ChevronRight className="h-4 w-4" />
@@ -358,18 +375,23 @@ export function Calendar({
           const isSelected = isStart || isEnd;
           const inRange = isInRange(cellDate, selectedStart, selectedEnd);
           const isToday = isSameDay(cellDate, today());
+          const isDisabled = (minDate && cellDate.getTime() < minDate.getTime()) || (maxDate && cellDate.getTime() > maxDate.getTime());
 
           return (
             <button
               key={i}
               type="button"
+              disabled={!!isDisabled}
               onClick={() => onDateSelect(cellDate)}
               className={cn(
-                "h-9 min-w-9 w-full mx-auto flex items-center justify-center text-sm cursor-pointer",
-                !cell.isCurrentMonth && "text-muted-foreground/40",
+                "h-9 min-w-9 w-full mx-auto flex items-center justify-center text-sm",
+                isDisabled && "opacity-30 cursor-not-allowed",
+                !isDisabled && "cursor-pointer",
+                !cell.isCurrentMonth && !isDisabled && "text-muted-foreground/40",
                 cell.isCurrentMonth &&
                   !isSelected &&
                   !inRange &&
+                  !isDisabled &&
                   "hover:bg-muted",
                 isStart && startClassName,
                 isEnd && !isStart && endClassName,
@@ -787,6 +809,8 @@ export interface DateRangePickerWithPresetsProps {
   presets?: Array<{ key: string; label: string; days: number | null }>;
   onChange?: (start: Date | null, end: Date | null, preset: string) => void;
   disabled?: boolean;
+  minDate?: Date | null;
+  maxDate?: Date | null;
 }
 
 export function DateRangePickerWithPresets({
@@ -798,6 +822,8 @@ export function DateRangePickerWithPresets({
   ],
   onChange,
   disabled,
+  minDate = null,
+  maxDate = null,
 }: DateRangePickerWithPresetsProps) {
   const t = useTranslations("datepicker");
 
@@ -815,6 +841,18 @@ export function DateRangePickerWithPresets({
   const [viewYear, setViewYear] = React.useState(new Date().getFullYear());
   const containerRef = React.useRef<HTMLDivElement>(null);
 
+  function handleClose() {
+    if (!startDate || !endDate) {
+      const fallback = presets.find((p) => p.key === "90d") ?? presets[0];
+      if (fallback) {
+        applyPreset(fallback);
+        return;
+      }
+    }
+    setOpen(false);
+    setPresetsOpen(false);
+  }
+
   React.useEffect(() => {
     if (!open) return;
     function handler(e: MouseEvent) {
@@ -822,13 +860,12 @@ export function DateRangePickerWithPresets({
         containerRef.current &&
         !containerRef.current.contains(e.target as Node)
       ) {
-        setOpen(false);
-        setPresetsOpen(false);
+        handleClose();
       }
     }
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
-  }, [open]);
+  }, [open, startDate, endDate]);
 
   function applyPreset(p: { key: string; days: number | null }) {
     setPreset(p.key);
@@ -895,7 +932,7 @@ export function DateRangePickerWithPresets({
     <div ref={containerRef} className="relative">
       <button
         type="button"
-        onClick={() => !disabled && setOpen((o) => !o)}
+        onClick={() => !disabled && (open ? handleClose() : setOpen(true))}
         disabled={disabled}
         className={cn(
           "flex items-center gap-2 rounded-md border px-3 py-2 text-sm hover:bg-muted",
@@ -969,10 +1006,7 @@ export function DateRangePickerWithPresets({
             </button>
             <button
               type="button"
-              onClick={() => {
-                setOpen(false);
-                setPresetsOpen(false);
-              }}
+              onClick={handleClose}
               className="h-7 w-7 min-h-7 min-w-7 flex items-center justify-center rounded hover:bg-muted cursor-pointer shrink-0"
               aria-label={t("closeDatePicker")}
               title={t("closeDatePicker")}
@@ -994,6 +1028,8 @@ export function DateRangePickerWithPresets({
                 setViewYear(y);
               }}
               showNav="left"
+              minDate={minDate}
+              maxDate={maxDate}
             />
             <div className="w-px bg-border" />
             <Calendar
@@ -1009,6 +1045,8 @@ export function DateRangePickerWithPresets({
                 setViewYear(newLeftYear);
               }}
               showNav="right"
+              minDate={minDate}
+              maxDate={maxDate}
             />
           </div>
 
@@ -1024,6 +1062,8 @@ export function DateRangePickerWithPresets({
                 setViewMonth(m);
                 setViewYear(y);
               }}
+              minDate={minDate}
+              maxDate={maxDate}
             />
           </div>
         </div>

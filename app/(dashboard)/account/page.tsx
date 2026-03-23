@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 
 import { DateRangePickerWithPresets } from "@/components/ui/datepicker";
+import { DATE_RANGE_MIN, dateRangeMax } from "@/lib/dates";
 import { OverviewTab } from "./tabs/OverviewTab";
 import { PerformanceTab } from "./tabs/PerformanceTab";
 import { WebsiteTab } from "./tabs/WebsiteTab";
@@ -33,7 +34,7 @@ export default function Dashboard() {
                 Smith Law Firm
               </h1>
               <div className="w-full @xl:w-auto [&>div]:w-full @xl:[&>div]:w-auto [&>div>button:first-child]:w-full @xl:[&>div>button:first-child]:w-auto">
-                <DateRangePickerWithPresets defaultPreset="90d" />
+                <DateRangePickerWithPresets defaultPreset="90d" minDate={DATE_RANGE_MIN} maxDate={dateRangeMax()} />
               </div>
             </div>
           </div>
