@@ -16,7 +16,10 @@ import {
 import { Badge, type BadgeVariant } from "@/components/ui/badge/Badge";
 import { Search, Filter, Lock, Eye } from "lucide-react";
 
-const ROLE_CONFIG: Record<string, { variant: BadgeVariant; icon: React.ComponentType<{ size: number }> }> = {
+const ROLE_CONFIG: Record<
+  string,
+  { variant: BadgeVariant; icon: React.ComponentType<{ size: number }> }
+> = {
   Admin: { variant: "neutral", icon: Lock },
   Internal: { variant: "warning", icon: Eye },
   Agency: { variant: "info", icon: Eye },
@@ -267,7 +270,9 @@ export function OverviewTab() {
               {t("practiceAreas")}
             </h3>
             <div className="flex flex-wrap gap-2">
-              <Badge variant="info" className="px-2.5 py-1">Practice area</Badge>
+              <Badge variant="info" className="px-2.5 py-1">
+                Practice area
+              </Badge>
             </div>
           </CardContent>
         </Card>
@@ -277,7 +282,9 @@ export function OverviewTab() {
               {t("integrations")}
             </h3>
             <div className="flex flex-wrap gap-2">
-              <Badge variant="success" className="px-2.5 py-1">Integration</Badge>
+              <Badge variant="success" className="px-2.5 py-1">
+                Integration
+              </Badge>
             </div>
           </CardContent>
         </Card>
@@ -287,7 +294,9 @@ export function OverviewTab() {
               {t("techStack")}
             </h3>
             <div className="flex flex-wrap gap-2">
-              <Badge variant="neutral" className="px-2.5 py-1">Tech platform</Badge>
+              <Badge variant="neutral" className="px-2.5 py-1">
+                Tech platform
+              </Badge>
             </div>
           </CardContent>
         </Card>
@@ -297,7 +306,9 @@ export function OverviewTab() {
               {t("lawbrokrFeatures")}
             </h3>
             <div className="flex flex-wrap gap-2">
-              <Badge variant="neutral" className="px-2.5 py-1">Feature</Badge>
+              <Badge variant="neutral" className="px-2.5 py-1">
+                Feature
+              </Badge>
             </div>
           </CardContent>
         </Card>

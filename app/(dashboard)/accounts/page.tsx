@@ -129,7 +129,7 @@ export default function AccountsPage() {
       <div className="overflow-y-auto min-h-0 flex-1 flex flex-col gap-4 pb-2">
         <Table
           toolbar={
-            <div className="flex flex-col @md/table:flex-row @md/table:items-center justify-between">
+            <div className="flex flex-col @md/table:flex-row @md/table:items-center justify-between gap-4">
               <div className="relative">
                 <Search
                   size={16}
@@ -241,8 +241,12 @@ export default function AccountsPage() {
               >
                 <TableCell className="font-medium">{account.name}</TableCell>
                 <TableCell className="font-medium">{account.website}</TableCell>
-                <TableCell className="font-medium">{account.employees}</TableCell>
-                <TableCell className="font-medium">{account.location}</TableCell>
+                <TableCell className="font-medium">
+                  {account.employees}
+                </TableCell>
+                <TableCell className="font-medium">
+                  {account.location}
+                </TableCell>
                 <TableCell className="font-medium">
                   {account.totalVisits.toLocaleString()}
                 </TableCell>
