@@ -105,7 +105,7 @@ export function AccountsTable() {
   return (
     <Table
       toolbar={
-        <div className="flex flex-col @md/table:flex-row @md/table:items-center justify-between">
+        <div className="flex flex-col gap-2 @md/table:flex-row @md/table:items-center justify-between">
           <div className="relative">
             <Search
               size={16}
