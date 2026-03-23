@@ -41,9 +41,9 @@ const navItems: NavItem[] = [
 export function Sidebar() {
   const pathname = usePathname();
   const t = useTranslations("nav");
-  const [open, setOpen] = useState(() =>
-    typeof window !== "undefined" ? window.innerWidth >= 768 : true,
-  );
+  // Start with server-safe defaults (desktop, open) to avoid hydration mismatch.
+  // The useEffect below corrects to the actual viewport on first client render.
+  const [open, setOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const onToggle = () => setOpen((o) => !o);
   const openRef = useRef(open);
@@ -53,13 +53,12 @@ export function Sidebar() {
     const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
     const apply = (mobile: boolean) => {
       setIsMobile(mobile);
-      if (mobile && openRef.current) onToggle();
+      setOpen(!mobile);
     };
     apply(mql.matches);
     const handler = (e: MediaQueryListEvent) => apply(e.matches);
     mql.addEventListener("change", handler);
     return () => mql.removeEventListener("change", handler);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const collapsedContent = (
@@ -208,49 +207,47 @@ export function Sidebar() {
     </div>
   );
 
-  if (isMobile) {
-    return (
-      <>
-        {/* Backdrop */}
-        <div
-          className={`fixed inset-0 bg-black/30 z-40 transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0 pointer-events-none"}`}
-          onClick={onToggle}
-          aria-hidden="true"
-        />
-
-        {/* Collapsed icon strip — always in flow on mobile */}
-        <div className="shrink-0 h-full bg-white flex flex-col items-center py-5 px-2 gap-6 shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.1)]">
-          {collapsedContent}
-        </div>
-
-        {/* Expanded sidebar — fixed overlay */}
-        <div
-          className={`shrink-0 h-full bg-white flex p-5 shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.1)] w-[200px] transition-transform duration-300 ease-in-out fixed left-0 top-0 z-50 ${!open ? "-translate-x-full" : "translate-x-0"}`}
-        >
-          {expandedContent}
-        </div>
-      </>
-    );
-  }
-
-  // Desktop: single container, width transitions between collapsed and expanded
   return (
-    <div
-      className={`shrink-0 h-full relative overflow-hidden transition-[width] duration-300 ease-in-out ${open ? "w-[200px]" : "w-12"}`}
-    >
-      {/* Collapsed view */}
+    <>
+      {/* Backdrop — only visible on mobile when open */}
       <div
-        className={`absolute inset-0 bg-white flex flex-col items-center py-5 px-2 gap-6 shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.1)] transition-opacity duration-200 ${open ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+        className={`fixed inset-0 bg-black/30 z-40 transition-opacity duration-300 ${isMobile && open ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+        onClick={onToggle}
+        aria-hidden="true"
+      />
+
+      {/* Mobile: collapsed icon strip — always in flow */}
+      <div
+        className={`shrink-0 h-full bg-white flex flex-col items-center py-5 px-2 gap-6 shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.1)] ${isMobile ? "" : "hidden"}`}
       >
         {collapsedContent}
       </div>
 
-      {/* Expanded view */}
+      {/* Mobile: expanded sidebar — fixed overlay */}
       <div
-        className={`w-[200px] h-full bg-white flex p-5 shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.1)] transition-opacity duration-200 ${open ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+        className={`shrink-0 h-full bg-white flex p-5 shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.1)] w-[200px] transition-transform duration-300 ease-in-out fixed left-0 top-0 z-50 ${!isMobile ? "hidden" : !open ? "-translate-x-full" : "translate-x-0"}`}
       >
         {expandedContent}
       </div>
-    </div>
+
+      {/* Desktop: single container, width transitions between collapsed and expanded */}
+      <div
+        className={`shrink-0 h-full relative overflow-hidden transition-[width] duration-300 ease-in-out ${isMobile ? "hidden" : open ? "w-[200px]" : "w-12"}`}
+      >
+        {/* Collapsed view */}
+        <div
+          className={`absolute inset-0 bg-white flex flex-col items-center py-5 px-2 gap-6 shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.1)] transition-opacity duration-200 ${open ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+        >
+          {collapsedContent}
+        </div>
+
+        {/* Expanded view */}
+        <div
+          className={`w-[200px] h-full bg-white flex p-5 shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.1)] transition-opacity duration-200 ${open ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+        >
+          {expandedContent}
+        </div>
+      </div>
+    </>
   );
 }
