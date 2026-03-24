@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -14,11 +14,14 @@ import {
   Settings,
   PanelLeftClose,
   PanelLeftOpen,
+  Menu,
+  X,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-const MOBILE_BREAKPOINT = 768;
+const MOBILE_BREAKPOINT = 480;
+const TABLET_BREAKPOINT = 768;
 
 interface NavItem {
   id: string;
@@ -43,24 +46,36 @@ const navItems: NavItem[] = [
 export function Nav() {
   const pathname = usePathname();
   const t = useTranslations("nav");
-  // Start with server-safe defaults (desktop, open) to avoid hydration mismatch.
-  // The useEffect below corrects to the actual viewport on first client render.
   const [open, setOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
   const onToggle = () => setOpen((o) => !o);
-  const openRef = useRef(open);
-  openRef.current = open;
 
   useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
-    const apply = (mobile: boolean) => {
+    const mobileMql = window.matchMedia(
+      `(max-width: ${MOBILE_BREAKPOINT - 1}px)`,
+    );
+    const tabletMql = window.matchMedia(
+      `(min-width: ${MOBILE_BREAKPOINT}px) and (max-width: ${TABLET_BREAKPOINT - 1}px)`,
+    );
+
+    const apply = () => {
+      const mobile = mobileMql.matches;
+      const tablet = tabletMql.matches;
       setIsMobile(mobile);
-      setOpen(!mobile);
+      setIsTablet(tablet);
+      setOpen(!mobile && !tablet);
     };
-    apply(mql.matches);
-    const handler = (e: MediaQueryListEvent) => apply(e.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
+
+    apply();
+    const onMobileChange = () => apply();
+    const onTabletChange = () => apply();
+    mobileMql.addEventListener("change", onMobileChange);
+    tabletMql.addEventListener("change", onTabletChange);
+    return () => {
+      mobileMql.removeEventListener("change", onMobileChange);
+      tabletMql.removeEventListener("change", onTabletChange);
+    };
   }, []);
 
   const collapsedContent = (
@@ -199,7 +214,7 @@ export function Nav() {
               key={item.id}
               href={item.href}
               onClick={() => {
-                if (isMobile && open) onToggle();
+                if ((isMobile || isTablet) && open) onToggle();
               }}
               className={`flex items-center gap-1.5 rounded-xl px-2 py-1.5 text-base transition-colors whitespace-nowrap ${isActive ? "bg-surface font-bold text-brand-dark" : "text-muted-foreground"}`}
             >
@@ -211,13 +226,13 @@ export function Nav() {
       </nav>
 
       <div className="flex items-center justify-between w-full mt-auto">
-        <div className="flex items-center flex flex-col flex-end">
+        <div className="flex flex-col items-end">
           <Image
             src="/images/Logo.svg"
             alt="Logo"
             height="100"
             width="100"
-            className="flex-2"
+            className="flex-1"
           />
         </div>
         <button
@@ -232,32 +247,119 @@ export function Nav() {
     </div>
   );
 
+  const isDesktop = !isMobile && !isTablet;
+
   return (
     <>
-      {/* Backdrop — only visible on mobile when open */}
+      {/* Backdrop — visible on tablet/mobile when expanded */}
       <div
-        className={`fixed inset-0 bg-black/30 z-40 transition-opacity duration-300 ${isMobile && open ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+        className={`fixed inset-0 bg-black/30 z-40 transition-opacity duration-300 ${(isTablet || isMobile) && open ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         onClick={onToggle}
         aria-hidden="true"
       />
 
-      {/* Mobile: collapsed icon strip — always in flow */}
+      {/* Mobile: horizontal top bar */}
+      {isMobile && (
+        <div className="absolute top-0 left-0 right-0 z-50 bg-white shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.1)]">
+          <div className="flex items-center justify-between px-4 py-3">
+            <Image src="/images/Logo.svg" alt="Logo" height={24} width={80} />
+            <button
+              type="button"
+              className="text-muted-foreground hover:text-foreground cursor-pointer"
+              aria-label={open ? "Close menu" : "Open menu"}
+              onClick={onToggle}
+            >
+              {open ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+
+          {/* Mobile: dropdown menu */}
+          <div
+            className={`overflow-hidden transition-[max-height] duration-300 ease-in-out ${open ? "max-h-[400px]" : "max-h-0"}`}
+          >
+            <nav className="flex flex-col gap-1 px-4 pb-4">
+              {navItems.map((item) => {
+                const isActive =
+                  item.href === "/"
+                    ? pathname === "/"
+                    : pathname.startsWith(item.href);
+                if (item.disabled) {
+                  return (
+                    <span
+                      key={item.id}
+                      className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-muted-foreground/40 cursor-not-allowed"
+                    >
+                      <item.icon size={18} />
+                      {t(item.labelKey)}
+                    </span>
+                  );
+                }
+                return (
+                  <Link
+                    key={item.id}
+                    href={item.href}
+                    onClick={() => {
+                      if (open) onToggle();
+                    }}
+                    className={`flex items-center gap-2 rounded-xl px-3 py-2 text-sm transition-colors ${isActive ? "bg-surface font-bold text-brand-dark" : "text-muted-foreground hover:text-foreground"}`}
+                  >
+                    <item.icon size={18} />
+                    {t(item.labelKey)}
+                  </Link>
+                );
+              })}
+            </nav>
+            <div className="flex items-center justify-between border-t border-border px-4 py-3">
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-foreground">
+                  Penelope Anthony
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  className="text-muted-foreground hover:text-foreground cursor-pointer"
+                  aria-label="Settings"
+                >
+                  <Settings size={18} />
+                </button>
+                <button
+                  type="button"
+                  className="text-muted-foreground hover:text-foreground cursor-pointer"
+                  aria-label="Notifications"
+                >
+                  <Bell size={18} />
+                </button>
+                <button
+                  type="button"
+                  className="text-muted-foreground hover:text-foreground cursor-pointer"
+                  aria-label={t("logout")}
+                >
+                  <LogOut size={18} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tablet: collapsed icon strip — always in flow */}
       <div
-        className={`shrink-0 h-full bg-white flex flex-col items-center py-5 px-2 gap-6 shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.1)] ${isMobile ? "" : "hidden"}`}
+        className={`shrink-0 h-full bg-white flex flex-col items-center py-5 px-2 gap-6 shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.1)] ${isTablet ? "" : "hidden"}`}
       >
         {collapsedContent}
       </div>
 
-      {/* Mobile: expanded sidebar — fixed overlay */}
+      {/* Tablet: expanded sidebar — fixed overlay */}
       <div
-        className={`shrink-0 h-full bg-white flex p-5 shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.1)] w-[200px] transition-transform duration-300 ease-in-out fixed left-0 top-0 z-50 ${!isMobile ? "hidden" : !open ? "-translate-x-full" : "translate-x-0"}`}
+        className={`shrink-0 h-full bg-white flex p-5 shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.1)] w-[200px] transition-transform duration-300 ease-in-out fixed left-0 top-0 z-50 ${!isTablet ? "hidden" : !open ? "-translate-x-full" : "translate-x-0"}`}
       >
         {expandedContent}
       </div>
 
       {/* Desktop: single container, width transitions between collapsed and expanded */}
       <div
-        className={`shrink-0 h-full relative overflow-hidden transition-[width] duration-300 ease-in-out ${isMobile ? "hidden" : open ? "w-[200px]" : "w-12"}`}
+        className={`shrink-0 h-full relative overflow-hidden transition-[width] duration-300 ease-in-out ${isDesktop ? (open ? "w-[200px]" : "w-12") : "hidden"}`}
       >
         {/* Collapsed view */}
         <div
