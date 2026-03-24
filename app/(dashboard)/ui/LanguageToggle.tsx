@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from "react";
 import { Globe } from "lucide-react";
 import { locales, localeNames, type Locale } from "@/i18n/config";
 
-export function LanguageSwitcher() {
+export function LanguageToggle() {
   const locale = useLocale();
   const router = useRouter();
   const [open, setOpen] = useState(false);

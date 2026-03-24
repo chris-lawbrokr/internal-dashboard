@@ -2,7 +2,7 @@
 
 import { Sidebar } from "@/app/(dashboard)/ui/Sidebar";
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppContainer({ children }: { children: React.ReactNode }) {
   return (
     <div className="h-screen w-full overflow-hidden flex">
       <Sidebar />
