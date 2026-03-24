@@ -15,12 +15,16 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col h-full">
       {/* Welcome + Date Filter */}
-      <div className="flex justify-between items-center pb-4">
+      <div className="flex flex-col @xl:flex-row @xl:items-center justify-between gap-4 pb-4">
         <h1 className="text-2xl font-bold">
           {t("welcome", { name: "Penelope" })}
         </h1>
         <div className="w-full @xl:w-auto [&>div]:w-full @xl:[&>div]:w-auto [&>div>button:first-child]:w-full @xl:[&>div>button:first-child]:w-auto">
-          <DateRangePickerWithPresets defaultPreset="90d" minDate={DATE_RANGE_MIN} maxDate={dateRangeMax()} />
+          <DateRangePickerWithPresets
+            defaultPreset="90d"
+            minDate={DATE_RANGE_MIN}
+            maxDate={dateRangeMax()}
+          />
         </div>
       </div>
 
