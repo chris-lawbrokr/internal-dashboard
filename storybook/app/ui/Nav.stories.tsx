@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { Sidebar } from "@/app/(dashboard)/ui/Sidebar";
+import { Nav } from "@/app/(dashboard)/ui/Nav";
 
-const meta: Meta<typeof Sidebar> = {
-  title: "App/UI/Sidebar",
-  component: Sidebar,
+const meta: Meta<typeof Nav> = {
+  title: "App/UI/Nav",
+  component: Nav,
   parameters: {
     layout: "fullscreen",
     nextjs: {
@@ -17,12 +17,12 @@ const meta: Meta<typeof Sidebar> = {
 
 export default meta;
 
-type Story = StoryObj<typeof Sidebar>;
+type Story = StoryObj<typeof Nav>;
 
 export const Default: Story = {
   render: () => (
     <div className="relative h-[500px]">
-      <Sidebar />
+      <Nav />
     </div>
   ),
 };

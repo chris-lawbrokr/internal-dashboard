@@ -40,7 +40,7 @@ const navItems: NavItem[] = [
   },
 ];
 
-export function Sidebar() {
+export function Nav() {
   const pathname = usePathname();
   const t = useTranslations("nav");
   // Start with server-safe defaults (desktop, open) to avoid hydration mismatch.
