@@ -827,9 +827,11 @@ export function DateRangePickerWithPresets({
 }: DateRangePickerWithPresetsProps) {
   const t = useTranslations("datepicker");
 
+  const allStart = minDate ?? subDays(365);
+  const allEnd = maxDate ?? today();
   const defaultStart =
-    defaultPreset === "all" ? null : subDays(defaultPreset === "30d" ? 30 : 90);
-  const defaultEnd = defaultPreset === "all" ? null : today();
+    defaultPreset === "all" ? allStart : subDays(defaultPreset === "30d" ? 30 : 90);
+  const defaultEnd = defaultPreset === "all" ? allEnd : today();
 
   const [open, setOpen] = React.useState(false);
   const [preset, setPreset] = React.useState<string>(defaultPreset);
@@ -869,8 +871,8 @@ export function DateRangePickerWithPresets({
 
   function applyPreset(p: { key: string; days: number | null }) {
     setPreset(p.key);
-    const newStart = p.days != null ? subDays(p.days) : null;
-    const newEnd = p.days != null ? today() : null;
+    const newStart = p.days != null ? subDays(p.days) : allStart;
+    const newEnd = p.days != null ? today() : allEnd;
     setStartDate(newStart);
     setEndDate(newEnd);
     onChange?.(newStart, newEnd, p.key);
