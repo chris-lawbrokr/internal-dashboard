@@ -19,7 +19,7 @@ export const Default: Story = {
     const Wrapper = () => {
       const [value, setValue] = useState<Date | null>(null);
       return (
-        <div className="w-[280px]">
+        <div className="w-[280px] flex justify-end">
           <DatePicker
             label="Date"
             value={value}
@@ -38,7 +38,7 @@ export const WithValue: Story = {
     const Wrapper = () => {
       const [value, setValue] = useState<Date | null>(new Date(2025, 0, 12));
       return (
-        <div className="w-[280px]">
+        <div className="w-[280px] flex justify-end">
           <DatePicker
             label="Date"
             value={value}
@@ -57,7 +57,7 @@ export const DateRange: Story = {
       const [start, setStart] = useState<Date | null>(null);
       const [end, setEnd] = useState<Date | null>(null);
       return (
-        <div className="w-[500px]">
+        <div className="w-[500px] flex justify-end">
           <DateRangePicker
             labels={{ start: "Start Date", end: "End Date" }}
             startDate={start}
@@ -77,7 +77,7 @@ export const DateRangeWithValues: Story = {
       const [start, setStart] = useState<Date | null>(new Date(2025, 0, 12));
       const [end, setEnd] = useState<Date | null>(new Date(2025, 1, 20));
       return (
-        <div className="w-[500px]">
+        <div className="w-[500px] flex justify-end">
           <DateRangePicker
             labels={{ start: "Start Date", end: "End Date" }}
             startDate={start}
@@ -93,7 +93,7 @@ export const DateRangeWithValues: Story = {
 
 export const Disabled: Story = {
   render: () => (
-    <div className="w-[280px]">
+    <div className="w-[280px] flex justify-end">
       <DatePicker
         label="Date"
         value={new Date(2025, 0, 12)}
