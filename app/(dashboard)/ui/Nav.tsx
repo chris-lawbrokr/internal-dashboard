@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-
 import { usePathname } from "next/navigation";
 import {
   Home,
@@ -349,12 +348,14 @@ export function Nav() {
       >
         {collapsedContent}
       </div>
+
       {/* Tablet: expanded sidebar — fixed overlay */}
       <div
         className={`shrink-0 h-full bg-white flex p-5 shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.1)] w-[200px] transition-transform duration-300 ease-in-out fixed left-0 top-0 z-50 ${!isTablet ? "hidden" : !open ? "-translate-x-full" : "translate-x-0"}`}
       >
         {expandedContent}
       </div>
+
       {/* Desktop: single container, width transitions between collapsed and expanded */}
       <div
         className={`shrink-0 h-full relative overflow-hidden transition-[width] duration-300 ease-in-out ${isDesktop ? (open ? "w-[200px]" : "w-12") : "hidden"}`}
@@ -365,6 +366,7 @@ export function Nav() {
         >
           {collapsedContent}
         </div>
+
         {/* Expanded view */}
         <div
           className={`w-[200px] h-full bg-white flex p-5 shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.1)] transition-opacity duration-200 ${open ? "opacity-100" : "opacity-0 pointer-events-none"}`}
