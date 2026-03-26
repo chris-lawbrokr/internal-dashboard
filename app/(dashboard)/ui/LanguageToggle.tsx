@@ -11,7 +11,6 @@ export function LanguageToggle() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     if (!open) return;
     function handler(e: MouseEvent) {
@@ -48,7 +47,9 @@ export function LanguageToggle() {
               type="button"
               onClick={() => switchLocale(l)}
               className={`w-full text-left px-3 py-1.5 text-sm rounded-sm cursor-pointer hover:bg-muted ${
-                l === locale ? "font-bold text-foreground" : "text-muted-foreground"
+                l === locale
+                  ? "font-bold text-foreground"
+                  : "text-muted-foreground"
               }`}
             >
               {localeNames[l]}

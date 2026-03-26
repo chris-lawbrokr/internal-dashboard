@@ -1,7 +1,6 @@
 "use client";
 
 import { Nav } from "@/app/(dashboard)/ui/Nav";
-
 export function AppContainer({ children }: { children: React.ReactNode }) {
   return (
     <div className="h-screen w-full overflow-hidden flex relative">
