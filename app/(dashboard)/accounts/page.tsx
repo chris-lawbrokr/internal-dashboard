@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
@@ -26,54 +26,50 @@ import { DATE_RANGE_MIN, dateRangeMax } from "@/lib/dates";
 type HealthStatus = "success" | "warning" | "error";
 
 interface Account {
-  id: number;
   name: string;
   website: string;
-  employees: number;
-  location: string;
-  totalVisits: number;
-  totalResponses: number;
-  conversionRate: number;
-  nextPaymentDue: string;
-  status: "Active" | "Inactive";
-  onboarding: HealthStatus;
-  performance: HealthStatus;
-  websiteHealth: HealthStatus;
+  employees: number | null;
+  location: string | null;
+  visits: number;
+  conversions: number;
+  conversion_rate: number;
+  contract_term: string;
+  activation_date: string;
+  next_payment_date: string;
+  status: string;
+  onboarding_health: string;
+  performance_health: string;
+  website_health: string;
+  practice_areas: string[] | null;
 }
 
-function seededRandom(seed: number) {
-  const x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
+function healthToVariant(health: string): HealthStatus {
+  switch (health) {
+    case "good":
+      return "success";
+    case "fair":
+      return "warning";
+    default:
+      return "error";
+  }
 }
 
-const healthStatuses: HealthStatus[] = ["success", "warning", "error"];
-
-const fakeAccounts: Account[] = Array.from({ length: 100 }, (_, i) => {
-  const r = seededRandom(i + 1);
-  const iconIdx = Math.floor(seededRandom(i + 200) * 3);
-  return {
-    id: i + 1,
-    name: "Law Firm Name",
-    website: "www.lawfirmwebsite.com",
-    employees: 10,
-    location: "Los Angeles, CA",
-    totalVisits: 10000,
-    totalResponses: 10000,
-    conversionRate: 10000,
-    nextPaymentDue: "Mar. 20, 2026",
-    status: r > 0.3 ? "Active" : "Inactive",
-    onboarding: healthStatuses[iconIdx],
-    performance: healthStatuses[iconIdx],
-    websiteHealth: healthStatuses[iconIdx],
-  };
-});
+function formatPaymentDate(dateStr: string): string {
+  const d = new Date(dateStr + "T00:00:00");
+  return d.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
 
 const PAGE_SIZE = 20;
 
-type SortField = "totalVisits" | "totalResponses" | "conversionRate";
+type SortField = "visits" | "conversions" | "conversion_rate";
 type SortDir = "asc" | "desc";
 
 export default function AccountsPage() {
+  const [accounts, setAccounts] = useState<Account[]>([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [sortField, setSortField] = useState<SortField | null>(null);
@@ -82,12 +78,29 @@ export default function AccountsPage() {
   const t = useTranslations("accounts");
   const tc = useTranslations("common");
 
-  const filtered = fakeAccounts.filter((a) => {
+  const defaultEnd = new Date();
+  const defaultStart = new Date();
+  defaultStart.setDate(defaultStart.getDate() - 90);
+
+  const [startDate, setStartDate] = useState<Date>(defaultStart);
+  const [endDate, setEndDate] = useState<Date>(defaultEnd);
+
+  useEffect(() => {
+    const fmt = (d: Date) => d.toISOString().split("T")[0];
+    const qs = `start_date=${fmt(startDate)}&end_date=${fmt(endDate)}`;
+
+    fetch(`/api/accounts?${qs}`)
+      .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
+      .then((data) => setAccounts(data.data ?? []))
+      .catch((err) => console.error("Failed to fetch accounts:", err));
+  }, [startDate, endDate]);
+
+  const filtered = accounts.filter((a) => {
     const q = search.toLowerCase();
     return (
       a.name.toLowerCase().includes(q) ||
       a.website.toLowerCase().includes(q) ||
-      a.location.toLowerCase().includes(q)
+      (a.location ?? "").toLowerCase().includes(q)
     );
   });
 
@@ -123,6 +136,12 @@ export default function AccountsPage() {
             defaultPreset="90d"
             minDate={DATE_RANGE_MIN}
             maxDate={dateRangeMax()}
+            onChange={(start, end) => {
+              if (start && end) {
+                setStartDate(start);
+                setEndDate(end);
+              }
+            }}
           />
         </div>
       </div>
@@ -207,7 +226,7 @@ export default function AccountsPage() {
                 <button
                   type="button"
                   className="flex items-center gap-1 cursor-pointer"
-                  onClick={() => handleSort("totalVisits")}
+                  onClick={() => handleSort("visits")}
                 >
                   {t("totalVisits")}
                   <ArrowUpDown size={14} />
@@ -217,7 +236,7 @@ export default function AccountsPage() {
                 <button
                   type="button"
                   className="flex items-center gap-1 cursor-pointer"
-                  onClick={() => handleSort("totalResponses")}
+                  onClick={() => handleSort("conversions")}
                 >
                   {t("totalResponses")}
                   <ArrowUpDown size={14} />
@@ -227,7 +246,7 @@ export default function AccountsPage() {
                 <button
                   type="button"
                   className="flex items-center gap-1 cursor-pointer"
-                  onClick={() => handleSort("conversionRate")}
+                  onClick={() => handleSort("conversion_rate")}
                 >
                   {t("conversionRate")}
                   <ArrowUpDown size={14} />
@@ -251,9 +270,9 @@ export default function AccountsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginated.map((account) => (
+            {paginated.map((account, i) => (
               <TableRow
-                key={account.id}
+                key={`${account.name}-${i}`}
                 className="border-b border-background cursor-pointer"
                 onClick={() => router.push("/accounts/account")}
               >
@@ -264,44 +283,44 @@ export default function AccountsPage() {
                   {account.website}
                 </TableCell>
                 <TableCell className="font-medium whitespace-nowrap">
-                  {account.employees}
+                  {account.employees ?? "—"}
                 </TableCell>
                 <TableCell className="font-medium whitespace-nowrap">
-                  {account.location}
+                  {account.location ?? "—"}
                 </TableCell>
                 <TableCell className="font-medium whitespace-nowrap">
-                  {account.totalVisits.toLocaleString()}
+                  {account.visits.toLocaleString()}
                 </TableCell>
                 <TableCell className="font-medium whitespace-nowrap">
-                  {account.totalResponses.toLocaleString()}
+                  {account.conversions.toLocaleString()}
                 </TableCell>
                 <TableCell className="font-medium whitespace-nowrap">
-                  {account.conversionRate.toLocaleString()}
+                  {Math.round(account.conversion_rate)}%
                 </TableCell>
                 <TableCell className="font-medium whitespace-nowrap">
-                  {account.nextPaymentDue}
+                  {formatPaymentDate(account.next_payment_date)}
                 </TableCell>
                 <TableCell>
                   <Badge
-                    variant={account.status === "Active" ? "success" : "error"}
+                    variant={account.status === "active" ? "success" : "error"}
                     className="px-2 py-1 text-sm"
                   >
-                    {account.status}
+                    {account.status === "active" ? "Active" : "Inactive"}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-center">
                   <div className="flex justify-center">
-                    <StatusIcon variant={account.onboarding} />
+                    <StatusIcon variant={healthToVariant(account.onboarding_health)} />
                   </div>
                 </TableCell>
                 <TableCell className="text-center">
                   <div className="flex justify-center">
-                    <StatusIcon variant={account.performance} />
+                    <StatusIcon variant={healthToVariant(account.performance_health)} />
                   </div>
                 </TableCell>
                 <TableCell className="text-center">
                   <div className="flex justify-center">
-                    <StatusIcon variant={account.websiteHealth} />
+                    <StatusIcon variant={healthToVariant(account.website_health)} />
                   </div>
                 </TableCell>
               </TableRow>
