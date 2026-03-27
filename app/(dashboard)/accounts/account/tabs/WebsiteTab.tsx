@@ -79,7 +79,11 @@ function StatusCard({
   );
 }
 
-export function WebsiteTab() {
+interface WebsiteTabProps {
+  lawFirmId?: string | null;
+}
+
+export function WebsiteTab({ lawFirmId }: WebsiteTabProps) {
   const [page, setPage] = useState(1);
   const pageSize = 10;
   const t = useTranslations("website");

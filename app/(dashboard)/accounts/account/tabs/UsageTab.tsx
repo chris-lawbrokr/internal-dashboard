@@ -244,7 +244,11 @@ function AccountUsersTable() {
 
 // ── Usage Tab ────────────────────────────────────────────────────────
 
-export function UsageTab() {
+interface UsageTabProps {
+  lawFirmId?: string | null;
+}
+
+export function UsageTab({ lawFirmId }: UsageTabProps) {
   return (
     <div className="flex flex-col gap-6">
       {/* Onboarding Checklist + Account Info */}

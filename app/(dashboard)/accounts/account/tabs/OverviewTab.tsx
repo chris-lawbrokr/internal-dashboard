@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/table/Table";
 import { Badge, type BadgeVariant } from "@/components/ui/badge/Badge";
 import { Search, Filter, Lock, Eye } from "lucide-react";
+import type { AccountDetail, AccountUser } from "../page";
 
 const ROLE_CONFIG: Record<
   string,
@@ -25,69 +26,6 @@ const ROLE_CONFIG: Record<
   Agency: { variant: "info", icon: Eye },
   Support: { variant: "support", icon: Eye },
 };
-
-const users = [
-  {
-    name: "Full Name",
-    email: "name@example.com",
-    role: "Admin",
-    dateAdded: "Feb. 1, 2026",
-  },
-  {
-    name: "Full Name",
-    email: "name@example.com",
-    role: "Internal",
-    dateAdded: "Feb. 1, 2026",
-  },
-  {
-    name: "Full Name",
-    email: "livingston@example.com",
-    role: "Agency",
-    dateAdded: "Feb. 1, 2026",
-  },
-  {
-    name: "Full Name",
-    email: "name@example.com",
-    role: "Agency",
-    dateAdded: "Feb. 1, 2026",
-  },
-  {
-    name: "Full Name",
-    email: "name@example.com",
-    role: "Support",
-    dateAdded: "Feb. 1, 2026",
-  },
-  {
-    name: "Full Name",
-    email: "name@example.com",
-    role: "Admin",
-    dateAdded: "Feb. 1, 2026",
-  },
-  {
-    name: "Full Name",
-    email: "livingston@example.com",
-    role: "Agency",
-    dateAdded: "Feb. 1, 2026",
-  },
-  {
-    name: "Full Name",
-    email: "name@example.com",
-    role: "Internal",
-    dateAdded: "Feb. 1, 2026",
-  },
-  {
-    name: "Full Name",
-    email: "name@example.com",
-    role: "Support",
-    dateAdded: "Feb. 1, 2026",
-  },
-  {
-    name: "Full Name",
-    email: "name@example.com",
-    role: "Admin",
-    dateAdded: "Feb. 1, 2026",
-  },
-];
 
 const PAGE_SIZE = 5;
 
@@ -101,7 +39,35 @@ function RoleBadge({ role }: { role: string }) {
   );
 }
 
-export function OverviewTab() {
+const HEALTH_MAP: Record<string, { label: string; value: number; color: string }> = {
+  good: { label: "good", value: 75, color: "var(--color-chart-sage)" },
+  fair: { label: "fair", value: 50, color: "var(--color-chart-gold-light)" },
+  poor: { label: "poor", value: 25, color: "var(--color-chart-coral)" },
+};
+
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr + "T00:00:00");
+  return d.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
+interface OverviewTabProps {
+  account: AccountDetail | null;
+  users: AccountUser[];
+}
+
+export function OverviewTab({ account, users }: OverviewTabProps) {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const t = useTranslations("account");
@@ -116,7 +82,7 @@ export function OverviewTab() {
         u.email.toLowerCase().includes(q) ||
         u.role.toLowerCase().includes(q),
     );
-  }, [search]);
+  }, [search, users]);
 
   const totalPages = Math.max(1, Math.ceil(filteredUsers.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
@@ -124,29 +90,72 @@ export function OverviewTab() {
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE,
   );
+
+  const onboarding = HEALTH_MAP[account?.onboarding_health ?? "poor"];
+  const performance = HEALTH_MAP[account?.performance_health ?? "poor"];
+  const websiteHealth = HEALTH_MAP[account?.website_health ?? "poor"];
+
+  const companyInfo = account
+    ? [
+        { label: `${t("companyName")}:`, value: account.name },
+        {
+          label: `${t("companySize")}:`,
+          value: account.employees ? `${account.employees} employees` : "N/A",
+        },
+        { label: `${t("location")}:`, value: account.location ?? "N/A" },
+        {
+          label: `${t("marketingAgency")}:`,
+          value: account.marketing_agency ?? "N/A",
+        },
+        { label: `${t("website")}:`, value: account.website },
+        {
+          label: `${t("marketingSpend")}:`,
+          value: account.marketing_spend
+            ? formatCurrency(account.marketing_spend)
+            : "N/A",
+        },
+        {
+          label: `${t("activationDate")}:`,
+          value: formatDate(account.activation_date),
+        },
+        {
+          label: `${tc("status")}:`,
+          value: account.status === "active" ? "Active" : "Inactive",
+        },
+        { label: `${t("username")}:`, value: account.username },
+        {
+          label: `${t("integrations")}:`,
+          value:
+            account.integrations && account.integrations.length > 0
+              ? "Active"
+              : "None",
+        },
+      ]
+    : [];
+
   return (
     <>
       {/* Health Gauges */}
       <div className="flex flex-col gap-4 @xl:flex-row">
         <GaugeChart
           title={t("onboardingHealth")}
-          label={t("good")}
-          value={75}
-          color="var(--color-chart-sage)"
+          label={t(onboarding.label)}
+          value={onboarding.value}
+          color={onboarding.color}
           href="#"
         />
         <GaugeChart
           title={t("performanceHealth")}
-          label={t("fair")}
-          value={50}
-          color="var(--color-chart-gold-light)"
+          label={t(performance.label)}
+          value={performance.value}
+          color={performance.color}
           href="#"
         />
         <GaugeChart
           title={t("websiteHealth")}
-          label={t("poor")}
-          value={25}
-          color="var(--color-chart-coral)"
+          label={t(websiteHealth.label)}
+          value={websiteHealth.value}
+          color={websiteHealth.color}
           href="#"
         />
       </div>
@@ -157,18 +166,7 @@ export function OverviewTab() {
         <Card className="flex-1 min-w-0 @[1100px]:basis-1/2 p-4 md:p-8">
           <CardContent className="h-full">
             <div className="grid grid-cols-1 @lg:grid-cols-2 h-full">
-              {[
-                { label: `${t("companyName")}:`, value: "Law Firm Name" },
-                { label: `${t("companySize")}:`, value: "25 employees" },
-                { label: `${t("location")}:`, value: "Los Angeles, CA, USA" },
-                { label: `${t("marketingAgency")}:`, value: "N/A" },
-                { label: `${t("website")}:`, value: "www.lawfirmname.com" },
-                { label: `${t("marketingSpend")}:`, value: "N/A" },
-                { label: `${t("activationDate")}:`, value: "Feb. 1, 2026" },
-                { label: `${tc("status")}:`, value: "Active" },
-                { label: `${t("username")}:`, value: "lawfirmname" },
-                { label: `${t("integrations")}:`, value: "Active" },
-              ].map((item, i) => (
+              {companyInfo.map((item, i) => (
                 <div
                   key={i}
                   className="flex flex-col gap-1 py-4 px-4 border-b border-border-light last:border-b-0 @lg:[&:nth-last-child(2)]:border-b-0"
@@ -233,30 +231,38 @@ export function OverviewTab() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {paginatedUsers.map((user, i) => (
-                <TableRow
-                  key={`${user.name}-${i}`}
-                  className="border-b border-background last:border-0"
-                >
-                  <TableCell className="py-3 px-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-full bg-status-neutral-bg text-muted-foreground flex items-center justify-center text-xs font-medium shrink-0">
-                        PH
+              {paginatedUsers.map((user, i) => {
+                const initials = user.name
+                  .split(" ")
+                  .map((w) => w[0])
+                  .join("")
+                  .toUpperCase()
+                  .slice(0, 2);
+                return (
+                  <TableRow
+                    key={`${user.email}-${i}`}
+                    className="border-b border-background last:border-0"
+                  >
+                    <TableCell className="py-3 px-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-full bg-status-neutral-bg text-muted-foreground flex items-center justify-center text-xs font-medium shrink-0">
+                          {initials}
+                        </div>
+                        <span className="font-medium">{user.name}</span>
                       </div>
-                      <span className="font-medium">{user.name}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="py-3 px-2">
-                    <RoleBadge role={user.role} />
-                  </TableCell>
-                  <TableCell className="py-3 px-2 text-muted-foreground">
-                    {user.email}
-                  </TableCell>
-                  <TableCell className="py-3 px-2 font-medium">
-                    {user.dateAdded}
-                  </TableCell>
-                </TableRow>
-              ))}
+                    </TableCell>
+                    <TableCell className="py-3 px-2">
+                      <RoleBadge role={user.role} />
+                    </TableCell>
+                    <TableCell className="py-3 px-2 text-muted-foreground">
+                      {user.email}
+                    </TableCell>
+                    <TableCell className="py-3 px-2 font-medium">
+                      {formatDate(user.created_date)}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </div>
@@ -270,9 +276,15 @@ export function OverviewTab() {
               {t("practiceAreas")}
             </h3>
             <div className="flex flex-wrap gap-2">
-              <Badge variant="info" className="px-2.5 py-1">
-                Practice area
-              </Badge>
+              {(account?.practice_areas ?? []).length > 0 ? (
+                account!.practice_areas!.map((area) => (
+                  <Badge key={area} variant="info" className="px-2.5 py-1">
+                    {area}
+                  </Badge>
+                ))
+              ) : (
+                <span className="text-sm text-muted-foreground">N/A</span>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -282,9 +294,15 @@ export function OverviewTab() {
               {t("integrations")}
             </h3>
             <div className="flex flex-wrap gap-2">
-              <Badge variant="success" className="px-2.5 py-1">
-                Integration
-              </Badge>
+              {(account?.integrations ?? []).length > 0 ? (
+                account!.integrations!.map((int) => (
+                  <Badge key={int} variant="success" className="px-2.5 py-1">
+                    {int}
+                  </Badge>
+                ))
+              ) : (
+                <span className="text-sm text-muted-foreground">N/A</span>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -294,9 +312,15 @@ export function OverviewTab() {
               {t("techStack")}
             </h3>
             <div className="flex flex-wrap gap-2">
-              <Badge variant="neutral" className="px-2.5 py-1">
-                Tech platform
-              </Badge>
+              {(account?.tech_stack ?? []).length > 0 ? (
+                account!.tech_stack!.map((tech) => (
+                  <Badge key={tech} variant="neutral" className="px-2.5 py-1">
+                    {tech}
+                  </Badge>
+                ))
+              ) : (
+                <span className="text-sm text-muted-foreground">N/A</span>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -306,9 +330,15 @@ export function OverviewTab() {
               {t("lawbrokrFeatures")}
             </h3>
             <div className="flex flex-wrap gap-2">
-              <Badge variant="neutral" className="px-2.5 py-1">
-                Feature
-              </Badge>
+              {(account?.features ?? []).length > 0 ? (
+                account!.features!.map((feat) => (
+                  <Badge key={feat} variant="neutral" className="px-2.5 py-1">
+                    {feat}
+                  </Badge>
+                ))
+              ) : (
+                <span className="text-sm text-muted-foreground">N/A</span>
+              )}
             </div>
           </CardContent>
         </Card>

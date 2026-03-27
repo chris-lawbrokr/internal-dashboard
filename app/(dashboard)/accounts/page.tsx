@@ -26,6 +26,7 @@ import { DATE_RANGE_MIN, dateRangeMax } from "@/lib/dates";
 type HealthStatus = "success" | "warning" | "error";
 
 interface Account {
+  law_firm_id: number;
   name: string;
   website: string;
   employees: number | null;
@@ -274,7 +275,7 @@ export default function AccountsPage() {
               <TableRow
                 key={`${account.name}-${i}`}
                 className="border-b border-background cursor-pointer"
-                onClick={() => router.push("/accounts/account")}
+                onClick={() => router.push(`/accounts/account?law_firm_id=${account.law_firm_id ?? 1}`)}
               >
                 <TableCell className="font-medium whitespace-nowrap">
                   {account.name}

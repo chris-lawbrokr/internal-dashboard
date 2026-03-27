@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { ArrowLeft, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { DateRangePickerWithPresets } from "@/components/ui/datepicker";
@@ -12,11 +13,64 @@ import { PerformanceTab } from "./tabs/PerformanceTab";
 import { WebsiteTab } from "./tabs/WebsiteTab";
 import { UsageTab } from "./tabs/UsageTab";
 
+export interface AccountDetail {
+  name: string;
+  username: string;
+  website: string;
+  employees: number | null;
+  location: string | null;
+  marketing_agency: string | null;
+  marketing_spend: number | null;
+  contract_term: string;
+  activation_date: string;
+  next_payment_date: string;
+  status: string;
+  onboarding_health: string;
+  performance_health: string;
+  website_health: string;
+  practice_areas: string[] | null;
+  integrations: string[] | null;
+  tech_stack: string[] | null;
+  features: string[] | null;
+}
+
+export interface AccountUser {
+  name: string;
+  role: string;
+  email: string;
+  created_date: string;
+}
+
 const tabKeys = ["overview", "performance", "website", "usage"] as const;
 
-export default function Dashboard() {
+export default function AccountPage() {
   const [activeTab, setActiveTab] = useState<string>("overview");
+  const [account, setAccount] = useState<AccountDetail | null>(null);
+  const [users, setUsers] = useState<AccountUser[]>([]);
   const t = useTranslations("account");
+  const searchParams = useSearchParams();
+  const lawFirmId = searchParams.get("law_firm_id");
+
+  const defaultEnd = new Date();
+  const defaultStart = new Date();
+  defaultStart.setDate(defaultStart.getDate() - 90);
+
+  const [startDate, setStartDate] = useState<Date>(defaultStart);
+  const [endDate, setEndDate] = useState<Date>(defaultEnd);
+
+  useEffect(() => {
+    if (!lawFirmId) return;
+
+    fetch(`/api/account?law_firm_id=${lawFirmId}`)
+      .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
+      .then(setAccount)
+      .catch((err) => console.error("Failed to fetch account:", err));
+
+    fetch(`/api/account/users?law_firm_id=${lawFirmId}`)
+      .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
+      .then((data) => setUsers(data.data ?? []))
+      .catch((err) => console.error("Failed to fetch users:", err));
+  }, [lawFirmId]);
 
   return (
     <div className="flex flex-col h-full">
@@ -30,12 +84,20 @@ export default function Dashboard() {
           {t("back")}
         </Link>
         <div className="flex flex-col @xl:flex-row @xl:items-center justify-between gap-4">
-          <h1 className="text-2xl font-bold text-foreground">Smith Law Firm</h1>
+          <h1 className="text-2xl font-bold text-foreground">
+            {account?.name ?? ""}
+          </h1>
           <div className="w-full @xl:w-auto [&>div]:w-full @xl:[&>div]:w-auto [&>div>button:first-child]:w-full @xl:[&>div>button:first-child]:w-auto">
             <DateRangePickerWithPresets
               defaultPreset="90d"
               minDate={DATE_RANGE_MIN}
               maxDate={dateRangeMax()}
+              onChange={(start, end) => {
+                if (start && end) {
+                  setStartDate(start);
+                  setEndDate(end);
+                }
+              }}
             />
           </div>
         </div>
@@ -75,10 +137,18 @@ export default function Dashboard() {
       </div>
 
       <div className="overflow-y-auto min-h-0 flex-1 flex flex-col gap-4 pb-2">
-        {activeTab === "overview" && <OverviewTab />}
-        {activeTab === "performance" && <PerformanceTab />}
-        {activeTab === "website" && <WebsiteTab />}
-        {activeTab === "usage" && <UsageTab />}
+        {activeTab === "overview" && (
+          <OverviewTab account={account} users={users} />
+        )}
+        {activeTab === "performance" && (
+          <PerformanceTab
+            lawFirmId={lawFirmId}
+            startDate={startDate}
+            endDate={endDate}
+          />
+        )}
+        {activeTab === "website" && <WebsiteTab lawFirmId={lawFirmId} />}
+        {activeTab === "usage" && <UsageTab lawFirmId={lawFirmId} />}
       </div>
     </div>
   );
