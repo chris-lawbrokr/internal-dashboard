@@ -12,6 +12,7 @@ import {
   TablePagination,
 } from "@/components/ui/table/Table";
 import { Badge, StatusIcon } from "@/components/ui/badge/Badge";
+import { Spinner } from "@/components/ui/Spinner";
 
 // ── Types ──────────────────────────────────────────────────────────
 
@@ -331,6 +332,8 @@ export function UsageTab({ lawFirmId, startDate, endDate }: UsageTabProps) {
       .then(setDetails)
       .catch((e) => console.error("Failed to fetch usage details:", e));
   }, [lawFirmId, startDate, endDate]);
+
+  if (usage === null) return <Spinner />;
 
   const statusLabel = usage?.status === "active" ? "Active" : "Inactive";
   const contractLabel = usage?.contract_term === "annual" ? "Annual" : "Monthly";

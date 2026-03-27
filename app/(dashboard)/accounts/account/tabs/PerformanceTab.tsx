@@ -17,6 +17,7 @@ import {
   TablePagination,
 } from "@/components/ui/table/Table";
 import dynamic from "next/dynamic";
+import { Spinner } from "@/components/ui/Spinner";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -114,6 +115,8 @@ export function PerformanceTab({ lawFirmId, startDate, endDate }: PerformanceTab
       .then((data) => setFunnels(data.data ?? []))
       .catch((e) => console.error("Failed to fetch funnels:", e));
   }, [lawFirmId, startDate, endDate]);
+
+  if (analytics === null) return <Spinner />;
 
   const visits = analytics?.summary.visits ?? 0;
   const conversions = analytics?.summary.conversions ?? 0;

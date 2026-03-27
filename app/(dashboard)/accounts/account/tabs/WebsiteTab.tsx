@@ -20,6 +20,7 @@ import {
   ArrowDown,
   ArrowUp,
 } from "lucide-react";
+import { Spinner } from "@/components/ui/Spinner";
 
 interface WebsiteData {
   status: string;
@@ -96,6 +97,8 @@ export function WebsiteTab({ lawFirmId }: WebsiteTabProps) {
     () => links.slice((currentPage - 1) * pageSize, currentPage * pageSize),
     [currentPage, pageSize, links],
   );
+
+  if (website === null) return <Spinner />;
 
   const isLive = website?.status === "live";
   const isLinkUp = website?.link_status === "up";

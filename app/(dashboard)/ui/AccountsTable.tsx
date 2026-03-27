@@ -19,6 +19,7 @@ import {
   ArrowUpDown,
 } from "lucide-react";
 import { Badge, StatusIcon } from "@/components/ui/badge/Badge";
+import { Spinner } from "@/components/ui/Spinner";
 
 type HealthStatus = "success" | "warning" | "error";
 
@@ -56,7 +57,7 @@ interface AccountsTableProps {
 }
 
 export function AccountsTable({ startDate, endDate }: AccountsTableProps) {
-  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [accounts, setAccounts] = useState<Account[] | null>(null);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [sortField, setSortField] = useState<SortField | null>(null);
@@ -70,11 +71,14 @@ export function AccountsTable({ startDate, endDate }: AccountsTableProps) {
     if (endDate) params.set("end_date", endDate.toISOString().split("T")[0]);
     const qs = params.toString();
 
+    setAccounts(null);
     fetch(`/api/accounts${qs ? `?${qs}` : ""}`)
       .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
       .then((data) => setAccounts(data.data ?? []))
       .catch((err) => console.error("Failed to fetch accounts:", err));
   }, [startDate, endDate]);
+
+  if (accounts === null) return <Spinner />;
 
   const filtered = accounts.filter((a) => {
     const q = search.toLowerCase();

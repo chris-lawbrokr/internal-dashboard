@@ -22,6 +22,7 @@ import {
 import { Badge, StatusIcon } from "@/components/ui/badge/Badge";
 import { DateRangePickerWithPresets } from "@/components/ui/datepicker";
 import { DATE_RANGE_MIN, dateRangeMax } from "@/lib/dates";
+import { Spinner } from "@/components/ui/Spinner";
 
 type HealthStatus = "success" | "warning" | "error";
 
@@ -70,7 +71,7 @@ type SortField = "visits" | "conversions" | "conversion_rate";
 type SortDir = "asc" | "desc";
 
 export default function AccountsPage() {
-  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [accounts, setAccounts] = useState<Account[] | null>(null);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [sortField, setSortField] = useState<SortField | null>(null);
@@ -90,13 +91,14 @@ export default function AccountsPage() {
     const fmt = (d: Date) => d.toISOString().split("T")[0];
     const qs = `start_date=${fmt(startDate)}&end_date=${fmt(endDate)}`;
 
+    setAccounts(null);
     fetch(`/api/accounts?${qs}`)
       .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
       .then((data) => setAccounts(data.data ?? []))
       .catch((err) => console.error("Failed to fetch accounts:", err));
   }, [startDate, endDate]);
 
-  const filtered = accounts.filter((a) => {
+  const filtered = (accounts ?? []).filter((a) => {
     const q = search.toLowerCase();
     return (
       a.name.toLowerCase().includes(q) ||
@@ -146,6 +148,9 @@ export default function AccountsPage() {
           />
         </div>
       </div>
+      {accounts === null ? (
+        <Spinner />
+      ) : (
       <div className="overflow-y-auto min-h-0 flex-1 flex flex-col gap-4 pb-2">
         <Table
           toolbar={
@@ -329,6 +334,7 @@ export default function AccountsPage() {
           </TableBody>
         </Table>
       </div>
+      )}
     </div>
   );
 }

@@ -11,6 +11,7 @@ import { SparklineChart } from "@/app/(dashboard)/ui/charts/SparklineChart";
 import { DateRangePickerWithPresets } from "@/components/ui/datepicker";
 import { DATE_RANGE_MIN, dateRangeMax } from "@/lib/dates";
 import { useAuth } from "@/lib/auth";
+import { Spinner } from "@/components/ui/Spinner";
 
 interface AnalyticsSummary {
   summary: {
@@ -119,9 +120,12 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="overflow-y-auto min-h-0 flex-1 flex flex-col gap-4 pb-2">
-        {/* Stats Row */}
-        <div className="flex flex-col gap-4 @xl:flex-row">
+      {analytics === null ? (
+        <Spinner />
+      ) : (
+        <div className="overflow-y-auto min-h-0 flex-1 flex flex-col gap-4 pb-2">
+          {/* Stats Row */}
+          <div className="flex flex-col gap-4 @xl:flex-row">
             {/* Left: Stacked stat cards */}
             <div className="flex-1 min-w-0 flex flex-col gap-4">
               <Card className="flex-1 p-4 @container/stat">
@@ -199,9 +203,10 @@ export default function Dashboard() {
             </Card>
           </div>
 
-        {/* Accounts Table */}
-        <AccountsTable startDate={startDate} endDate={endDate} />
-      </div>
+          {/* Accounts Table */}
+          <AccountsTable startDate={startDate} endDate={endDate} />
+        </div>
+      )}
     </div>
   );
 }
