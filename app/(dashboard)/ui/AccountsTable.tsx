@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
   Table,
@@ -24,6 +25,7 @@ import { Spinner } from "@/components/ui/Spinner";
 type HealthStatus = "success" | "warning" | "error";
 
 interface Account {
+  law_firm_id?: number;
   name: string;
   website: string;
   visits: number;
@@ -62,6 +64,7 @@ export function AccountsTable({ startDate, endDate }: AccountsTableProps) {
   const [page, setPage] = useState(1);
   const [sortField, setSortField] = useState<SortField | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>("asc");
+  const router = useRouter();
   const t = useTranslations("dashboard");
   const tc = useTranslations("common");
 
@@ -216,7 +219,11 @@ export function AccountsTable({ startDate, endDate }: AccountsTableProps) {
       </TableHeader>
       <TableBody>
         {paginated.map((account, i) => (
-          <TableRow key={`${account.name}-${i}`} className="border-b border-background">
+          <TableRow
+            key={`${account.name}-${i}`}
+            className="border-b border-background cursor-pointer"
+            onClick={() => router.push(`/accounts/account?law_firm_id=${account.law_firm_id ?? 1}`)}
+          >
             <TableCell className="font-medium">{account.name}</TableCell>
             <TableCell className="font-medium">{account.website}</TableCell>
             <TableCell className="font-medium">
