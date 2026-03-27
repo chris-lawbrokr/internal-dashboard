@@ -20,6 +20,7 @@ import {
 
 import type { LucideIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useAuth } from "@/lib/auth";
 
 const MOBILE_BREAKPOINT = 480;
 const TABLET_BREAKPOINT = 768;
@@ -47,10 +48,21 @@ const navItems: NavItem[] = [
 export function Nav() {
   const pathname = usePathname();
   const t = useTranslations("nav");
+  const { user, logout } = useAuth();
+  const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
   const onToggle = () => setOpen((o) => !o);
+
+  const displayName = user?.name ?? "";
+  const displayEmail = user?.email ?? "";
+  const initials = displayName
+    .split(" ")
+    .map((p) => p[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
 
   useEffect(() => {
     const mobileMql = window.matchMedia(
@@ -69,6 +81,7 @@ export function Nav() {
     };
 
     apply();
+    setMounted(true);
     const onMobileChange = () => apply();
     const onTabletChange = () => apply();
     mobileMql.addEventListener("change", onMobileChange);
@@ -82,12 +95,13 @@ export function Nav() {
   const collapsedContent = (
     <>
       <div className="h-8 w-8 rounded-full bg-status-neutral-bg text-muted-foreground flex items-center justify-center text-xs font-semibold">
-        PA
+        {initials}
       </div>
       <button
         type="button"
         className="text-muted-foreground hover:text-foreground cursor-pointer"
         aria-label={t("logout")}
+        onClick={logout}
       >
         <LogOut size={18} />
       </button>
@@ -154,20 +168,21 @@ export function Nav() {
       <div className="flex flex-col gap-5 items-start w-full">
         <div className="flex flex-col gap-2 items-center w-full">
           <div className="h-8 w-8 rounded-full bg-status-neutral-bg text-muted-foreground flex items-center justify-center text-sm font-semibold">
-            PA
+            {initials}
           </div>
           <div className="flex flex-col items-center w-full text-center">
             <span className="text-base leading-7 text-foreground whitespace-nowrap">
-              Penelope Anthony
+              {displayName}
             </span>
             <span className="text-xs leading-6 text-muted-foreground whitespace-nowrap">
-              name@company.com
+              {displayEmail}
             </span>
           </div>
         </div>
         <button
           type="button"
           className="flex items-center gap-1.5 justify-center w-full bg-surface border border-border rounded-xl px-3 py-1.5 shadow-[0px_1px_0.5px_0px_rgba(37,13,83,0.02)] hover:bg-muted cursor-pointer"
+          onClick={logout}
         >
           <LogOut size={14} className="text-muted-foreground" />
           <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">
@@ -233,7 +248,7 @@ export function Nav() {
             alt="Logo"
             height="100"
             width="100"
-            className="flex-1"
+            style={{ width: "auto", height: "auto" }}
           />
         </div>
         <button
@@ -250,6 +265,8 @@ export function Nav() {
 
   const isDesktop = !isMobile && !isTablet;
 
+  if (!mounted) return null;
+
   return (
     <>
       {/* Backdrop — visible on tablet/mobile when expanded */}
@@ -263,7 +280,7 @@ export function Nav() {
       {isMobile && (
         <div className="absolute top-0 left-0 right-0 z-50 bg-white shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.1)]">
           <div className="flex items-center justify-between px-4 py-3">
-            <Image src="/images/Logo.svg" alt="Logo" height={24} width={80} />
+            <Image src="/images/Logo.svg" alt="Logo" height={24} width={80} loading="eager" style={{ height: "auto" }} />
             <button
               type="button"
               className="text-muted-foreground hover:text-foreground cursor-pointer"
@@ -313,7 +330,7 @@ export function Nav() {
             <div className="flex items-center justify-between border-t border-border px-4 py-3">
               <div className="flex items-center gap-3">
                 <span className="text-sm text-foreground">
-                  Penelope Anthony
+                  {displayName}
                 </span>
               </div>
               <div className="flex items-center gap-3">
@@ -335,6 +352,7 @@ export function Nav() {
                   type="button"
                   className="text-muted-foreground hover:text-foreground cursor-pointer"
                   aria-label={t("logout")}
+                  onClick={logout}
                 >
                   <LogOut size={18} />
                 </button>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import {
   Table,
@@ -23,48 +23,40 @@ import { Badge, StatusIcon } from "@/components/ui/badge/Badge";
 type HealthStatus = "success" | "warning" | "error";
 
 interface Account {
-  id: number;
   name: string;
   website: string;
-  totalVisits: number;
-  totalResponses: number;
-  conversionRate: number;
-  status: "Active" | "Inactive";
-  onboarding: HealthStatus;
-  performance: HealthStatus;
-  websiteHealth: HealthStatus;
+  visits: number;
+  conversions: number;
+  conversion_rate: number;
+  status: string;
+  onboarding_health: string;
+  performance_health: string;
+  website_health: string;
 }
 
-function seededRandom(seed: number) {
-  const x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
+function healthToVariant(health: string): HealthStatus {
+  switch (health) {
+    case "good":
+      return "success";
+    case "fair":
+      return "warning";
+    default:
+      return "error";
+  }
 }
-
-const statusIcons: HealthStatus[] = ["success", "warning", "error"];
-
-const fakeAccounts: Account[] = Array.from({ length: 100 }, (_, i) => {
-  const r = seededRandom(i + 1);
-  const iconIdx = Math.floor(seededRandom(i + 200) * 3);
-  return {
-    id: i + 1,
-    name: "Law Firm Name",
-    website: "www.lawfirmwebsite.com",
-    totalVisits: 10000,
-    totalResponses: 10000,
-    conversionRate: 10000,
-    status: r > 0.3 ? "Active" : "Inactive",
-    onboarding: statusIcons[iconIdx],
-    performance: statusIcons[iconIdx],
-    websiteHealth: statusIcons[iconIdx],
-  };
-});
 
 const PAGE_SIZE = 10;
 
-type SortField = "totalVisits" | "totalResponses" | "conversionRate";
+type SortField = "visits" | "conversions" | "conversion_rate";
 type SortDir = "asc" | "desc";
 
-export function AccountsTable() {
+interface AccountsTableProps {
+  startDate?: Date;
+  endDate?: Date;
+}
+
+export function AccountsTable({ startDate, endDate }: AccountsTableProps) {
+  const [accounts, setAccounts] = useState<Account[]>([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [sortField, setSortField] = useState<SortField | null>(null);
@@ -72,7 +64,19 @@ export function AccountsTable() {
   const t = useTranslations("dashboard");
   const tc = useTranslations("common");
 
-  const filtered = fakeAccounts.filter((a) => {
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (startDate) params.set("start_date", startDate.toISOString().split("T")[0]);
+    if (endDate) params.set("end_date", endDate.toISOString().split("T")[0]);
+    const qs = params.toString();
+
+    fetch(`/api/accounts${qs ? `?${qs}` : ""}`)
+      .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
+      .then((data) => setAccounts(data.data ?? []))
+      .catch((err) => console.error("Failed to fetch accounts:", err));
+  }, [startDate, endDate]);
+
+  const filtered = accounts.filter((a) => {
     const q = search.toLowerCase();
     return (
       a.name.toLowerCase().includes(q) || a.website.toLowerCase().includes(q)
@@ -174,7 +178,7 @@ export function AccountsTable() {
             <button
               type="button"
               className="flex items-center gap-1 cursor-pointer"
-              onClick={() => handleSort("totalVisits")}
+              onClick={() => handleSort("visits")}
             >
               {t("totalVisitsShort")}
               <ArrowUpDown size={14} />
@@ -184,7 +188,7 @@ export function AccountsTable() {
             <button
               type="button"
               className="flex items-center gap-1 cursor-pointer"
-              onClick={() => handleSort("totalResponses")}
+              onClick={() => handleSort("conversions")}
             >
               {t("totalResponsesShort")}
               <ArrowUpDown size={14} />
@@ -194,7 +198,7 @@ export function AccountsTable() {
             <button
               type="button"
               className="flex items-center gap-1 cursor-pointer"
-              onClick={() => handleSort("conversionRate")}
+              onClick={() => handleSort("conversion_rate")}
             >
               {t("conversionRateShort")}
               <ArrowUpDown size={14} />
@@ -207,40 +211,40 @@ export function AccountsTable() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {paginated.map((account) => (
-          <TableRow key={account.id} className="border-b border-background">
+        {paginated.map((account, i) => (
+          <TableRow key={`${account.name}-${i}`} className="border-b border-background">
             <TableCell className="font-medium">{account.name}</TableCell>
             <TableCell className="font-medium">{account.website}</TableCell>
             <TableCell className="font-medium">
-              {account.totalVisits.toLocaleString()}
+              {account.visits.toLocaleString()}
             </TableCell>
             <TableCell className="font-medium">
-              {account.totalResponses.toLocaleString()}
+              {account.conversions.toLocaleString()}
             </TableCell>
             <TableCell className="font-medium">
-              {account.conversionRate.toLocaleString()}
+              {Math.round(account.conversion_rate)}%
             </TableCell>
             <TableCell>
               <Badge
-                variant={account.status === "Active" ? "success" : "error"}
+                variant={account.status === "active" ? "success" : "error"}
                 className="px-2 py-1 text-sm"
               >
-                {account.status}
+                {account.status === "active" ? "Active" : "Inactive"}
               </Badge>
             </TableCell>
             <TableCell className="text-center">
               <div className="flex justify-center">
-                <StatusIcon variant={account.onboarding} />
+                <StatusIcon variant={healthToVariant(account.onboarding_health)} />
               </div>
             </TableCell>
             <TableCell className="text-center">
               <div className="flex justify-center">
-                <StatusIcon variant={account.performance} />
+                <StatusIcon variant={healthToVariant(account.performance_health)} />
               </div>
             </TableCell>
             <TableCell className="text-center">
               <div className="flex justify-center">
-                <StatusIcon variant={account.websiteHealth} />
+                <StatusIcon variant={healthToVariant(account.website_health)} />
               </div>
             </TableCell>
           </TableRow>

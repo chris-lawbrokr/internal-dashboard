@@ -5,7 +5,11 @@ import { useTranslations } from "next-intl";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-export function PieChart() {
+interface PieChartProps {
+  value?: number;
+}
+
+export function PieChart({ value = 10 }: PieChartProps) {
   const t = useTranslations("charts");
 
   const options: ApexCharts.ApexOptions = {
@@ -39,7 +43,7 @@ export function PieChart() {
     labels: [t("conversion")],
   };
 
-  const series = [10];
+  const series = [value];
 
   return (
     <Chart options={options} series={series} type="radialBar" height={140} width={140} />
