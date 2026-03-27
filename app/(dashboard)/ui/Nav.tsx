@@ -175,7 +175,6 @@ export function Nav() {
           </span>
         </button>
       </div>
-
       <div className="flex items-center justify-center gap-4 border-t border-b border-border py-4 w-full">
         <button
           type="button"
@@ -192,7 +191,6 @@ export function Nav() {
           <Settings size={20} />
         </button>
       </div>
-
       <nav className="flex flex-col gap-2 flex-1">
         {navItems.map((item) => {
           const isActive =
