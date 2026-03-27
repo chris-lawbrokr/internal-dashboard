@@ -122,82 +122,82 @@ export default function Dashboard() {
       <div className="overflow-y-auto min-h-0 flex-1 flex flex-col gap-4 pb-2">
         {/* Stats Row */}
         <div className="flex flex-col gap-4 @xl:flex-row">
-          {/* Left: Stacked stat cards */}
-          <div className="flex-1 min-w-0 flex flex-col gap-4">
-            <Card className="flex-1 p-4 @container/stat">
-              <CardContent className="flex items-center justify-between">
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm text-muted-foreground">
-                    {t("totalVisits")}
-                  </p>
-                  <p className="text-2xl font-bold">
-                    {formatNumber(visits)}
-                  </p>
-                  <ChangeIndicator
-                    change={mom?.visits_change ?? 0}
-                    label={t("vsLastMonth")}
-                  />
-                </div>
-                <div className="hidden @[200px]/stat:block">
-                  <SparklineChart
-                    data={series?.visits ?? []}
-                    color="#bcbc95"
-                  />
-                </div>
+            {/* Left: Stacked stat cards */}
+            <div className="flex-1 min-w-0 flex flex-col gap-4">
+              <Card className="flex-1 p-4 @container/stat">
+                <CardContent className="flex items-center justify-between">
+                  <div className="flex flex-col gap-1">
+                    <p className="text-sm text-muted-foreground">
+                      {t("totalVisits")}
+                    </p>
+                    <p className="text-2xl font-bold">
+                      {formatNumber(visits)}
+                    </p>
+                    <ChangeIndicator
+                      change={mom?.visits_change ?? 0}
+                      label={t("vsLastMonth")}
+                    />
+                  </div>
+                  <div className="hidden @[200px]/stat:block">
+                    <SparklineChart
+                      data={series?.visits ?? []}
+                      color="#bcbc95"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="flex-1 p-4 @container/stat2">
+                <CardContent className="flex items-center justify-between">
+                  <div className="flex flex-col gap-1">
+                    <p className="text-sm text-muted-foreground">
+                      {t("totalResponses")}
+                    </p>
+                    <p className="text-2xl font-bold">
+                      {formatNumber(conversions)}
+                    </p>
+                    <ChangeIndicator
+                      change={mom?.conversions_change ?? 0}
+                      label={t("vsLastMonth")}
+                    />
+                  </div>
+                  <div className="hidden @[200px]/stat2:block">
+                    <SparklineChart
+                      data={series?.conversions ?? []}
+                      color="#bcbc95"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Middle: Area chart */}
+            <Card className="flex-[2] min-w-0 p-4 flex">
+              <CardContent className="overflow-hidden flex flex-col justify-center flex-1">
+                <LineChart data={chartData} />
               </CardContent>
             </Card>
-            <Card className="flex-1 p-4 @container/stat2">
-              <CardContent className="flex items-center justify-between">
-                <div className="flex flex-col gap-1">
+
+            {/* Right: Conversion rate + donut */}
+            <Card className="flex-1 min-w-0 p-4 @container/conv">
+              <CardContent className="flex flex-col @[200px]/conv:flex-row @[200px]/conv:items-center @[200px]/conv:justify-between h-full gap-2">
+                <div className="flex flex-col gap-1 items-start h-full">
                   <p className="text-sm text-muted-foreground">
-                    {t("totalResponses")}
+                    {t("conversionRate")}
                   </p>
-                  <p className="text-2xl font-bold">
-                    {formatNumber(conversions)}
+                  <p className="text-3xl font-bold text-foreground">
+                    {Math.round(conversionRate)}%
                   </p>
                   <ChangeIndicator
-                    change={mom?.conversions_change ?? 0}
+                    change={mom?.conversion_rate_change ?? 0}
                     label={t("vsLastMonth")}
                   />
                 </div>
-                <div className="hidden @[200px]/stat2:block">
-                  <SparklineChart
-                    data={series?.conversions ?? []}
-                    color="#bcbc95"
-                  />
+                <div className="shrink-0 self-center">
+                  <PieChart value={Math.round(conversionRate)} />
                 </div>
               </CardContent>
             </Card>
           </div>
-
-          {/* Middle: Area chart */}
-          <Card className="flex-[2] min-w-0 p-4 flex">
-            <CardContent className="overflow-hidden flex flex-col justify-center flex-1">
-              <LineChart data={chartData} />
-            </CardContent>
-          </Card>
-
-          {/* Right: Conversion rate + donut */}
-          <Card className="flex-1 min-w-0 p-4 @container/conv">
-            <CardContent className="flex flex-col @[200px]/conv:flex-row @[200px]/conv:items-center @[200px]/conv:justify-between h-full gap-2">
-              <div className="flex flex-col gap-1 items-start h-full">
-                <p className="text-sm text-muted-foreground">
-                  {t("conversionRate")}
-                </p>
-                <p className="text-3xl font-bold text-foreground">
-                  {Math.round(conversionRate)}%
-                </p>
-                <ChangeIndicator
-                  change={mom?.conversion_rate_change ?? 0}
-                  label={t("vsLastMonth")}
-                />
-              </div>
-              <div className="shrink-0 self-center">
-                <PieChart value={Math.round(conversionRate)} />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
 
         {/* Accounts Table */}
         <AccountsTable startDate={startDate} endDate={endDate} />

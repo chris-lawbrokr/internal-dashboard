@@ -148,7 +148,13 @@ export default function AccountPage() {
           />
         )}
         {activeTab === "website" && <WebsiteTab lawFirmId={lawFirmId} />}
-        {activeTab === "usage" && <UsageTab lawFirmId={lawFirmId} />}
+        {activeTab === "usage" && (
+          <UsageTab
+            lawFirmId={lawFirmId}
+            startDate={startDate}
+            endDate={endDate}
+          />
+        )}
       </div>
     </div>
   );

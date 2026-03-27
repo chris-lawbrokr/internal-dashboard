@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, type ReactNode } from "react";
+import { useState, useEffect, useMemo, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -18,46 +18,32 @@ import {
   AlertCircle,
   X,
   ArrowDown,
+  ArrowUp,
 } from "lucide-react";
 
-type LinkStatus = "Active" | "Review" | "Broken";
-
-interface LawbrokrLink {
-  websiteUrl: string;
-  lawbrokrUrl: string;
-  status: LinkStatus;
+interface WebsiteData {
+  status: string;
+  source_attribution: string;
+  link_status: string;
+  ssl_status: string;
+  load_time: number;
+  live_links: number;
+  live_links_change: number;
+  integrations: string[] | null;
 }
 
-const websitePaths = [
-  "/home/landingpage/pagename",
-  "/home/landingpage/pagename",
-  "/home/landingpage/pagename",
-  "/home/landingpage/pagename",
-  "/home/landingpage/pagename",
-  "/home/landingpage/pagename",
-];
+interface WebsiteLink {
+  website_url: string;
+  lawbrokr_url: string | null;
+  status: string;
+}
 
-const lawbrokrPaths = [
-  "/practiceareas/personalinjury",
-  "/practiceareas/personalinjury/slipandfall",
-  "/practiceareas/personalinjury/dogbite",
-  "/practiceareas/personalinjury/carcrash",
-  "/practiceareas",
-  "/practiceareas/personalinjury/workplaceaccident",
-];
-
-const links: LawbrokrLink[] = Array.from({ length: 100 }, (_, i) => ({
-  websiteUrl: `www.lawfirmname.com${websitePaths[i % websitePaths.length]}`,
-  lawbrokrUrl: `www.lawfirm.lawbrokr.com${lawbrokrPaths[i % lawbrokrPaths.length]}`,
-  status: (
-    ["Active", "Active", "Review", "Broken", "Active", "Active"] as LinkStatus[]
-  )[i % 6],
-}));
+type LinkStatus = "active" | "review" | "broken";
 
 const statusConfig: Record<LinkStatus, { variant: "success" | "caution" | "error"; icon: ReactNode; labelKey: string }> = {
-  Active: { variant: "success", icon: <Check size={12} />, labelKey: "active" },
-  Review: { variant: "caution", icon: <AlertCircle size={12} />, labelKey: "review" },
-  Broken: { variant: "error", icon: <X size={12} />, labelKey: "broken" },
+  active: { variant: "success", icon: <Check size={12} />, labelKey: "active" },
+  review: { variant: "caution", icon: <AlertCircle size={12} />, labelKey: "review" },
+  broken: { variant: "error", icon: <X size={12} />, labelKey: "broken" },
 };
 
 function StatusCard({
@@ -85,51 +71,113 @@ interface WebsiteTabProps {
 
 export function WebsiteTab({ lawFirmId }: WebsiteTabProps) {
   const [page, setPage] = useState(1);
+  const [website, setWebsite] = useState<WebsiteData | null>(null);
+  const [links, setLinks] = useState<WebsiteLink[]>([]);
   const pageSize = 10;
   const t = useTranslations("website");
+
+  useEffect(() => {
+    if (!lawFirmId) return;
+
+    fetch(`/api/account/website?law_firm_id=${lawFirmId}`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then(setWebsite)
+      .catch((e) => console.error("Failed to fetch website data:", e));
+
+    fetch(`/api/account/website/links?law_firm_id=${lawFirmId}`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((data) => setLinks(data.data ?? []))
+      .catch((e) => console.error("Failed to fetch website links:", e));
+  }, [lawFirmId]);
 
   const totalPages = Math.max(1, Math.ceil(links.length / pageSize));
   const currentPage = Math.min(page, totalPages);
   const paginatedLinks = useMemo(
     () => links.slice((currentPage - 1) * pageSize, currentPage * pageSize),
-    [currentPage, pageSize],
+    [currentPage, pageSize, links],
   );
+
+  const isLive = website?.status === "live";
+  const isLinkUp = website?.link_status === "up";
+  const isSslEnabled = website?.ssl_status === "enabled";
+  const isAttrEnabled = website?.source_attribution === "enabled";
+  const linksChange = website?.live_links_change ?? 0;
+  const linksChangePositive = linksChange >= 0;
 
   return (
     <>
-      {/* Top stat cards – row 1 */}
+      {/* Top stat cards */}
       <div className="grid grid-cols-1 gap-4 @xl:grid-cols-4">
         <StatusCard label={t("websiteStatus")}>
-          <Badge variant="success" dot className="gap-1.5 self-start rounded-lg px-2 py-1 font-bold">{t("live")}</Badge>
+          <Badge
+            variant={isLive ? "success" : "error"}
+            dot
+            className="gap-1.5 self-start rounded-lg px-2 py-1 font-bold"
+          >
+            {isLive ? t("live") : t("down")}
+          </Badge>
         </StatusCard>
 
         <StatusCard label={t("sourceAttribution")}>
-          <Badge variant="success" dot className="gap-1.5 self-start rounded-lg px-2 py-1 font-bold">{t("enabled")}</Badge>
+          <Badge
+            variant={isAttrEnabled ? "success" : "error"}
+            dot
+            className="gap-1.5 self-start rounded-lg px-2 py-1 font-bold"
+          >
+            {isAttrEnabled ? t("enabled") : t("disabled")}
+          </Badge>
         </StatusCard>
 
         <StatusCard label={t("linkStatus")}>
-          <Badge variant="error" dot className="gap-1.5 self-start rounded-lg px-2 py-1 font-bold">{t("down")}</Badge>
+          <Badge
+            variant={isLinkUp ? "success" : "error"}
+            dot
+            className="gap-1.5 self-start rounded-lg px-2 py-1 font-bold"
+          >
+            {isLinkUp ? t("live") : t("down")}
+          </Badge>
         </StatusCard>
 
         <StatusCard label={t("activeIntegrations")} className="row-span-2">
-          <Badge variant="neutral" className="gap-1.5 self-start px-2 py-1 font-bold border-border-purple">Scorpion</Badge>
+          {(website?.integrations ?? []).length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {website!.integrations!.map((int) => (
+                <Badge key={int} variant="neutral" className="gap-1.5 self-start px-2 py-1 font-bold border-border-purple">
+                  {int}
+                </Badge>
+              ))}
+            </div>
+          ) : (
+            <span className="text-sm text-muted-foreground">N/A</span>
+          )}
         </StatusCard>
 
         <StatusCard label={t("sslStatus")}>
-          <Badge variant="success" dot className="gap-1.5 self-start rounded-lg px-2 py-1 font-bold">{t("enabled")}</Badge>
+          <Badge
+            variant={isSslEnabled ? "success" : "error"}
+            dot
+            className="gap-1.5 self-start rounded-lg px-2 py-1 font-bold"
+          >
+            {isSslEnabled ? t("enabled") : t("disabled")}
+          </Badge>
         </StatusCard>
 
         <StatusCard label={t("websiteLoadTime")}>
           <span className="text-2xl font-bold">
-            {t("seconds", { count: 8 })}
+            {t("seconds", { count: website?.load_time ?? 0 })}
           </span>
         </StatusCard>
 
         <StatusCard label={t("liveLawbrokrLinks")}>
-          <span className="text-2xl font-bold">39</span>
+          <span className="text-2xl font-bold">{website?.live_links ?? 0}</span>
           <span className="inline-flex items-center gap-1 text-sm">
-            <span className="text-status-error-text">
-              <ArrowDown size={14} className="inline" /> 10%
+            <span className={linksChangePositive ? "text-status-success-border" : "text-status-error-text"}>
+              {linksChangePositive ? (
+                <ArrowUp size={14} className="inline" />
+              ) : (
+                <ArrowDown size={14} className="inline" />
+              )}{" "}
+              {Math.round(Math.abs(linksChange))}%
             </span>{" "}
             <span className="text-muted-foreground">{t("vsLastMonth")}</span>
           </span>
@@ -165,19 +213,25 @@ export function WebsiteTab({ lawFirmId }: WebsiteTabProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {paginatedLinks.map((link, i) => (
-            <TableRow key={i} className="h-14">
-              <TableCell className="py-0 pl-5 pr-10 text-muted-foreground">
-                {link.websiteUrl}
-              </TableCell>
-              <TableCell className="py-0 pl-5 pr-10 text-muted-foreground">
-                {link.lawbrokrUrl}
-              </TableCell>
-              <TableCell className="py-0 pl-5 pr-10 text-right">
-                <Badge variant={statusConfig[link.status].variant} icon={statusConfig[link.status].icon}>{t(statusConfig[link.status].labelKey)}</Badge>
-              </TableCell>
-            </TableRow>
-          ))}
+          {paginatedLinks.map((link, i) => {
+            const status = (link.status as LinkStatus) || "broken";
+            const config = statusConfig[status] ?? statusConfig.broken;
+            return (
+              <TableRow key={i} className="h-14">
+                <TableCell className="py-0 pl-5 pr-10 text-muted-foreground">
+                  {link.website_url}
+                </TableCell>
+                <TableCell className="py-0 pl-5 pr-10 text-muted-foreground">
+                  {link.lawbrokr_url ?? "—"}
+                </TableCell>
+                <TableCell className="py-0 pl-5 pr-10 text-right">
+                  <Badge variant={config.variant} icon={config.icon}>
+                    {t(config.labelKey)}
+                  </Badge>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </>

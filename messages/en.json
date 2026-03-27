@@ -83,6 +83,7 @@
     "live": "Live",
     "sourceAttribution": "Source Attribution",
     "enabled": "Enabled",
+    "disabled": "Disabled",
     "linkStatus": "Lawbrokr Link Status",
     "down": "Down",
     "activeIntegrations": "Active Integrations",
