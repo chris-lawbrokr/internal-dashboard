@@ -11,6 +11,7 @@ The backend call is fire-and-forget because even if it fails (e.g. network
 error), clearing the cookies ensures the user is logged out in the browser.
 The refresh token will eventually expire on the backend side.
 */
+
 export async function POST(request: NextRequest) {
   const accessToken = request.cookies.get("access_token")?.value;
   const refreshToken = request.cookies.get("refresh_token")?.value;
