@@ -4,6 +4,20 @@ import { type SyntheticEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 
+import Image from "next/image";
+
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input, PasswordInput } from "@/components/ui/input";
+import {
+  CardCentered,
+  CardHeader,
+  CardDescription,
+  CardContent,
+  CardFooter,
+  CardLink,
+} from "@/components/ui/card";
+
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
@@ -32,62 +46,66 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-sm">
-        <h1 className="mb-6 text-center text-2xl font-semibold text-gray-900">
-          Sign in
-        </h1>
-
-        <form
-          onSubmit={(e) => void handleSubmit(e)}
-          className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm"
-        >
-          {error && (
-            <p className="mb-4 rounded bg-red-50 px-3 py-2 text-sm text-red-600">
-              {error}
-            </p>
-          )}
-
-          <label
-            htmlFor="email"
-            className="mb-1 block text-sm font-medium text-gray-700"
-          >
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            required
-            value={email}
-            onChange={(e) => { setEmail(e.target.value); }}
-            placeholder="you@example.com"
-            className="mb-4 w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+    <div className="h-screen w-full p-8 sm:p-24 md:p-36 flex">
+      <div className="flex-1 flex gap-24">
+        <div className="w-full">
+          <CardCentered className="w-full h-full">
+            <form onSubmit={(e) => void handleSubmit(e)}>
+              <CardHeader>
+                <Image
+                  src="/images/Logo.svg"
+                  alt="Logo"
+                  height={30}
+                  width={117}
+                  loading="eager"
+                  style={{ height: "auto" }}
+                />
+                <CardDescription>Enter your credentials</CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-4">
+                {error && (
+                  <p className="text-sm text-status-error-border">{error}</p>
+                )}
+                <Input
+                  id="email"
+                  type="email"
+                  label="Email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setEmail(e.target.value); }}
+                  required
+                />
+                <PasswordInput
+                  id="password"
+                  label="Password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setPassword(e.target.value); }}
+                  required
+                />
+              </CardContent>
+              <CardFooter>
+                <div className="flex items-center justify-between mt-4">
+                  <Checkbox id="remember" label="Remember me" />
+                  <CardLink href="/login">Forgot password?</CardLink>
+                </div>
+                <Button className="w-full" type="submit" disabled={loading}>
+                  {loading ? "Signing in..." : "Sign in"}
+                </Button>
+              </CardFooter>
+            </form>
+          </CardCentered>
+        </div>
+        <div className="hidden lg:flex w-full items-center justify-center">
+          <Image
+            src="/images/graphics/login.svg"
+            alt="Logo"
+            height={494}
+            width={608}
+            draggable={false}
+            className="select-none"
           />
-
-          <label
-            htmlFor="password"
-            className="mb-1 block text-sm font-medium text-gray-700"
-          >
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            required
-            value={password}
-            onChange={(e) => { setPassword(e.target.value); }}
-            placeholder="••••••••"
-            className="mb-6 w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-          />
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
-          >
-            {loading ? "Signing in..." : "Sign in"}
-          </button>
-        </form>
+        </div>
       </div>
     </div>
   );
