@@ -2,10 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   const accessToken = request.cookies.get("access_token")?.value;
-  if (!accessToken) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   const { searchParams } = new URL(request.url);
   const params = new URLSearchParams();
   for (const key of ["law_firm_id", "start_date", "end_date"]) {

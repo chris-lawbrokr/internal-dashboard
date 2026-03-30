@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, useRef, useCallback } from "react";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 export interface User {
@@ -68,54 +68,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     router.push("/login");
   }, [router]);
-
-  // Refresh token every 10 minutes with retry on failure
-  const REFRESH_INTERVAL = 10 * 60 * 1000; // 10 minutes
-  const RETRY_DELAY = 10 * 1000; // 10 seconds
-  const MAX_RETRIES = 3;
-  const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const refreshToken = useCallback(async () => {
-    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-      try {
-        const res = await fetch("/api/auth/refresh", { method: "POST" });
-        if (res.ok) return; // success — done
-        if (res.status === 401) {
-          // session gone server-side, log out
-          await logout();
-          return;
-        }
-      } catch {
-        // network error — will retry
-      }
-
-      // If we have retries left, wait 10s before next attempt
-      if (attempt < MAX_RETRIES) {
-        await new Promise((r) => setTimeout(r, RETRY_DELAY));
-      }
-    }
-
-    // All retries exhausted — force logout
-    await logout();
-  }, [logout]);
-
-  useEffect(() => {
-    if (!user) return;
-
-    const schedule = () => {
-      refreshTimer.current = setTimeout(async () => {
-        await refreshToken();
-        // Schedule the next refresh (only if we didn't logout)
-        schedule();
-      }, REFRESH_INTERVAL);
-    };
-
-    schedule();
-
-    return () => {
-      if (refreshTimer.current) clearTimeout(refreshTimer.current);
-    };
-  }, [user, refreshToken]);
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>

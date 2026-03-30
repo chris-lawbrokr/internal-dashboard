@@ -143,7 +143,7 @@ export default function AccountPage() {
 
           <div className="overflow-y-auto min-h-0 flex-1 flex flex-col gap-4 pb-2">
             {activeTab === "overview" && (
-              <OverviewTab account={account} users={users} />
+              <OverviewTab account={account} users={users} onTabChange={setActiveTab} />
             )}
             {activeTab === "performance" && (
               <PerformanceTab

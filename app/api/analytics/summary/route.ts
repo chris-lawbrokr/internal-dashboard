@@ -2,10 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   const accessToken = request.cookies.get("access_token")?.value;
-  if (!accessToken) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   const { searchParams } = new URL(request.url);
 
   const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;

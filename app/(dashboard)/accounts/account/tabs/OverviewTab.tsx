@@ -65,9 +65,10 @@ function formatCurrency(amount: number): string {
 interface OverviewTabProps {
   account: AccountDetail | null;
   users: AccountUser[];
+  onTabChange?: (tab: string) => void;
 }
 
-export function OverviewTab({ account, users }: OverviewTabProps) {
+export function OverviewTab({ account, users, onTabChange }: OverviewTabProps) {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const t = useTranslations("account");
@@ -142,21 +143,21 @@ export function OverviewTab({ account, users }: OverviewTabProps) {
           label={t(onboarding.label)}
           value={onboarding.value}
           color={onboarding.color}
-          href="#"
+          onLinkClick={onTabChange ? () => onTabChange("usage") : undefined}
         />
         <GaugeChart
           title={t("performanceHealth")}
           label={t(performance.label)}
           value={performance.value}
           color={performance.color}
-          href="#"
+          onLinkClick={onTabChange ? () => onTabChange("performance") : undefined}
         />
         <GaugeChart
           title={t("websiteHealth")}
           label={t(websiteHealth.label)}
           value={websiteHealth.value}
           color={websiteHealth.color}
-          href="#"
+          onLinkClick={onTabChange ? () => onTabChange("website") : undefined}
         />
       </div>
 

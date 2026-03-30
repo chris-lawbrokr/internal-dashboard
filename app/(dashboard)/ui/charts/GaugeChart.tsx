@@ -11,6 +11,7 @@ interface GaugeChartProps {
   value: number; // 0-100
   color: string;
   href?: string;
+  onLinkClick?: () => void;
 }
 
 function describeArc(
@@ -32,7 +33,7 @@ function describeArc(
   return `M ${start.x} ${start.y} A ${r} ${r} 0 ${largeArc} 1 ${end.x} ${end.y}`;
 }
 
-export function GaugeChart({ title, label, value, color, href }: GaugeChartProps) {
+export function GaugeChart({ title, label, value, color, href, onLinkClick }: GaugeChartProps) {
   const t = useTranslations("common");
   const cx = 100;
   const cy = 90;
@@ -70,14 +71,24 @@ export function GaugeChart({ title, label, value, color, href }: GaugeChartProps
             )}
           </svg>
         </div>
-        {href && (
+        {(href || onLinkClick) && (
           <div className="flex justify-end">
-            <Link
-              href={href}
-              className="text-sm hover:underline flex items-center gap-0.5"
-            >
-              {t("viewMore")} <ChevronRight className="w-4 h-4" />
-            </Link>
+            {onLinkClick ? (
+              <button
+                type="button"
+                onClick={onLinkClick}
+                className="text-sm hover:underline flex items-center gap-0.5 cursor-pointer"
+              >
+                {t("viewMore")} <ChevronRight className="w-4 h-4" />
+              </button>
+            ) : (
+              <Link
+                href={href!}
+                className="text-sm hover:underline flex items-center gap-0.5"
+              >
+                {t("viewMore")} <ChevronRight className="w-4 h-4" />
+              </Link>
+            )}
           </div>
         )}
       </CardContent>
