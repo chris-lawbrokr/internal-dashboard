@@ -1,18 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 
 /*
-Route Protection Middleware
+Route Protection Proxy
 Checks for the session marker cookie and redirects unauthenticated
 users to /login. The session cookie is set client-side after login.
 
 The actual access token lives in-memory (not in cookies), so this
-middleware only provides a first line of defense. Real auth validation
+proxy only provides a first line of defense. Real auth validation
 happens on the backend when the Bearer token is sent.
 */
 
 const PUBLIC_PATHS = ["/login", "/_next", "/images", "/favicon.ico"];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (PUBLIC_PATHS.some((p) => pathname.startsWith(p))) {

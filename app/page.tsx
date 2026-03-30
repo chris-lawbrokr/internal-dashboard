@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
+import Table from "./components/table";
 
 export default function Home() {
   const { user, logout, getAccessToken } = useAuth();
@@ -90,22 +91,27 @@ export default function Home() {
   }, [user, getAccessToken]);
 
   return (
-    <div className="w-full h-full flex items-center justify-center">
-      <div className="flex flex-col gap-4 text-center">
-        <h1 className="text-2xl font-semibold">Lawbrokr Internal Dashboard</h1>
-        {user && (
-          <p className="text-gray-600 m-0">
-            Signed in as {user.first_name} {user.last_name}
-          </p>
-        )}
-        <button
-          type="button"
-          onClick={() => void logout()}
-          className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
-        >
-          Sign out
-        </button>
+    <>
+      <div className="w-full h-full flex items-center justify-center">
+        <div className="flex flex-col gap-4 text-center">
+          <h1 className="text-2xl font-semibold">
+            Lawbrokr Internal Dashboard
+          </h1>
+          {user && (
+            <p className="text-gray-600 m-0">
+              Signed in as {user.first_name} {user.last_name}
+            </p>
+          )}
+          <button
+            type="button"
+            onClick={() => void logout()}
+            className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
+          >
+            Sign out
+          </button>
+        </div>
       </div>
-    </div>
+      {/* <Table /> */}
+    </>
   );
 }
