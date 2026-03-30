@@ -15,7 +15,7 @@ const API_BASE =
 export async function api<T>(
   path: string,
   getAccessToken: () => string | null,
-  options?: RequestInit
+  options?: RequestInit,
 ): Promise<T> {
   const token = getAccessToken();
   const headers: Record<string, string> = {
