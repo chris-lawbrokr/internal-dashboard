@@ -51,7 +51,9 @@ const navItems: NavItem[] = [
   },
 ];
 
-export function Nav() {
+const BARE_ROUTES = ["/login"];
+
+export function Nav({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const t = (key: string) => navLabels[key] ?? key;
   const { user, logout } = useAuth();
@@ -60,6 +62,8 @@ export function Nav() {
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
   const onToggle = () => setOpen((o) => !o);
+
+  const isBare = BARE_ROUTES.some((r) => pathname.startsWith(r));
 
   const displayName = [user?.first_name, user?.last_name].filter(Boolean).join(" ");
   const displayEmail = user?.email ?? "";
@@ -272,10 +276,11 @@ export function Nav() {
 
   const isDesktop = !isMobile && !isTablet;
 
+  if (isBare) return <>{children}</>;
   if (!mounted) return null;
 
   return (
-    <>
+    <div className="h-screen w-full overflow-hidden flex relative">
       {/* Backdrop — visible on tablet/mobile when expanded */}
       <div
         className={`fixed inset-0 bg-black/30 z-40 transition-opacity duration-300 ${(isTablet || isMobile) && open ? "opacity-100" : "opacity-0 pointer-events-none"}`}
@@ -406,6 +411,10 @@ export function Nav() {
           {expandedContent}
         </div>
       </div>
-    </>
+
+      <div className="flex-1 min-w-0 p-4 pt-16 min-[480px]:pt-4 @md:p-6 overflow-y-auto overflow-x-hidden @container flex flex-col gap-6 bg-surface">
+        {children}
+      </div>
+    </div>
   );
 }

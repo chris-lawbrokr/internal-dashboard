@@ -58,7 +58,7 @@ export default function Home() {
   }, [user, getAccessToken]);
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4">
+    <>
       <h1 className="text-2xl font-semibold">Lawbrokr Internal Dashboard</h1>
       {user && <p className="text-gray-600">Signed in as {user.first_name} {user.last_name}</p>}
       <button
@@ -68,6 +68,6 @@ export default function Home() {
       >
         Sign out
       </button>
-    </div>
+    </>
   );
 }
