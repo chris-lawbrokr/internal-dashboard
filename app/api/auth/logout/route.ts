@@ -14,7 +14,7 @@ The refresh token will eventually expire on the backend side.
 export async function POST(request: NextRequest) {
   const accessToken = request.cookies.get("access_token")?.value;
   const refreshToken = request.cookies.get("refresh_token")?.value;
-  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 
   // Best-effort: tell the backend to revoke the refresh token
   try {

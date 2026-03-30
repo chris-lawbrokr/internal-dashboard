@@ -17,8 +17,12 @@ Flow:
 6. Return 200 on success, 401 if the session is truly expired
 */
 
+interface BackendRefreshResponse {
+  access_token: string;
+  token_type: string;
+}
+
 export async function POST(request: NextRequest) {
-  3;
   const accessToken = request.cookies.get("access_token")?.value;
   const refreshToken = request.cookies.get("refresh_token")?.value;
 
@@ -27,7 +31,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "No session" }, { status: 401 });
   }
 
-  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 
   try {
     // Send both tokens to the backend — the access token via Authorization header
@@ -46,7 +50,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Backend returns { access_token, token_type }
-    const data = await backendRes.json();
+    const data = (await backendRes.json()) as BackendRefreshResponse;
 
     const response = NextResponse.json({ ok: true });
 
@@ -60,7 +64,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Forward any Set-Cookie headers so the browser stores the new value.
-    const setCookieHeaders = backendRes.headers.getSetCookie?.() ?? [];
+    const setCookieHeaders = backendRes.headers.getSetCookie();
     for (const cookie of setCookieHeaders) {
       response.headers.append("Set-Cookie", cookie);
     }

@@ -18,9 +18,9 @@ export async function api<T>(path: string): Promise<T> {
 
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    console.error(`API error ${res.status} on ${path}:`, body);
-    throw new Error(`API error: ${res.status}`);
+    console.error(`API error ${String(res.status)} on ${path}:`, body);
+    throw new Error(`API error: ${String(res.status)}`);
   }
 
-  return res.json();
+  return res.json() as Promise<T>;
 }

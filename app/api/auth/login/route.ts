@@ -15,8 +15,32 @@ Flow:
 8. We return { user } to the client so AuthProvider can update state
 */
 
+interface LoginRequest {
+  email?: string;
+  password?: string;
+}
+
+interface BackendUser {
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  role: string;
+  law_firm_id: number;
+}
+
+interface BackendLoginResponse {
+  access_token: string;
+  token_type: string;
+  user: BackendUser;
+}
+
+interface BackendError {
+  detail?: string;
+}
+
 export async function POST(request: NextRequest) {
-  const { email, password } = await request.json();
+  const { email, password } = (await request.json()) as LoginRequest;
 
   if (!email || !password) {
     return NextResponse.json(
@@ -25,7 +49,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 
   try {
     // Forward credentials to the backend
@@ -38,15 +62,15 @@ export async function POST(request: NextRequest) {
 
     if (!backendRes.ok) {
       // Pass through the backend's error (e.g. "Invalid credentials")
-      const err = await backendRes.json().catch(() => null);
+      const err = (await backendRes.json().catch(() => null)) as BackendError | null;
       return NextResponse.json(
-        { error: err?.detail || "Invalid credentials" },
+        { error: err?.detail ?? "Invalid credentials" },
         { status: backendRes.status },
       );
     }
 
     // Backend response: { access_token, token_type, user: { id, email, first_name, last_name, role, law_firm_id } }
-    const data = await backendRes.json();
+    const data = (await backendRes.json()) as BackendLoginResponse;
 
     // Build a simplified user object for the client
     const user = {
@@ -70,7 +94,7 @@ export async function POST(request: NextRequest) {
 
     // The backend may set a refresh_token via its own Set-Cookie header.
     // Forward those headers directly so the browser stores the refresh token.
-    const setCookieHeaders = backendRes.headers.getSetCookie?.() ?? [];
+    const setCookieHeaders = backendRes.headers.getSetCookie();
     for (const cookie of setCookieHeaders) {
       response.headers.append("Set-Cookie", cookie);
     }

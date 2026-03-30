@@ -35,10 +35,18 @@ interface AuthContextValue {
   logout: () => Promise<void>;
 }
 
+interface LoginApiResponse {
+  user: User;
+}
+
+interface LoginApiError {
+  error?: string;
+}
+
 const AuthContext = createContext<AuthContextValue>({
   user: null,
-  login: async () => ({}),
-  logout: async () => {},
+  login: () => Promise.resolve({}),
+  logout: () => Promise.resolve(),
 });
 
 // Hook to access auth state and actions from any component.
@@ -53,7 +61,7 @@ function parseCookie(name: string): string | null {
       "(?:^|; )" + name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "=([^;]*)",
     ),
   );
-  return match ? decodeURIComponent(match[1]) : null;
+  return match?.[1] ? decodeURIComponent(match[1]) : null;
 }
 
 // How often to proactively refresh the token (before the 15-min JWT expires)
@@ -103,7 +111,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       if (res.status === 401) {
         // Backend explicitly rejected the refresh token.
-        logout();
+        void logout();
         return;
       }
       // Any other status (500, 503) — treat as a transient server
@@ -113,11 +121,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (retryCountRef.current <= MAX_RETRIES) {
         // Schedule another attempt in 10 seconds
         clearRetryTimer();
-        retryTimerRef.current = setTimeout(silentRefresh, RETRY_INTERVAL_MS);
+        retryTimerRef.current = setTimeout(() => { void silentRefresh(); }, RETRY_INTERVAL_MS);
       } else {
         // All retries exhausted — force logout
         retryCountRef.current = 0;
-        logout();
+        void logout();
       }
     }
   }, [logout, clearRetryTimer]);
@@ -127,7 +135,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const raw = parseCookie("session_user");
     if (raw) {
       try {
-        setUser(JSON.parse(raw));
+        setUser(JSON.parse(raw) as User);
       } catch {
         setUser(null);
       }
@@ -137,7 +145,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Start the background refresh interval once the user is logged in.
   useEffect(() => {
     if (!user) return; // Don't poll when logged out
-    intervalRef.current = setInterval(silentRefresh, REFRESH_INTERVAL_MS);
+    intervalRef.current = setInterval(() => { void silentRefresh(); }, REFRESH_INTERVAL_MS);
     // Cleanup on unmount or when user logs out
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
@@ -158,11 +166,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     if (!res.ok) {
-      const data = await res.json();
-      return { error: data.error || "Login failed" };
+      const data = (await res.json()) as LoginApiError;
+      return { error: data.error ?? "Login failed" };
     }
 
-    const data = await res.json();
+    const data = (await res.json()) as LoginApiResponse;
     setUser(data.user);
     return {};
   };

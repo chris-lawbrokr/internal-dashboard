@@ -62,7 +62,7 @@ export default function Home() {
       }
     }
 
-    fetchAll();
+    void fetchAll();
   }, [user]);
 
   return (
@@ -70,7 +70,7 @@ export default function Home() {
       <h1 className="text-2xl font-semibold">Lawbrokr Internal Dashboard</h1>
       {user && <p className="text-gray-600">Signed in as {user.name}</p>}
       <button
-        onClick={logout}
+        onClick={() => void logout()}
         className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
       >
         Sign out

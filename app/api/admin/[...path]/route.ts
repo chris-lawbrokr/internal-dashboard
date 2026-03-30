@@ -16,7 +16,7 @@ async function proxyRequest(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 
   // Build the backend URL from the incoming path and query string
   const url = new URL(request.url);

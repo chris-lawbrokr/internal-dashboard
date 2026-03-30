@@ -11,6 +11,11 @@ Auth Middleware
 5. Session + no access_token + no refresh_token - expire session
 */
 
+interface BackendRefreshResponse {
+  access_token: string;
+  token_type: string;
+}
+
 // Routes that don't require authentication
 const PUBLIC_PATHS = ["/login", "/api/auth", "/_next", "/images"];
 
@@ -43,7 +48,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Call the backend's refresh endpoint directly from the middleware
-  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
   try {
     const backendRes = await fetch(`${apiBase}/auth/refresh`, {
       method: "POST",
@@ -56,7 +61,7 @@ export async function middleware(request: NextRequest) {
       return expireSession(request);
     }
 
-    const data = await backendRes.json();
+    const data = (await backendRes.json()) as BackendRefreshResponse;
     const response = NextResponse.next();
 
     // Set the new access_token (httpOnly, 15 min TTL)
@@ -71,7 +76,7 @@ export async function middleware(request: NextRequest) {
     // The backend may rotate the refresh token on each use.
     // Forward any Set-Cookie headers from the backend response so the
     // browser receives the new refresh_token value.
-    const setCookieHeaders = backendRes.headers.getSetCookie?.() ?? [];
+    const setCookieHeaders = backendRes.headers.getSetCookie();
     for (const cookie of setCookieHeaders) {
       response.headers.append("Set-Cookie", cookie);
     }
