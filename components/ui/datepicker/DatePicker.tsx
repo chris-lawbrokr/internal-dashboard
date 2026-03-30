@@ -11,7 +11,31 @@ import {
   Eraser,
   X,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const WEEKDAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+
+const dpStrings: Record<string, unknown> = {
+  months: MONTHS,
+  shortMonths: SHORT_MONTHS,
+  weekdays: WEEKDAYS,
+  selectDate: "Select date",
+  noDateSelected: "No date selected",
+  previousMonth: "Previous month",
+  nextMonth: "Next month",
+  openDatePicker: "Open date picker",
+  closeDatePicker: "Close date picker",
+  today: "Today",
+  clear: "Clear",
+  start: "Start",
+  end: "End",
+};
+
+function useDatePickerStrings() {
+  const t = (key: string) => (dpStrings[key] as string | undefined) ?? key;
+  t.raw = (key: string) => dpStrings[key];
+  return t;
+}
 
 function cn(...values: Array<string | undefined | null | false>): string {
   return values.filter(Boolean).join(" ");
@@ -87,15 +111,13 @@ export const DatePickerInput = React.forwardRef<
   HTMLButtonElement,
   DatePickerInputProps
 >(({ label, required, value, placeholder, onClick, disabled }, ref) => {
-  const t = useTranslations("datepicker");
-  const resolvedPlaceholder = placeholder ?? t("selectDate");
+  const resolvedPlaceholder = placeholder ?? "Select date";
 
   function formatDate(date: Date): string {
-    const shortMonths: string[] = t.raw("shortMonths");
     const day = date.getDate();
-    const month = shortMonths[date.getMonth()];
+    const month = SHORT_MONTHS[date.getMonth()];
     const year = date.getFullYear();
-    return `${day} ${month} ${year}`;
+    return `${String(day)} ${month ?? ""} ${String(year)}`;
   }
 
   return (
@@ -158,9 +180,9 @@ export function Calendar({
   minDate = null,
   maxDate = null,
 }: CalendarProps) {
-  const t = useTranslations("datepicker");
-  const months: string[] = t.raw("months");
-  const weekdays: string[] = t.raw("weekdays");
+  const t = (key: string) => (dpStrings[key] as string | undefined) ?? key;
+  const months = MONTHS;
+  const weekdays = WEEKDAYS;
 
   const totalDays = daysInMonth(year, month);
   const firstDay = startDayOfWeek(year, month);
@@ -435,7 +457,7 @@ export function DatePicker({
   void _label;
   void _required;
   void _placeholder;
-  const t = useTranslations("datepicker");
+  const t = useDatePickerStrings();
   const [open, setOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
@@ -462,7 +484,7 @@ export function DatePicker({
   }, [open]);
 
   function formatDate(date: Date): string {
-    const shortMonths: string[] = t.raw("shortMonths");
+    const shortMonths = SHORT_MONTHS;
     const day = date.getDate();
     const month = shortMonths[date.getMonth()];
     const year = date.getFullYear();
@@ -587,7 +609,7 @@ export function DateRangePicker({
   startClassName,
   endClassName,
 }: DateRangePickerProps) {
-  const t = useTranslations("datepicker");
+  const t = useDatePickerStrings();
   void _labels;
   void _required;
 
@@ -623,7 +645,7 @@ export function DateRangePicker({
   }, [open]);
 
   function formatDate(date: Date): string {
-    const shortMonths: string[] = t.raw("shortMonths");
+    const shortMonths = SHORT_MONTHS;
     const day = date.getDate();
     const month = shortMonths[date.getMonth()];
     const year = date.getFullYear();
@@ -826,7 +848,7 @@ export function DateRangePickerWithPresets({
   minDate = null,
   maxDate = null,
 }: DateRangePickerWithPresetsProps) {
-  const t = useTranslations("datepicker");
+  const t = useDatePickerStrings();
 
   const allStart = minDate ?? subDays(365);
   const allEnd = maxDate ?? today();

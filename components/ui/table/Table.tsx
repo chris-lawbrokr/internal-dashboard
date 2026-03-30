@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { Search } from "lucide-react";
-import { useTranslations } from "next-intl";
 
 function cn(...values: Array<string | undefined | null | false>): string {
   return values.filter(Boolean).join(" ");
@@ -199,8 +198,6 @@ export function TablePagination({
   onPageChange,
   info,
 }: TablePaginationProps) {
-  const t = useTranslations("table");
-  const tc = useTranslations("common");
   const start = totalItems === 0 ? 0 : (page - 1) * pageSize + 1;
   const end = Math.min(page * pageSize, totalItems);
 
@@ -208,11 +205,11 @@ export function TablePagination({
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm">
       {info ?? (
         <span className="text-muted-foreground">
-          {t("showing")}{" "}
+          Showing{" "}
           <span className="font-bold">
             {start}-{end}
           </span>{" "}
-          {t("of")} <span className="font-bold">{totalItems}</span>
+          of <span className="font-bold">{totalItems}</span>
         </span>
       )}
       <div className="flex gap-2">
@@ -222,7 +219,7 @@ export function TablePagination({
           onClick={() => onPageChange(page - 1)}
           className="flex-1 sm:flex-none flex items-center justify-center rounded-md border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
         >
-          {tc("back")}
+          Back
         </button>
         <button
           type="button"
@@ -230,7 +227,7 @@ export function TablePagination({
           onClick={() => onPageChange(page + 1)}
           className="flex-1 sm:flex-none flex items-center justify-center rounded-md border border-primary px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
         >
-          {tc("next")}
+          Next
         </button>
       </div>
     </div>

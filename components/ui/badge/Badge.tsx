@@ -17,10 +17,8 @@ const variantClasses: Record<BadgeVariant, string> = {
     "bg-status-warning-bg text-status-warning-text border-status-warning-border",
   caution:
     "bg-status-warning-bg text-status-caution-text border-status-warning-border",
-  error:
-    "bg-status-error-bg text-status-error-text border-status-error-border",
-  neutral:
-    "bg-status-neutral-bg text-brand-dark border-status-neutral-border",
+  error: "bg-status-error-bg text-status-error-text border-status-error-border",
+  neutral: "bg-status-neutral-bg text-brand-dark border-status-neutral-border",
   info: "bg-status-info-bg text-status-info-text border-status-info-border",
   support:
     "bg-status-support-bg text-status-support-text border-status-error-border",
@@ -34,13 +32,7 @@ interface BadgeProps {
   className?: string;
 }
 
-export function Badge({
-  variant,
-  children,
-  icon,
-  dot,
-  className,
-}: BadgeProps) {
+export function Badge({ variant, children, icon, dot, className }: BadgeProps) {
   return (
     <span
       className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-medium ${variantClasses[variant]}${className ? ` ${className}` : ""}`}
@@ -60,8 +52,7 @@ const statusIconClasses: Record<StatusIconVariant, string> = {
     "bg-status-success-bg border-status-success-border text-status-success-text",
   warning:
     "bg-status-warning-bg border-status-warning-border text-status-caution-text",
-  error:
-    "bg-status-error-bg border-status-error-border text-status-error-text",
+  error: "bg-status-error-bg border-status-error-border text-status-error-text",
 };
 
 const statusIcons: Record<StatusIconVariant, ReactNode> = {
