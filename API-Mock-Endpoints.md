@@ -1,5 +1,3 @@
-# API Mock Endpoints
-
 ## /admin/analytics/summary?law_firm_id=...
 
 Returns visits and conversion analytics summary, month over month results, and daily counts for sparklines.
@@ -10,7 +8,7 @@ Returns results for a single law firm if law_firm_id provided.
   "summary": {
     "visits": 4268,
     "conversions": 426,
-    "conversion_rate": 10.5, // conversion percent
+    "conversion_rate": 10.5 // conversion percent
   },
   "month_over_month": {
     "previous_period_start": "2026-01-24",
@@ -25,14 +23,15 @@ Returns results for a single law firm if law_firm_id provided.
     "current_conversion_rate": 100.0, // conversion percent
     "visits_change": -81.81818181818183, // percent change
     "conversions_change": -60.0, // percent change
-    "conversion_rate_change": 54.54545454545455, // percent difference in conversion rate
+    "conversion_rate_change": 54.54545454545455 // percent difference in conversion rate
   },
   "series": {
     "visits": [45, 52, 38, 30, 42, 55, 60],
-    "conversions": [20, 25, 32, 35, 28, 35, 40],
-  },
+    "conversions": [20, 25, 32, 35, 28, 35, 40]
+  }
 }
 ```
+
 
 ## /admin/analytics/chart/leads
 
@@ -49,9 +48,14 @@ Returns results for a single law firm if law_firm_id provided.
     "visits": [92, 109, 146],
     "conversions": [92, 109, 146]
   },
-  "labels": ["Dec 25", "Jan 26", "Feb 26"]
+  "labels": [
+    "Dec 25",
+    "Jan 26",
+    "Feb 26"
+  ]
 }
 ```
+
 
 ## /admin/accounts
 
@@ -67,7 +71,7 @@ Returns the list of law firms.
       "location": "Los Angeles, CA", // can be null
       "visits": 100,
       "conversions": 10,
-      "conversion_rate": 10.0, // conversion percent
+      "conversion_rate": 10.00, // conversion percent
       "contract_term": "annual",
       "activation_date": "2024-10-30",
       "next_payment_date": "2026-10-25",
@@ -75,16 +79,16 @@ Returns the list of law firms.
       "onboarding_health": "good",
       "performance_health": "fair",
       "website_health": "poor",
-      "practice_areas": [
-        // can be null or empty array
+      "practice_areas": [ // can be null or empty array
         "Personal Injury",
         "Corporate",
-        "Wills and Estates",
-      ],
-    },
-  ],
+        "Wills and Estates"
+      ]
+    }
+  ]
 }
 ```
+
 
 ## /admin/account?law_firm_id=...
 
@@ -106,30 +110,27 @@ Returns the details for a single law firm, including health metrics.
   "onboarding_health": "good", // good, fair, or poor
   "performance_health": "fair",
   "website_health": "poor",
-  "practice_areas": [
-    // can be null or empty array
+  "practice_areas": [ // can be null or empty array
     "Personal Injury",
     "Corporate",
-    "Wills and Estates",
+    "Wills and Estates"
   ],
-  "integrations": [
-    // can be null or empty array
+  "integrations": [ // can be null or empty array
     "ClioGrow",
     "Lawmatics",
-    "Zapier",
+    "Zapier"
   ],
-  "tech_stack": [
-    // can be null or empty array
+  "tech_stack": [ // can be null or empty array
     "Clio Manage",
-    "Clio Grow",
+    "Clio Grow"
   ],
-  "features": [
-    // can be null or empty array
+  "features": [ // can be null or empty array
     "Clips",
-    "Ad Manager",
-  ],
+    "Ad Manager"
+  ]
 }
 ```
+
 
 ## /admin/account/users?law_firm_id=...
 
@@ -148,6 +149,7 @@ Returns the list of users for a law firm
 }
 ```
 
+
 ## /admin/account/performance/chart?law_firm_id=...
 
 Returns the performance chart for the conversion rate comparison.
@@ -159,9 +161,18 @@ NOTE: Use the existing /admin/analytics/... endpoints for the cards and visits/c
     "current": [10, 8, 10, 6, 6, 5, 4],
     "previous": [8, 9, 8, 5, 5, 7, 5]
   },
-  "labels": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+  "labels": [
+    "Mon",
+    "Tue",
+    "Wed",
+    "Thu",
+    "Fri",
+    "Sat",
+    "Sun"
+  ]
 }
 ```
+
 
 ## /admin/account/performance/funnels?law_firm_id=...
 
@@ -174,15 +185,17 @@ Returns the performance for funnels.
       "name": "Personal Injury",
       "visits": 100,
       "conversions": 10,
-      "conversion_rate": 10.0, // conversion percent
-    },
-  ],
+      "conversion_rate": 10.0 // conversion percent
+    }
+  ]
 }
 ```
+
 
 ## /admin/account/website?law_firm_id=...
 
 Returns the main website metrics for the law firm.
+
 
 ```jsonc
 {
@@ -194,13 +207,13 @@ Returns the main website metrics for the law firm.
   "live_links": 39, // number of total live lawbrokr links
   "live_links_prev": 35, // number of live lawbrokr links the previous month
   "live_links_change": -10.5, // percent change in link
-  "integrations": [
-    // Can be null or empty array
+  "integrations": [ // Can be null or empty array
     "Scorpion",
-    "Intaker",
-  ],
+    "Intaker"
+  ]
 }
 ```
+
 
 ## /admin/account/website/links?law_firm_id=...
 
@@ -212,11 +225,12 @@ Returns the list of lawbrokr links on the customer website.
     {
       "website_url": "www.lawfirm.com",
       "lawbrokr_url": "lawfirm.lawbrokr.com", // may be null for broken or review
-      "status": "active", // active, review, or broken
-    },
-  ],
+      "status": "active" // active, review, or broken
+    }
+  ]
 }
 ```
+
 
 ## /admin/account/usage?law_firm_id=...
 
@@ -234,9 +248,10 @@ Returns the usage details for the law firm.
   "activation_date": "2024-10-30",
   "next_payment_date": "2026-10-25",
   "live_funnels": 12,
-  "live_workflows": 29,
+  "live_workflows": 29
 }
 ```
+
 
 ## /admin/account/usage/users?law_firm_id=...
 
@@ -251,19 +266,19 @@ Return the list of users.
       "email": "name@example.com",
       "phone": "4165007647", // You'll need to apply north american formatting
       "last_visit": 1774383208, // epoch you'll want to show local time in browser
-      "latest_interactions": [
-        // will be often empty array or null as most users never login
+      "latest_interactions": [ // will be often empty array or null as most users never login
         "Home",
         "Analytics",
-        "Responses",
+        "Responses"
       ],
       "lead_notifications": false,
       "integration_notifications": true,
-      "platform_notifications": false,
-    },
-  ],
+      "platform_notifications": false
+    }
+  ]
 }
 ```
+
 
 ## /admin/account/usage/details?law_firm_id=...
 
@@ -280,8 +295,8 @@ Returns the detailed breakdown of the law firms usage across different segments 
       "conversion_rate": 10.0, // conversion percent
       "workflows": 5,
       "created_at": 1774383208, // epoch you'll want to show local time in browser
-      "status": "active", // inactive otherwise
-    },
+      "status": "active" // inactive otherwise
+    }
   ],
   "workflows": [
     {
@@ -293,8 +308,8 @@ Returns the detailed breakdown of the law firms usage across different segments 
       "conversion_rate": 10.0, // conversion percent
       "completion_time": 330, // seconds you'll want to display as X min Y sec.
       "created_at": 1774383208, // epoch you'll want to show local time in browser
-      "status": "active", // inactive otherwise
-    },
+      "status": "active" // inactive otherwise
+    }
   ],
   "landing_pages": [
     {
@@ -304,8 +319,8 @@ Returns the detailed breakdown of the law firms usage across different segments 
       "conversions": 10,
       "conversion_rate": 10.0, // conversion percent
       "created_at": 1774383208, // epoch you'll want to show local time in browser
-      "status": "active", // inactive otherwise
-    },
+      "status": "active" // inactive otherwise
+    }
   ],
   "ad_campaigns": [
     {
@@ -317,8 +332,8 @@ Returns the detailed breakdown of the law firms usage across different segments 
       "click_through_rate": 10.0, // Click through rate (CTR) percent
       "spend": 5000, // amount spent on ads
       "created_at": 1774383208, // epoch you'll want to show local time in browser
-      "status": "active", // inactive otherwise
-    },
+      "status": "active" // inactive otherwise
+    }
   ],
   "clips": [
     {
@@ -327,8 +342,8 @@ Returns the detailed breakdown of the law firms usage across different segments 
       "conversions": 10,
       "conversion_rate": 10.0, // conversion percent
       "created_at": 1774383208, // epoch you'll want to show local time in browser
-      "status": "active", // inactive otherwise
-    },
+      "status": "active" // inactive otherwise
+    }
   ],
   "automations": [
     {
@@ -337,8 +352,8 @@ Returns the detailed breakdown of the law firms usage across different segments 
       "sent": 100,
       "open_rate": 10.0, // percent open rate
       "created_at": 1774383208, // epoch you'll want to show local time in browser
-      "status": "active", // inactive otherwise
-    },
-  ],
+      "status": "active" // inactive otherwise
+    }
+  ]
 }
 ```

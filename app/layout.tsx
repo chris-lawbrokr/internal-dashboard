@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { NextIntlClientProvider } from "next-intl";
-import { getLocale, getMessages } from "next-intl/server";
-import { AuthProvider } from "@/lib/auth";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,26 +13,21 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Lawbrokr",
+  title: "Lawbrokr Internal Dashboard",
   description: "Lawbrokr Internal Dashboard",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = await getLocale();
-  const messages = await getMessages();
-
   return (
-    <html lang={locale}>
+    <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased max-w-[1600px] mx-auto`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NextIntlClientProvider messages={messages}>
-          <AuthProvider>{children}</AuthProvider>
-        </NextIntlClientProvider>
+        {children}
       </body>
     </html>
   );
