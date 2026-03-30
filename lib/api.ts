@@ -1,15 +1,38 @@
 /*
-Thin fetch wrapper for calling the admin API proxy.
-Handles 401 redirects so individual components don't have to.
+Fetch wrapper for authenticated API calls.
+Calls the backend directly with Bearer token and credentials: "include".
+Redirects to /login on 401.
 
 Usage:
-const data = await api("accounts");
-const account = await api("account?law_firm_id=9");
-const usage = await api("account/usage/details?law_firm_id=9");
+  const { getAccessToken } = useAuth();
+  const data = await api("admin/accounts", getAccessToken);
+  const account = await api("admin/account?law_firm_id=9", getAccessToken);
 */
 
-export async function api<T>(path: string): Promise<T> {
-  const res = await fetch(`/api/admin/${path}`);
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.lawbrokr.ca/v1/legacy";
+
+export async function api<T>(
+  path: string,
+  getAccessToken: () => string | null,
+  options?: RequestInit
+): Promise<T> {
+  const token = getAccessToken();
+  const headers: Record<string, string> = {
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+  if (options?.headers) {
+    const extra = new Headers(options.headers);
+    extra.forEach((value, key) => {
+      headers[key] = value;
+    });
+  }
+
+  const res = await fetch(`${API_BASE}/${path}`, {
+    credentials: "include",
+    ...options,
+    headers,
+  });
 
   if (res.status === 401) {
     window.location.href = "/login";
@@ -18,8 +41,7 @@ export async function api<T>(path: string): Promise<T> {
 
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    console.error(`API error ${String(res.status)} on ${path}:`, body);
-    throw new Error(`API error: ${String(res.status)}`);
+    throw new Error(`API error ${String(res.status)}: ${body}`);
   }
 
   return res.json() as Promise<T>;

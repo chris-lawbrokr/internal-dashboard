@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
+    "dev:https": "next dev --turbopack --experimental-https --experimental-https-key ./certs/key.pem --experimental-https-cert ./certs/cert.pem",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
