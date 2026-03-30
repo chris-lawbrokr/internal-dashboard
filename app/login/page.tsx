@@ -72,7 +72,9 @@ export default function LoginPage() {
                   label="Email"
                   placeholder="you@example.com"
                   value={email}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setEmail(e.target.value); }}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setEmail(e.target.value);
+                  }}
                   required
                 />
                 <PasswordInput
@@ -80,7 +82,9 @@ export default function LoginPage() {
                   label="Password"
                   placeholder="••••••••"
                   value={password}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setPassword(e.target.value); }}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setPassword(e.target.value);
+                  }}
                   required
                 />
               </CardContent>
