@@ -1,6 +1,7 @@
 "use client";
 
 import { use } from "react";
+import { PageHeader } from "@/components/ui/page-header/PageHeader";
 import { Tabs, useTabSearchParam } from "@/components/ui/tabs/Tabs";
 import type { Tab } from "@/components/ui/tabs/Tabs";
 
@@ -20,10 +21,10 @@ export default function AccountPage({
   const [activeTab, setActiveTab] = useTabSearchParam(accountTabs);
 
   return (
-    <div className="w-full h-full">
-      <h1 className="text-xl font-semibold mb-4">Account {id}</h1>
+    <div className="w-full h-full flex flex-col gap-4">
+      <PageHeader title={`Account ${id}`} back="/accounts" />
       <Tabs tabs={accountTabs} activeTab={activeTab} onTabChange={setActiveTab} />
-      <div className="mt-4">
+      <div>
         {activeTab === "overview" && <p>Overview content</p>}
         {activeTab === "performance" && <p>Performance content</p>}
         {activeTab === "website" && <p>Website content</p>}
