@@ -12,10 +12,12 @@
     "check": "tsc --noEmit && eslint"
   },
   "dependencies": {
+    "apexcharts": "^5.10.4",
     "lucide-react": "^1.7.0",
     "nanoid": "^5.1.7",
     "next": "^16.2.1",
     "react": "19.2.3",
+    "react-apexcharts": "^2.1.0",
     "react-dom": "19.2.3"
   },
   "devDependencies": {

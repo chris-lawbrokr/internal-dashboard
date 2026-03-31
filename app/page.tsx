@@ -5,7 +5,12 @@ import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
 import { useDateRange } from "@/lib/useDateRange";
 import { Card } from "@/components/ui/card";
+import { StatCard } from "@/app/components/StatCard";
 import { PageHeader } from "@/components/ui/page-header/PageHeader";
+import { PieChart } from "@/app/components/PieChart";
+import { LineChart } from "@/app/components/LineChart";
+import type { LineChartData } from "@/app/components/LineChart";
+import { CardContent } from "@/components/ui/card";
 
 interface AnalyticsSummary {
   summary: {
@@ -20,16 +25,12 @@ interface AnalyticsSummary {
   };
 }
 
-function formatChange(value: number): string {
-  const arrow = value >= 0 ? "↑" : "↓";
-  return `${arrow} ${Math.abs(Math.round(value))}% vs last month`;
-}
-
 export default function Home() {
   const { user, getAccessToken } = useAuth();
   const firstname = user?.first_name ?? "";
   const { dateQuery } = useDateRange();
   const [data, setData] = useState<AnalyticsSummary | null>(null);
+  const [chartData, setChartData] = useState<LineChartData | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -37,6 +38,9 @@ export default function Home() {
     api<AnalyticsSummary>(`admin/analytics/summary${qs}`, getAccessToken)
       .then(setData)
       .catch((err) => console.error("Failed to load summary:", err));
+    api<LineChartData>(`admin/analytics/chart/leads${qs}`, getAccessToken)
+      .then(setChartData)
+      .catch((err) => console.error("Failed to load chart:", err));
   }, [user, getAccessToken, dateQuery]);
 
   const visits = data?.summary.visits ?? 0;
@@ -49,35 +53,29 @@ export default function Home() {
       <PageHeader title={`Welcome back, ${firstname}`} />
       <div className="flex gap-4">
         <div className="flex flex-col gap-4 flex-1">
-          <Card className="p-4">
-            <p className="text-sm text-muted-foreground">Total Visits</p>
-            <p className="text-2xl font-bold">{visits.toLocaleString()}</p>
-            {mom && (
-              <p className="text-xs text-muted-foreground">
-                {formatChange(mom.visits_change)}
-              </p>
-            )}
-          </Card>
-          <Card className="p-4">
-            <p className="text-sm text-muted-foreground">Conversions</p>
-            <p className="text-2xl font-bold">{conversions.toLocaleString()}</p>
-            {mom && (
-              <p className="text-xs text-muted-foreground">
-                {formatChange(mom.conversions_change)}
-              </p>
-            )}
-          </Card>
+          <StatCard
+            label="Total Visits"
+            value={visits}
+            change={mom?.visits_change}
+            className="h-full"
+          />
+          <StatCard
+            label="Conversions"
+            value={conversions}
+            change={mom?.conversions_change}
+            className="h-full"
+          />
         </div>
-        <Card className="flex-1 p-4">
+        <Card className="flex-[2] min-w-0 p-4 flex">
+          <CardContent className="overflow-hidden flex flex-col justify-center flex-1">
+            <LineChart data={chartData} />
+          </CardContent>
+        </Card>
+        <Card className="flex-1 p-4 flex flex-col items-center justify-center gap-2">
+          <PieChart value={conversionRate} label="Conversion" />
           <p className="text-sm text-muted-foreground">Conversion Rate</p>
           <p className="text-2xl font-bold">{conversionRate.toFixed(1)}%</p>
-          {mom && (
-            <p className="text-xs text-muted-foreground">
-              {formatChange(mom.conversion_rate_change)}
-            </p>
-          )}
         </Card>
-        <Card className="flex-1 p-4">card 1</Card>
       </div>
     </div>
   );
