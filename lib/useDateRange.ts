@@ -16,12 +16,14 @@ function parseDate(value: string | null): Date | null {
 }
 
 export interface DateRange {
-  startDate: Date | null;
-  endDate: Date | null;
+  startDate: Date;
+  endDate: Date;
   setDateRange: (start: Date | null, end: Date | null) => void;
-  /** Formatted as YYYY-MM-DD for API calls, or null */
-  startString: string | null;
-  endString: string | null;
+  /** Formatted as YYYY-MM-DD for API calls */
+  startString: string;
+  endString: string;
+  /** Ready-to-append query string, e.g. "start_date=2026-01-01&end_date=2026-03-31" */
+  dateQuery: string;
 }
 
 export function useDateRange(): DateRange {
@@ -29,8 +31,12 @@ export function useDateRange(): DateRange {
   const router = useRouter();
   const pathname = usePathname();
 
-  const startDate = parseDate(searchParams.get("start"));
-  const endDate = parseDate(searchParams.get("end"));
+  const now = new Date();
+  const defaultEnd = now;
+  const defaultStart = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+
+  const startDate = parseDate(searchParams.get("start")) ?? defaultStart;
+  const endDate = parseDate(searchParams.get("end")) ?? defaultEnd;
 
   const setDateRange = (start: Date | null, end: Date | null) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -48,11 +54,15 @@ export function useDateRange(): DateRange {
     router.replace(`${pathname}${qs ? `?${qs}` : ""}`, { scroll: false });
   };
 
+  const startStr = toDateString(startDate);
+  const endStr = toDateString(endDate);
+
   return {
     startDate,
     endDate,
     setDateRange,
-    startString: startDate ? toDateString(startDate) : null,
-    endString: endDate ? toDateString(endDate) : null,
+    startString: startStr,
+    endString: endStr,
+    dateQuery: `start_date=${startStr}&end_date=${endStr}`,
   };
 }
