@@ -11,6 +11,7 @@ import { PieChart } from "@/app/components/PieChart";
 import { LineChart } from "@/app/components/LineChart";
 import type { LineChartData } from "@/app/components/LineChart";
 import { CardContent } from "@/components/ui/card";
+import { AccountsTable } from "@/app/components/AccountsTable";
 
 interface AnalyticsSummary {
   summary: {
@@ -77,6 +78,7 @@ export default function Home() {
           <p className="text-2xl font-bold">{conversionRate.toFixed(1)}%</p>
         </Card>
       </div>
+      <AccountsTable />
     </div>
   );
 }
