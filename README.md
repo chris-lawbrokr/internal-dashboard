@@ -111,3 +111,9 @@ Uses `typescript-eslint` strict type-checked rules on top of the Next.js default
 - **`no-misused-promises`** — passing promises where booleans are expected
 - **`no-unsafe-*`** — `any` leaking into typed code
 - **`restrict-template-expressions`** — non-string types in template literals
+
+---
+
+```bash
+rm -rf .next node_modules && npm install && npm run dev:https
+```

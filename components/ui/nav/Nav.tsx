@@ -47,7 +47,6 @@ const navItems: NavItem[] = [
     labelKey: "analytics",
     href: "/analytics",
     icon: BarChart3,
-    disabled: true,
   },
 ];
 
