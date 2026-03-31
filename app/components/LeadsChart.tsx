@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { Card, CardContent } from "@/components/ui/card";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -9,17 +10,18 @@ const LABEL_STYLE = {
   colors: "var(--color-muted-foreground)",
 };
 
-export interface LineChartData {
+export interface LeadsChartData {
   totals: { visits: number; conversions: number };
   series: { visits: number[]; conversions: number[] };
   labels: string[];
 }
 
-interface LineChartProps {
-  data?: LineChartData | null;
+interface LeadsChartProps {
+  data?: LeadsChartData | null;
+  className?: string;
 }
 
-export function LineChart({ data }: LineChartProps) {
+export function LeadsChart({ data, className }: LeadsChartProps) {
   const totals = data?.totals ?? { visits: 0, conversions: 0 };
   const labels = data?.labels ?? [];
   const seriesData = [
@@ -60,23 +62,25 @@ export function LineChart({ data }: LineChartProps) {
   };
 
   return (
-    <div>
-      <div className="flex items-center gap-4 mb-2">
-        {legend.map(({ label, total, dot }) => (
-          <div key={label} className="flex items-center gap-1.5">
-            <span
-              className={`inline-block h-2.5 w-2.5 rounded-full ${dot}`}
-            />
-            <span className="text-xs text-muted-foreground">
-              {label}:{" "}
-              <span className="font-semibold text-foreground">
-                {total.toLocaleString()}
+    <Card className={`min-w-0 p-4 flex ${className ?? ""}`}>
+      <CardContent className="overflow-hidden flex flex-col justify-center flex-1">
+        <div className="flex items-center gap-4 mb-2">
+          {legend.map(({ label, total, dot }) => (
+            <div key={label} className="flex items-center gap-1.5">
+              <span
+                className={`inline-block h-2.5 w-2.5 rounded-full ${dot}`}
+              />
+              <span className="text-xs text-muted-foreground">
+                {label}:{" "}
+                <span className="font-semibold text-foreground">
+                  {total.toLocaleString()}
+                </span>
               </span>
-            </span>
-          </div>
-        ))}
-      </div>
-      <Chart options={options} series={seriesData} type="area" height="100%" />
-    </div>
+            </div>
+          ))}
+        </div>
+        <Chart options={options} series={seriesData} type="area" height="100%" />
+      </CardContent>
+    </Card>
   );
 }

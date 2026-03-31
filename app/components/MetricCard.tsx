@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { SparklineChart } from "./SparklineChart";
 
-interface StatCardProps {
+interface MetricCardProps {
   label: string;
   value: string | number;
   change?: number | undefined;
@@ -11,7 +11,7 @@ interface StatCardProps {
   className?: string;
 }
 
-export function StatCard({
+export function MetricCard({
   label,
   value,
   change,
@@ -19,7 +19,7 @@ export function StatCard({
   sparkline,
   sparklineColor = "#bcbc95",
   className,
-}: StatCardProps) {
+}: MetricCardProps) {
   const display =
     format === "percent"
       ? `${Number(value).toFixed(1)}%`
