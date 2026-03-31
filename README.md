@@ -122,11 +122,8 @@ rm -rf .next node_modules && npm install && npm run dev:https
 
 verify cookie refresh every 1 min
 verify auto log out after 2min
-
 console log request in next terminal
-
 verify error on initial request and on refresh
-
 veryify responses in next.js terminal
 
 ---
