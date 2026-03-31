@@ -22,8 +22,28 @@ export function PageHeader({
   const { startDate, endDate, setDateRange } = useDateRange();
 
   return (
-    <div className="flex gap-4 items-center justify-between py-4">
-      <div className="flex gap-4 items-center">
+    <div
+      className="
+        flex
+        flex-col
+        gap-4
+        py-4
+        justify-start
+        lg:flex-row
+        lg:items-start
+        lg:justify-between
+    "
+    >
+      <div
+        className="
+          flex
+          flex-row
+          gap-4
+          items-center
+          max-sm:flex-col
+          max-sm:items-start
+      "
+      >
         {back && (
           <div>
             <Button
@@ -40,11 +60,13 @@ export function PageHeader({
         </h1>
       </div>
       {showDateRange && (
-        <DateRangePicker
-          startDate={startDate}
-          endDate={endDate}
-          onChange={setDateRange}
-        />
+        <div className="max-lg:w-full [&>div]:max-lg:w-full [&>div>button]:max-lg:w-full">
+          <DateRangePicker
+            startDate={startDate}
+            endDate={endDate}
+            onChange={setDateRange}
+          />
+        </div>
       )}
     </div>
   );

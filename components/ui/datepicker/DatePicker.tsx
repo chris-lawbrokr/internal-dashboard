@@ -694,14 +694,20 @@ export function DateRangePicker({
         }}
         disabled={disabled}
         className={cn(
-          "h-9 w-9 flex items-center justify-center rounded-md border border-input bg-background",
+          "h-9 flex items-center gap-2 rounded-md border border-input bg-background px-3",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           "disabled:cursor-not-allowed disabled:opacity-50",
           !disabled && "cursor-pointer",
+          !(startDate || endDate) && "text-muted-foreground",
         )}
         aria-label={open ? t("closeDatePicker") : t("openDatePicker")}
       >
-        <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+        <CalendarIcon className="h-4 w-4 text-muted-foreground shrink-0" />
+        <span className="text-sm whitespace-nowrap">
+          {startDate || endDate
+            ? `${startDate ? formatDate(startDate) : t("start")} — ${endDate ? formatDate(endDate) : t("end")}`
+            : t("selectDate")}
+        </span>
       </button>
 
       {open && (
