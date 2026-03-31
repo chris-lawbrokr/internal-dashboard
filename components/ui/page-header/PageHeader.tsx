@@ -8,7 +8,6 @@ import { useDateRange } from "@/lib/useDateRange";
 
 interface PageHeaderProps {
   title: string;
-  /** Pass a route string to show a back button, e.g. back="/" or back="/accounts" */
   back?: string;
   showDateRange?: boolean;
 }
