@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DateRangePicker } from "@/components/ui/datepicker";
+import { DateRangePickerWithPresets } from "@/components/ui/datepicker";
 import { useDateRange } from "@/lib/useDateRange";
 
 interface PageHeaderProps {
@@ -18,7 +18,7 @@ export function PageHeader({
   showDateRange = true,
 }: PageHeaderProps) {
   const router = useRouter();
-  const { startDate, endDate, setDateRange } = useDateRange();
+  const { setDateRange } = useDateRange();
 
   return (
     <div
@@ -59,11 +59,10 @@ export function PageHeader({
         </h1>
       </div>
       {showDateRange && (
-        <div className="max-lg:w-full [&>div]:max-lg:w-full [&>div>button]:max-lg:w-full">
-          <DateRangePicker
-            startDate={startDate}
-            endDate={endDate}
-            onChange={setDateRange}
+        <div className="max-lg:w-full [&>div]:max-lg:w-full [&>div>button:first-child]:max-lg:w-full">
+          <DateRangePickerWithPresets
+            defaultPreset="90d"
+            onChange={(start, end) => setDateRange(start, end)}
           />
         </div>
       )}

@@ -33,23 +33,17 @@ export function useDateRange(): DateRange {
 
   const now = new Date();
   const defaultEnd = now;
-  const defaultStart = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+  const defaultStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 90);
 
   const startDate = parseDate(searchParams.get("start")) ?? defaultStart;
   const endDate = parseDate(searchParams.get("end")) ?? defaultEnd;
 
   const setDateRange = (start: Date | null, end: Date | null) => {
     const params = new URLSearchParams(searchParams.toString());
-    if (start) {
-      params.set("start", toDateString(start));
-    } else {
-      params.delete("start");
-    }
-    if (end) {
-      params.set("end", toDateString(end));
-    } else {
-      params.delete("end");
-    }
+    const resolvedStart = start ?? defaultStart;
+    const resolvedEnd = end ?? defaultEnd;
+    params.set("start", toDateString(resolvedStart));
+    params.set("end", toDateString(resolvedEnd));
     const qs = params.toString();
     router.replace(`${pathname}${qs ? `?${qs}` : ""}`, { scroll: false });
   };

@@ -24,6 +24,10 @@ interface AnalyticsSummary {
     conversions_change: number;
     conversion_rate_change: number;
   };
+  series: {
+    visits: number[];
+    conversions: number[];
+  };
 }
 
 export default function Home() {
@@ -48,6 +52,7 @@ export default function Home() {
   const conversions = data?.summary.conversions ?? 0;
   const conversionRate = data?.summary.conversion_rate ?? 0;
   const mom = data?.month_over_month;
+  const series = data?.series;
 
   return (
     <div className="w-full h-full flex flex-col gap-4">
@@ -58,12 +63,14 @@ export default function Home() {
             label="Total Visits"
             value={visits}
             change={mom?.visits_change}
+            sparkline={series?.visits}
             className="h-full"
           />
           <StatCard
             label="Conversions"
             value={conversions}
             change={mom?.conversions_change}
+            sparkline={series?.conversions}
             className="h-full"
           />
         </div>
@@ -72,10 +79,12 @@ export default function Home() {
             <LineChart data={chartData} />
           </CardContent>
         </Card>
-        <Card className="flex-1 p-4 flex flex-col items-center justify-center gap-2">
+        <Card className="flex-1 p-4 flex items-center justify-center">
+          <div className="h-full">
+            <p className="text-sm text-muted-foreground">Conversion Rate</p>
+            <p className="text-2xl font-bold">{conversionRate.toFixed(1)}%</p>
+          </div>
           <PieChart value={conversionRate} label="Conversion" />
-          <p className="text-sm text-muted-foreground">Conversion Rate</p>
-          <p className="text-2xl font-bold">{conversionRate.toFixed(1)}%</p>
         </Card>
       </div>
       <AccountsTable />
