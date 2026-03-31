@@ -42,10 +42,10 @@ export default function Home() {
     const qs = dateQuery ? `?${dateQuery}` : "";
     api<AnalyticsSummary>(`admin/analytics/summary${qs}`, getAccessToken)
       .then(setData)
-      .catch((err) => console.error("Failed to load summary:", err));
+      .catch((err: unknown) => { console.error("Failed to load summary:", err); });
     api<LeadsChartData>(`admin/analytics/chart/leads${qs}`, getAccessToken)
       .then(setChartData)
-      .catch((err) => console.error("Failed to load chart:", err));
+      .catch((err: unknown) => { console.error("Failed to load chart:", err); });
   }, [user, getAccessToken, dateQuery]);
 
   const visits = data?.summary.visits ?? 0;
@@ -57,7 +57,8 @@ export default function Home() {
   return (
     <div className="w-full h-full flex flex-col gap-4">
       <PageHeader title={`Welcome back, ${firstname}`} />
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 @lg:flex-row">
+        {/* consolidate request for all cards */}
         <div className="flex flex-col gap-4 flex-1">
           <MetricCard
             label="Total Visits"
@@ -75,7 +76,11 @@ export default function Home() {
           />
         </div>
         <LeadsChart data={chartData} className="flex-[2]" />
-        <ConversionRateChart value={conversionRate} change={mom?.conversion_rate_change} className="flex-1" />
+        <ConversionRateChart
+          value={conversionRate}
+          change={mom?.conversion_rate_change}
+          className="flex-1"
+        />
       </div>
       <AccountsTable />
     </div>

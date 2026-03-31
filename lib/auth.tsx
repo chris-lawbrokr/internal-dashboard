@@ -1,20 +1,5 @@
 "use client";
 
-/*
-Auth Context & Provider
-- Direct backend calls with credentials: "include" (CORS-friendly)
-- Access token stored in-memory (useRef) — never in cookies/localStorage
-- JWT-exp-based refresh scheduling (precise, not a fixed interval)
-- httpOnly refresh_token cookie managed by the backend
-- Session cookies (set client-side) for middleware route protection
-- Retry logic on refresh failure
-
-Cookie layout:
-- refresh_token (httpOnly) — set by backend, used to obtain new access tokens
-- session       (readable) — 7 day marker, tells middleware user is logged in
-- session_user  (readable) — JSON with user info for client display on reload
-*/
-
 import {
   createContext,
   useContext,
@@ -25,58 +10,25 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 
-// ── Configuration ──────────────────────────────────────────────
-
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.lawbrokr.ca/v1/legacy";
 
-const REFRESH_BUFFER_MS =
-  Number(process.env.NEXT_PUBLIC_REFRESH_BUFFER_SECONDS ?? "60") * 1000;
+// How many times to retry a failed token refresh before forcing logout
+const MAX_REFRESH_RETRIES = 3;
 
-const MAX_RETRIES = 3;
-const RETRY_INTERVAL_MS = 10 * 1000;
+// How often to re-check the cookie and refresh the access token (seconds before JWT expiry)
+const COOKIE_REFRESH_SECONDS =
+  Number(process.env.NEXT_PUBLIC_REFRESH_BUFFER_SECONDS ?? "30");
+const COOKIE_REFRESH_MS = COOKIE_REFRESH_SECONDS * 1000;
 
-// ── JWT helpers ────────────────────────────────────────────────
+// How long until the refresh token expires and the user is forced to log in again
+const HARD_LOGOUT_MINUTES = 2;
+const HARD_LOGOUT_DAYS = HARD_LOGOUT_MINUTES / (60 * 24);
 
-interface JwtPayload {
-  sub: string;
-  exp: number;
-}
+// Delay between refresh retries on failure
+const RETRY_INTERVAL_MS = 10_000;
 
-function decodeJwtPayload(token: string): JwtPayload {
-  const base64Url = token.split(".")[1];
-  if (!base64Url) throw new Error("Invalid JWT");
-  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-  const json = decodeURIComponent(
-    atob(base64)
-      .split("")
-      .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-      .join(""),
-  );
-  return JSON.parse(json) as JwtPayload;
-}
-
-// ── Cookie helpers ─────────────────────────────────────────────
-
-function setCookie(name: string, value: string, days: number) {
-  const expires = new Date(Date.now() + days * 864e5).toUTCString();
-  document.cookie = `${name}=${encodeURIComponent(value)}; path=/; expires=${expires}; SameSite=Lax`;
-}
-
-function getCookie(name: string): string | null {
-  const match = document.cookie.match(
-    new RegExp(
-      "(?:^|; )" + name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "=([^;]*)",
-    ),
-  );
-  return match?.[1] ? decodeURIComponent(match[1]) : null;
-}
-
-function deleteCookie(name: string) {
-  document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
-}
-
-// ── Types ──────────────────────────────────────────────────────
+// ── Types ─────────────────────────────────────────────────────
 
 export interface User {
   id: number;
@@ -87,22 +39,10 @@ export interface User {
   law_firm_id: number | null;
 }
 
-interface LoginResponse {
-  access_token: string;
-  token_type: string;
-  user: User;
-}
-
-interface RefreshResponse {
-  access_token: string;
-  token_type: string;
-}
-
 interface AuthContextValue {
   user: User | null;
   login: (email: string, password: string) => Promise<{ error?: string }>;
   logout: () => Promise<void>;
-  /** Get the current in-memory access token for API calls */
   getAccessToken: () => string | null;
 }
 
@@ -117,7 +57,37 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
-// ── Provider ───────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────
+
+function decodeJwtExp(token: string): number {
+  const base64 = token.split(".")[1]?.replace(/-/g, "+").replace(/_/g, "/");
+  if (!base64) throw new Error("Invalid JWT");
+  return (JSON.parse(atob(base64)) as { exp: number }).exp;
+}
+
+function setCookie(name: string, value: string, days: number) {
+  document.cookie = `${name}=${encodeURIComponent(value)}; path=/; expires=${new Date(Date.now() + days * 864e5).toUTCString()}; SameSite=Lax`;
+}
+
+function getCookie(name: string): string | null {
+  const match = document.cookie.match(
+    new RegExp(`(?:^|; )${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}=([^;]*)`),
+  );
+  return match?.[1] ? decodeURIComponent(match[1]) : null;
+}
+
+function deleteCookie(name: string) {
+  document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+}
+
+function clearTimer(ref: React.RefObject<ReturnType<typeof setTimeout> | null>) {
+  if (ref.current !== null) {
+    clearTimeout(ref.current);
+    ref.current = null;
+  }
+}
+
+// ── Provider ──────────────────────────────────────────────────
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -125,86 +95,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const accessTokenRef = useRef<string | null>(null);
   const refreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const retryCountRef = useRef(0);
   const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const retryCountRef = useRef(0);
   const doRefreshRef = useRef<(() => Promise<void>) | undefined>(undefined);
 
   const getAccessToken = useCallback(() => accessTokenRef.current, []);
 
-  // ── Timer cleanup ──────────────────────────────────────────
-
-  const clearRefreshTimer = useCallback(() => {
-    if (refreshTimerRef.current !== null) {
-      clearTimeout(refreshTimerRef.current);
-      refreshTimerRef.current = null;
-    }
+  const persistSession = useCallback((u: User) => {
+    setCookie("session", "1", HARD_LOGOUT_DAYS);
+    setCookie("session_user", JSON.stringify(u), HARD_LOGOUT_DAYS);
   }, []);
 
-  const clearRetryTimer = useCallback(() => {
-    if (retryTimerRef.current !== null) {
-      clearTimeout(retryTimerRef.current);
-      retryTimerRef.current = null;
-    }
-  }, []);
-
-  // ── Session cookies ────────────────────────────────────────
-
-  const persistSession = useCallback((userData: User) => {
-    setCookie("session", "1", 7);
-    setCookie("session_user", JSON.stringify(userData), 7);
-  }, []);
-
-  const clearSessionCookies = useCallback(() => {
+  const clearSession = useCallback(() => {
     deleteCookie("session");
     deleteCookie("session_user");
   }, []);
 
-  // ── Refresh scheduling (JWT-exp based) ─────────────────────
-
-  const scheduleRefresh = useCallback(
-    (token: string) => {
-      clearRefreshTimer();
-      try {
-        const { exp } = decodeJwtPayload(token);
-        const expiresAt = exp * 1000;
-        const refreshAt = expiresAt - REFRESH_BUFFER_MS;
-        const delay = refreshAt - Date.now();
-
-        if (delay > 0) {
-          refreshTimerRef.current = setTimeout(() => {
-            void doRefreshRef.current?.();
-          }, delay);
-        } else {
-          void doRefreshRef.current?.();
-        }
-      } catch {
+  const scheduleRefresh = useCallback((token: string) => {
+    clearTimer(refreshTimerRef);
+    try {
+      const delay = decodeJwtExp(token) * 1000 - COOKIE_REFRESH_MS - Date.now();
+      if (delay > 0) {
+        refreshTimerRef.current = setTimeout(() => void doRefreshRef.current?.(), delay);
+      } else {
         void doRefreshRef.current?.();
       }
-    },
-    [clearRefreshTimer],
-  );
-
-  // ── Logout ─────────────────────────────────────────────────
+    } catch {
+      void doRefreshRef.current?.();
+    }
+  }, []);
 
   const logout = useCallback(async () => {
     try {
-      await fetch(`${API_BASE}/auth/logout`, {
-        method: "POST",
-        credentials: "include",
-      });
-    } catch {
-      // Best-effort — clear local state regardless
-    }
+      await fetch(`${API_BASE}/auth/logout`, { method: "POST", credentials: "include" });
+    } catch { /* best-effort */ }
     accessTokenRef.current = null;
-    clearRefreshTimer();
-    clearRetryTimer();
+    clearTimer(refreshTimerRef);
+    clearTimer(retryTimerRef);
     retryCountRef.current = 0;
     setUser(null);
-    clearSessionCookies();
+    clearSession();
     router.push("/login");
-  }, [router, clearRefreshTimer, clearRetryTimer, clearSessionCookies]);
-
-  // ── Token refresh with retry logic ─────────────────────────
+  }, [router, clearSession]);
 
   const doRefresh = useCallback(async () => {
     try {
@@ -212,64 +144,49 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         method: "POST",
         credentials: "include",
       });
-
-      if (!res.ok) {
-        if (res.status === 401) {
+      if (res.status === 401) {
+        const body = await res.json().catch(() => null) as { code?: string } | null;
+        if (body?.code === "authentication_error") {
           void logout();
           return;
         }
+      }
+      if (!res.ok) {
         throw new Error(`HTTP ${String(res.status)}`);
       }
-
-      const data = (await res.json()) as RefreshResponse;
-      accessTokenRef.current = data.access_token;
+      const { access_token } = (await res.json()) as { access_token: string };
+      accessTokenRef.current = access_token;
       retryCountRef.current = 0;
-      clearRetryTimer();
-      scheduleRefresh(data.access_token);
-    } catch {
+      clearTimer(retryTimerRef);
+      scheduleRefresh(access_token);
+    } catch (err) {
       retryCountRef.current += 1;
-      if (retryCountRef.current <= MAX_RETRIES) {
-        clearRetryTimer();
-        retryTimerRef.current = setTimeout(() => {
-          void doRefreshRef.current?.();
-        }, RETRY_INTERVAL_MS);
+      if (retryCountRef.current <= MAX_REFRESH_RETRIES) {
+        clearTimer(retryTimerRef);
+        retryTimerRef.current = setTimeout(() => void doRefreshRef.current?.(), RETRY_INTERVAL_MS);
       } else {
         retryCountRef.current = 0;
         void logout();
       }
     }
-  }, [scheduleRefresh, clearRetryTimer, logout]);
+  }, [scheduleRefresh, logout]);
 
-  // Wire up the ref so scheduled timers call the latest doRefresh
-  useEffect(() => {
-    doRefreshRef.current = doRefresh;
-  }, [doRefresh]);
+  useEffect(() => { doRefreshRef.current = doRefresh; }, [doRefresh]);
 
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      clearRefreshTimer();
-      clearRetryTimer();
-    };
-  }, [clearRefreshTimer, clearRetryTimer]);
+  useEffect(() => () => { clearTimer(refreshTimerRef); clearTimer(retryTimerRef); }, []);
 
-  // ── Hydrate session from cookie on mount ───────────────────
-
+  // Hydrate session from cookie on mount
   useEffect(() => {
     const raw = getCookie("session_user");
-    if (raw) {
-      try {
-        const restored = JSON.parse(raw) as User;
-        setUser(restored);
-        void doRefresh();
-      } catch {
-        clearSessionCookies();
-      }
+    if (!raw) { return; }
+    try {
+      setUser(JSON.parse(raw) as User);
+      void doRefresh();
+    } catch {
+      clearSession();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- run once on mount
   }, []);
-
-  // ── Login ──────────────────────────────────────────────────
 
   const login = useCallback(
     async (email: string, password: string): Promise<{ error?: string }> => {
@@ -280,15 +197,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           credentials: "include",
           body: JSON.stringify({ email, password }),
         });
-
         if (!res.ok) {
-          const err = (await res.json().catch(() => null)) as {
-            message?: string;
-          } | null;
+          const err = (await res.json().catch(() => null)) as { message?: string } | null;
           return { error: err?.message ?? "Login failed" };
         }
-
-        const data = (await res.json()) as LoginResponse;
+        const data = (await res.json()) as { access_token: string; user: User };
         accessTokenRef.current = data.access_token;
         setUser(data.user);
         persistSession(data.user);

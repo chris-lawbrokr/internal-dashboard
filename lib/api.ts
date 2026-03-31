@@ -28,15 +28,26 @@ export async function api<T>(
     });
   }
 
-  const res = await fetch(`${API_BASE}/${path}`, {
-    credentials: "include",
-    ...options,
-    headers,
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${API_BASE}/${path}`, {
+      credentials: "include",
+      ...options,
+      headers,
+    });
+  } catch {
+    window.location.href = "/login";
+    throw new Error("Network error — redirecting to login");
+  }
 
   if (res.status === 401) {
-    window.location.href = "/login";
-    throw new Error("Session expired");
+    const body = (await res.json().catch(() => null)) as {
+      code?: string;
+    } | null;
+    if (body?.code === "authentication_error") {
+      window.location.href = "/login";
+      throw new Error("Session expired");
+    }
   }
 
   if (!res.ok) {

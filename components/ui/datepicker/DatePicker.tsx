@@ -896,6 +896,7 @@ export function DateRangePickerWithPresets({
     }
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, startDate, endDate]);
 
   function applyPreset(p: { key: string; days: number | null }) {

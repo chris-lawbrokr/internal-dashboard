@@ -65,10 +65,11 @@ export function AccountsTable() {
 
   useEffect(() => {
     if (!user) return;
-    setAccounts(null);
+    let cancelled = false;
     api<AccountsResponse>(`admin/accounts?${dateQuery}`, getAccessToken)
-      .then((data) => setAccounts(data.data ?? []))
-      .catch((err) => console.error("Failed to fetch accounts:", err));
+      .then((data) => { if (!cancelled) setAccounts(data.data); })
+      .catch((err: unknown) => { console.error("Failed to fetch accounts:", err); });
+    return () => { cancelled = true; };
   }, [user, getAccessToken, dateQuery]);
 
   if (accounts === null) return <Spinner />;
@@ -157,7 +158,7 @@ export function AccountsTable() {
             <button
               type="button"
               className="flex items-center gap-1 cursor-pointer"
-              onClick={() => handleSort("visits")}
+              onClick={() => { handleSort("visits"); }}
             >
               Visits
               <ArrowUpDown size={14} />
@@ -167,7 +168,7 @@ export function AccountsTable() {
             <button
               type="button"
               className="flex items-center gap-1 cursor-pointer"
-              onClick={() => handleSort("conversions")}
+              onClick={() => { handleSort("conversions"); }}
             >
               Responses
               <ArrowUpDown size={14} />
@@ -177,7 +178,7 @@ export function AccountsTable() {
             <button
               type="button"
               className="flex items-center gap-1 cursor-pointer"
-              onClick={() => handleSort("conversion_rate")}
+              onClick={() => { handleSort("conversion_rate"); }}
             >
               Conv. Rate
               <ArrowUpDown size={14} />
@@ -192,13 +193,13 @@ export function AccountsTable() {
       <TableBody>
         {paginated.map((account, i) => (
           <TableRow
-            key={`${account.name}-${i}`}
+            key={`${account.name}-${String(i)}`}
             className="border-b border-background cursor-pointer"
-            onClick={() =>
+            onClick={() => {
               router.push(
                 `/accounts/${String(account.law_firm_id ?? 1)}`,
-              )
-            }
+              );
+            }}
           >
             <TableCell className="font-medium">{account.name}</TableCell>
             <TableCell className="font-medium">{account.website}</TableCell>

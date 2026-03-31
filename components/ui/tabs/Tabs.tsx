@@ -49,7 +49,7 @@ export function useTabSearchParam(tabs: Tab[]): [string, (id: string) => void] {
   const router = useRouter();
   const pathname = usePathname();
 
-  const defaultTab = tabs[0]!.id;
+  const defaultTab = tabs[0]?.id ?? "";
   const paramValue = searchParams.get("tab");
   const activeTab = tabs.find((t) => t.id === paramValue)?.id ?? defaultTab;
 
