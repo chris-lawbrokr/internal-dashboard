@@ -51,11 +51,13 @@ export default function Home() {
         console.error("Failed to load chart:", err);
       });
   }, [user, getAccessToken, dateQuery]);
+
   const visits = data?.summary.visits ?? 0;
   const conversions = data?.summary.conversions ?? 0;
   const conversionRate = data?.summary.conversion_rate ?? 0;
   const mom = data?.month_over_month;
   const series = data?.series;
+
   return (
     <div className="w-full h-full flex flex-col gap-4">
       <PageHeader title={`Welcome back, ${firstname}`} />
