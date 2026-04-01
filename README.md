@@ -129,5 +129,7 @@ veryify responses in next.js terminal
 ---
 
 date picker
-localstorage
+**localstorage**
 state management
+
+---
