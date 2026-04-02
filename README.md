@@ -118,18 +118,13 @@ Uses `typescript-eslint` strict type-checked rules on top of the Next.js default
 rm -rf .next node_modules && npm install && npm run dev:https
 ```
 
----
-
-verify cookie refresh every 1 min
-verify auto log out after 2min
-console log request in next terminal
-verify error on initial request and on refresh
-veryify responses in next.js terminal
+```bash
+https://dev.lawbrokr.ca:3000
+```
 
 ---
 
-date picker
-**localstorage**
-state management
+TODO
+date picker use localstorage instead of url params
 
 ---
