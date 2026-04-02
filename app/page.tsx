@@ -9,7 +9,6 @@ import { MetricCard } from "@/app/components/MetricCard";
 import { PageHeader } from "@/components/ui/page-header/PageHeader";
 import { ConversionRateChart } from "@/app/components/ConversionRateChart";
 import { LeadsChart } from "@/app/components/LeadsChart";
-import type { LeadsChartData } from "@/app/components/LeadsChart";
 
 import { AccountsTable } from "@/app/components/AccountsTable";
 
@@ -35,7 +34,6 @@ export default function Home() {
   const firstname = user?.first_name ?? "";
   const { dateQuery } = useDateRange();
   const [data, setData] = useState<AnalyticsSummary | null>(null);
-  const [chartData, setChartData] = useState<LeadsChartData | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -45,11 +43,6 @@ export default function Home() {
       .catch((err: unknown) => {
         console.error("Failed to load summary:", err);
       });
-    api<LeadsChartData>(`admin/analytics/chart/leads${qs}`, getAccessToken)
-      .then(setChartData)
-      .catch((err: unknown) => {
-        console.error("Failed to load chart:", err);
-      });
   }, [user, getAccessToken, dateQuery]);
 
   const visits = data?.summary.visits ?? 0;
@@ -57,6 +50,13 @@ export default function Home() {
   const conversionRate = data?.summary.conversion_rate ?? 0;
   const mom = data?.month_over_month;
   const series = data?.series;
+  const chartData = data
+    ? {
+        totals: { visits, conversions },
+        series: data.series,
+        labels: [] as string[],
+      }
+    : null;
 
   return (
     <div className="w-full h-full flex flex-col gap-4">
@@ -72,7 +72,7 @@ export default function Home() {
             className="h-full"
           />
           <MetricCard
-            label="Conversions"
+            label="Responses"
             value={conversions}
             change={mom?.conversions_change}
             sparkline={series?.conversions}

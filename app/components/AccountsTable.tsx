@@ -67,9 +67,15 @@ export function AccountsTable() {
     if (!user) return;
     let cancelled = false;
     api<AccountsResponse>(`admin/accounts?${dateQuery}`, getAccessToken)
-      .then((data) => { if (!cancelled) setAccounts(data.data); })
-      .catch((err: unknown) => { console.error("Failed to fetch accounts:", err); });
-    return () => { cancelled = true; };
+      .then((data) => {
+        if (!cancelled) setAccounts(data.data);
+      })
+      .catch((err: unknown) => {
+        console.error("Failed to fetch accounts:", err);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [user, getAccessToken, dateQuery]);
 
   if (accounts === null) return <Spinner />;
@@ -158,7 +164,9 @@ export function AccountsTable() {
             <button
               type="button"
               className="flex items-center gap-1 cursor-pointer"
-              onClick={() => { handleSort("visits"); }}
+              onClick={() => {
+                handleSort("visits");
+              }}
             >
               Visits
               <ArrowUpDown size={14} />
@@ -168,7 +176,9 @@ export function AccountsTable() {
             <button
               type="button"
               className="flex items-center gap-1 cursor-pointer"
-              onClick={() => { handleSort("conversions"); }}
+              onClick={() => {
+                handleSort("conversions");
+              }}
             >
               Responses
               <ArrowUpDown size={14} />
@@ -178,7 +188,9 @@ export function AccountsTable() {
             <button
               type="button"
               className="flex items-center gap-1 cursor-pointer"
-              onClick={() => { handleSort("conversion_rate"); }}
+              onClick={() => {
+                handleSort("conversion_rate");
+              }}
             >
               Conv. Rate
               <ArrowUpDown size={14} />
@@ -196,9 +208,7 @@ export function AccountsTable() {
             key={`${account.name}-${String(i)}`}
             className="border-b border-background cursor-pointer"
             onClick={() => {
-              router.push(
-                `/accounts/${String(account.law_firm_id ?? 1)}`,
-              );
+              router.push(`/accounts/${String(account.law_firm_id ?? 1)}`);
             }}
           >
             <TableCell className="font-medium">{account.name}</TableCell>
@@ -236,9 +246,7 @@ export function AccountsTable() {
             </TableCell>
             <TableCell className="text-center">
               <div className="flex justify-center">
-                <StatusIcon
-                  variant={healthToVariant(account.website_health)}
-                />
+                <StatusIcon variant={healthToVariant(account.website_health)} />
               </div>
             </TableCell>
           </TableRow>
