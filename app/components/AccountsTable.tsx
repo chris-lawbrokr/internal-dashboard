@@ -21,7 +21,7 @@ import { Spinner } from "@/components/ui/Spinner";
 type HealthStatus = "success" | "warning" | "error";
 
 interface Account {
-  law_firm_id?: number;
+  id: number;
   name: string;
   website: string;
   visits: number;
@@ -208,7 +208,7 @@ export function AccountsTable() {
             key={`${account.name}-${String(i)}`}
             className="border-b border-background cursor-pointer"
             onClick={() => {
-              router.push(`/accounts/${String(account.law_firm_id ?? 1)}`);
+              router.push(`/accounts/${String(account.id)}`);
             }}
           >
             <TableCell className="font-medium">{account.name}</TableCell>
