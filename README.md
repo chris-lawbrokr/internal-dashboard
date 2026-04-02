@@ -127,4 +127,18 @@ https://dev.lawbrokr.ca:3000
 TODO
 date picker use localstorage instead of url params
 
+next.js best practive for degmenting url accounts - url params
+
 ---
+
+[auth] POST /auth/refresh → 200 ✓
+auth.tsx:204
+[auth] scheduleRefresh: next refresh in 30s - for this do not send authorization header
+
+do not set authorization header for just the /refresh (refreshing access token every 30s)
+
+add a check to trigger refresh when closing tab then opening page agan
+
+---
+
+add time filter to tables

@@ -1,5 +1,28 @@
 "use client";
 
+// ============================================================
+// AuthProvider.tsx — Authentication context & session manager
+// ============================================================
+// PURPOSE:
+//   This file owns everything related to the user's auth session:
+//     - Logging in and out
+//     - Storing the short-lived access token in memory (never in a cookie)
+//     - Proactively refreshing the access token before it expires
+//     - Retrying failed refreshes up to MAX_REFRESH_RETRIES times
+//     - Persisting a lightweight session cookie so the user
+//       survives a page reload without having to log in again
+//     - Exposing a `useAuth()` hook for any component that needs
+//       the current user, login/logout actions, or the token getter
+//
+// TOKEN STRATEGY (two-token pattern):
+//   Access token  — short-lived JWT, kept only in memory (accessTokenRef).
+//                   Never written to a cookie or localStorage to reduce XSS risk.
+//   Refresh token — longer-lived, stored in an httpOnly cookie by the server.
+//                   The browser sends it automatically; JS cannot read it.
+//   Session cookie — a simple "session=1" cookie written by this client code
+//                    so we know on page reload whether to attempt a refresh.
+// ============================================================
+
 import {
   createContext,
   useContext,
@@ -9,8 +32,7 @@ import {
   useRef,
 } from "react";
 import { useRouter } from "next/navigation";
-
-// ── Config ───────────────────────────────────────────────────
+import { setRefreshHandler } from "@/lib/api";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.lawbrokr.ca/v1/legacy";
@@ -18,16 +40,15 @@ const API_BASE =
 const MAX_REFRESH_RETRIES = 3;
 const RETRY_INTERVAL_MS = 10_000;
 
-const COOKIE_REFRESH_SECONDS = Number(
+const REFRESH_BUFFER_SECONDS = Number(
   process.env.NEXT_PUBLIC_REFRESH_BUFFER_SECONDS ?? "30",
 );
-const COOKIE_REFRESH_MS = COOKIE_REFRESH_SECONDS * 1000;
+const REFRESH_BUFFER_MS = REFRESH_BUFFER_SECONDS * 1000;
 
 const HARD_LOGOUT_MINUTES = 2;
 const HARD_LOGOUT_DAYS = HARD_LOGOUT_MINUTES / (60 * 24);
 
-// ── Types ───────────────────────────────────────────────────
-
+// Context
 export interface User {
   id: number;
   email: string;
@@ -44,6 +65,7 @@ interface AuthContextValue {
   getAccessToken: () => string | null;
 }
 
+// Context
 const AuthContext = createContext<AuthContextValue>({
   user: null,
   login: async () => ({}),
@@ -51,22 +73,22 @@ const AuthContext = createContext<AuthContextValue>({
   getAccessToken: () => null,
 });
 
+// Convenience hook
 export function useAuth() {
   return useContext(AuthContext);
 }
 
-// ── Helpers ─────────────────────────────────────────────────
-
+// Helpers
+// Decode the JWT payload
 function getJwtExpiry(token: string): number {
   const base64 = token.split(".")[1]?.replace(/-/g, "+").replace(/_/g, "/");
   if (!base64) throw new Error("Invalid JWT");
   return JSON.parse(atob(base64)).exp;
 }
 
+// Write a cookie visible to all paths
 function setCookie(name: string, value: string, days: number) {
-  document.cookie = `${name}=${encodeURIComponent(
-    value,
-  )}; path=/; expires=${new Date(
+  document.cookie = `${name}=${encodeURIComponent(value)}; path=/; expires=${new Date(
     Date.now() + days * 864e5,
   ).toUTCString()}; SameSite=Lax`;
 }
@@ -84,6 +106,7 @@ function deleteCookie(name: string) {
   document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
 }
 
+// Cancel a pending setTimeout
 function clearTimer(
   ref: React.RefObject<ReturnType<typeof setTimeout> | null>,
 ) {
@@ -93,24 +116,37 @@ function clearTimer(
   }
 }
 
-// ── Provider ────────────────────────────────────────────────
-
+// Provider
+// Wrap app with <AuthProvider> - All child components the use useAuth()
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+
   const router = useRouter();
 
+  // Refs (not state)
+  // access token as ref (not state, not a cookie)
+  // so it's only accessible within this JS context — invisible to
+  // other tabs and inaccessible to XSS scripts that can only read
+  // cookies/localStorage.
   const accessTokenRef = useRef<string | null>(null);
+
+  // Timer ID for the next scheduled proactive refresh.
   const refreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Timer ID for the next retry after a failed refresh.
   const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // How many consecutive refresh failures have occurred.
   const retryCountRef = useRef(0);
 
+  // Stable function reference passed down via context.
   const getAccessToken = useCallback(() => accessTokenRef.current, []);
 
-  // ── Session helpers ──
-
+  // Session cookie triggers a doRefresh() on mount if there was an existing session
   const session = {
     save(user: User) {
       setCookie("session", "1", HARD_LOGOUT_DAYS);
+      // Store the user object to restore on reload without completing refresh.
       setCookie("session_user", JSON.stringify(user), HARD_LOGOUT_DAYS);
     },
     clear() {
@@ -119,49 +155,69 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     },
   };
 
-  // ── Logout ──
-
+  // Logout
+  // Cleans up all auth state — both client-side and server-side.
   const logout = useCallback(async () => {
+    // server invalidates refresh-token cookie
     try {
-      await fetch(`${API_BASE}/auth/logout`, {
+      const res = await fetch(`${API_BASE}/auth/logout`, {
         method: "POST",
-        credentials: "include",
+        credentials: "include", // sends the httpOnly refresh-token cookie
       });
-    } catch {
-      /* ignore */
+      console.log(`[auth] POST /auth/logout → ${res.status}`);
+    } catch (err) {
+      console.log("[auth] POST /auth/logout → network error", err);
     }
 
+    // Wipe in-memory token so in-flight api() calls get null
     accessTokenRef.current = null;
+
+    // Cancel any pending refresh timers after logout
     clearTimer(refreshTimerRef);
     clearTimer(retryTimerRef);
     retryCountRef.current = 0;
 
+    // Remove the user from React state and delete the session cookies.
     setUser(null);
     session.clear();
 
     router.push("/login");
   }, [router]);
 
-  // ── Refresh logic ──
+  // Refresh logic
+  // calls doRefresh() in REFRESH_BUFFER_MS before current token expire
+  // Called after successful login or refresh so the timer to reflect latest expiry
+  // Use a ref so scheduleRefresh always calls the latest doRefresh
+  const doRefreshRef = useRef<() => Promise<string | null>>(async () => null);
 
-  const scheduleRefresh = useCallback(
-    (token: string) => {
-      clearTimer(refreshTimerRef);
+  const scheduleRefresh = useCallback((token: string) => {
+    clearTimer(refreshTimerRef); // cancel any previously scheduled refresh
 
-      let delay = 0;
-      try {
-        delay = getJwtExpiry(token) * 1000 - COOKIE_REFRESH_MS - Date.now();
-      } catch {}
+    let delay = 0;
+    try {
+      // delay = (token expiry in ms) - (safety buffer) - (current time)
+      delay = getJwtExpiry(token) * 1000 - REFRESH_BUFFER_MS - Date.now();
+    } catch {
+      // If can't be decoded trigger immediate refresh
+    }
 
-      if (delay <= 0) return void doRefresh();
+    console.log(
+      `[auth] scheduleRefresh: next refresh in ${Math.round(delay / 1000)}s`,
+    );
 
-      refreshTimerRef.current = setTimeout(doRefresh, delay);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
+    if (delay <= 0) {
+      // Token expired refresh immediately
+      return void doRefreshRef.current();
+    }
 
-  const doRefresh = useCallback(async () => {
+    refreshTimerRef.current = setTimeout(() => doRefreshRef.current(), delay);
+  }, []);
+
+  // /auth/refresh endpoint exchanges httpOnly refresh-token cookie for a new access token.
+  // Also registered with api.ts via setRefreshHandler() so api() trigger on 401
+  const doRefresh = useCallback(async (): Promise<string | null> => {
+    // TODO: remove debug logs after verifying auth flows
+    console.log("[auth] POST /auth/refresh → sending…");
     try {
       const res = await fetch(`${API_BASE}/auth/refresh`, {
         method: "POST",
@@ -169,43 +225,68 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       if (res.status === 401) {
+        // refresh token expired or revoked
         const body = await res.json().catch(() => null);
-        if (body?.code === "authentication_error") {
-          return logout();
-        }
+        console.log(`[auth] POST /auth/refresh → ${res.status}`, body);
+        logout();
+        return null;
       }
 
-      if (!res.ok) throw new Error();
+      if (!res.ok) {
+        const body = await res.text().catch(() => "");
+        console.log(`[auth] POST /auth/refresh → ${res.status}`, body);
+        throw new Error(body);
+      }
 
+      console.log(`[auth] POST /auth/refresh → ${res.status} ✓`);
       const { access_token } = await res.json();
 
+      // Store new token and reset failure counter
       accessTokenRef.current = access_token;
       retryCountRef.current = 0;
 
       clearTimer(retryTimerRef);
       scheduleRefresh(access_token);
-    } catch {
+      return access_token;
+    } catch (err) {
+      // Network error or non-401
+      // retry up to MAX_REFRESH_RETRIES times
       retryCountRef.current++;
+      console.log(
+        `[auth] POST /auth/refresh → error (retry ${retryCountRef.current}/${MAX_REFRESH_RETRIES})`,
+        err,
+      );
 
       if (retryCountRef.current <= MAX_REFRESH_RETRIES) {
         clearTimer(retryTimerRef);
         retryTimerRef.current = setTimeout(doRefresh, RETRY_INTERVAL_MS);
       } else {
+        // Exhausted retries. Log out cleanly
+        console.log("[auth] POST /auth/refresh → max retries, logging out");
         retryCountRef.current = 0;
         logout();
       }
+
+      return null;
     }
   }, [logout, scheduleRefresh]);
 
-  // ── Lifecycle ──
+  // Keep the ref in sync so scheduled timers always call the latest doRefresh
+  doRefreshRef.current = doRefresh;
 
+  // Lifecycle effects
+  // Register with api.ts when doRefresh changes, cleans timers when AuthProvider unmounts
   useEffect(() => {
+    setRefreshHandler(doRefresh);
     return () => {
       clearTimer(refreshTimerRef);
       clearTimer(retryTimerRef);
     };
-  }, []);
+  }, [doRefresh]);
 
+  // On first mount, check for existing session cookie.
+  // If found, restore the user into React state immediately
+  // kick off a token refresh in background for fresh access token
   useEffect(() => {
     const raw = getCookie("session_user");
     if (!raw) return;
@@ -216,14 +297,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch {
       session.clear();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── Login ──
-
+  // Login
+  // Sends credentials to the server.
+  // On success server sets httpOnly refresh-token cookie
+  // returns the first access token + user object
   const login = useCallback(
     async (email: string, password: string) => {
       try {
+        console.log("[auth] POST /auth/login → sending…");
         const res = await fetch(`${API_BASE}/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -233,15 +316,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         if (!res.ok) {
           const err = await res.json().catch(() => null);
+          console.log(`[auth] POST /auth/login → ${res.status}`, err);
           return { error: err?.message ?? "Login failed" };
         }
 
+        console.log(`[auth] POST /auth/login → ${res.status} ✓`);
         const data = await res.json();
 
+        // Store the access token in memory
         accessTokenRef.current = data.access_token;
         setUser(data.user);
 
+        // Persist a session cookie
         session.save(data.user);
+
+        // Start the proactive refresh
         scheduleRefresh(data.access_token);
 
         return {};
