@@ -25,7 +25,7 @@ const SHADOW =
 const navItems: { label: string; href: string; icon: LucideIcon }[] = [
   { label: "Home", href: "/", icon: Home },
   { label: "Accounts", href: "/accounts", icon: Users },
-  { label: "Analytics", href: "/analytics", icon: BarChart3 },
+  // { label: "Analytics", href: "/analytics", icon: BarChart3 },
 ];
 
 const BARE_ROUTES = ["/login"];
@@ -230,7 +230,9 @@ export function Nav({ children }: { children: React.ReactNode }) {
 
       {/* Mobile top bar */}
       {isMobile && (
-        <div className={`absolute top-0 left-0 right-0 z-50 bg-white ${SHADOW}`}>
+        <div
+          className={`absolute top-0 left-0 right-0 z-50 bg-white ${SHADOW}`}
+        >
           <div className="flex items-center justify-between px-4 py-3">
             <Image
               src="/images/Logo.svg"
@@ -251,11 +253,7 @@ export function Nav({ children }: { children: React.ReactNode }) {
             className={`overflow-hidden transition-[max-height] duration-300 ease-in-out ${open ? "max-h-[400px]" : "max-h-0"}`}
           >
             <nav className="flex flex-col gap-1 px-4 pb-4">
-              <NavLinks
-                pathname={pathname}
-                size={18}
-                onNavigate={toggle}
-              />
+              <NavLinks pathname={pathname} size={18} onNavigate={toggle} />
             </nav>
             <div className="flex items-center justify-between border-t border-border px-4 py-3">
               <span className="text-sm text-foreground">{displayName}</span>
