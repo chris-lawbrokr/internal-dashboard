@@ -9,11 +9,7 @@ interface SparklineChartProps {
   color?: string;
 }
 
-export function SparklineChart({ data: rawData, color = "var(--color-primary)" }: SparklineChartProps) {
-  // Trim trailing low values (< 10) so the chart doesn't draw a flat line
-  let end = rawData.length;
-  while (end > 0 && (rawData[end - 1] ?? 0) < 10) end--;
-  const data = rawData.slice(0, end);
+export function SparklineChart({ data, color = "var(--color-primary)" }: SparklineChartProps) {
 
   const options: ApexCharts.ApexOptions = {
     chart: {
