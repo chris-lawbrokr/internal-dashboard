@@ -20,7 +20,12 @@ interface TabsProps {
 
 export function Tabs({ tabs, activeTab, onTabChange, className }: TabsProps) {
   return (
-    <div className={cn("flex gap-1 border-b border-border", className)}>
+    <div
+      className={cn(
+        "flex gap-1 border-b border-border mx-4 overflow-y-scroll",
+        className,
+      )}
+    >
       {tabs.map((tab) => (
         <button
           key={tab.id}
