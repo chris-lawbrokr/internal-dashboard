@@ -104,7 +104,10 @@ export function AccountOverview({
     let cancelled = false;
     const qs = dateQuery ? `&${dateQuery}` : "";
 
-    api<AccountDetail>(`admin/account?law_firm_id=${lawFirmId}${qs}`, getAccessToken)
+    api<AccountDetail>(
+      `admin/account?law_firm_id=${lawFirmId}${qs}`,
+      getAccessToken,
+    )
       .then((data) => {
         if (!cancelled) setAccount(data);
       })

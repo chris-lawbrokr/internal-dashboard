@@ -321,7 +321,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     }
     document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, []);
 
   // Login
