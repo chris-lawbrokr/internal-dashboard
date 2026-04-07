@@ -3,7 +3,11 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
-import { SkeletonGauge, SkeletonTable, SkeletonChart } from "@/components/ui/Skeleton";
+import {
+  SkeletonGauge,
+  SkeletonTable,
+  SkeletonChart,
+} from "@/components/ui/Skeleton";
 import { useSkeletonTransition } from "@/components/ui/SkeletonTransition";
 import { Badge } from "@/components/ui/badge/Badge";
 import {
@@ -123,7 +127,9 @@ export function AccountOverview({
 
   if (showSkeleton)
     return (
-      <div className={`flex flex-col gap-4${fading ? " skeleton-fade-out" : ""}`}>
+      <div
+        className={`flex flex-col gap-4${fading ? " skeleton-fade-out" : ""}`}
+      >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <SkeletonGauge />
           <SkeletonGauge />
@@ -182,8 +188,7 @@ export function AccountOverview({
     { label: "Company Name", value: acct.name },
     {
       label: "Company Size",
-      value:
-        acct.employees != null ? `${acct.employees} employees` : "N/A",
+      value: acct.employees != null ? `${acct.employees} employees` : "N/A",
     },
     { label: "Location", value: acct.location || "N/A" },
     { label: "Marketing Agency", value: acct.marketing_agency || "N/A" },
@@ -249,20 +254,38 @@ export function AccountOverview({
         <div className="rounded-xl bg-card text-card-foreground shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.05)] h-full">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 h-full px-6">
             <div className="flex flex-col">
-              {detailItems.filter((_, i) => i % 2 === 0).map((item, i, arr) => (
-                <div key={item.label} className={`flex flex-col justify-center flex-1 py-4 border-b border-border${i === arr.length - 1 ? " sm:border-b-0" : ""}`}>
-                  <p className="text-sm text-muted-foreground">{item.label}</p>
-                  <p className="text-sm font-semibold mt-0.5 break-all">{item.value}</p>
-                </div>
-              ))}
+              {detailItems
+                .filter((_, i) => i % 2 === 0)
+                .map((item, i, arr) => (
+                  <div
+                    key={item.label}
+                    className={`flex flex-col justify-center flex-1 py-4 border-b border-border${i === arr.length - 1 ? " sm:border-b-0" : ""}`}
+                  >
+                    <p className="text-sm text-muted-foreground">
+                      {item.label}
+                    </p>
+                    <p className="text-sm font-semibold mt-0.5 break-all">
+                      {item.value}
+                    </p>
+                  </div>
+                ))}
             </div>
             <div className="flex flex-col">
-              {detailItems.filter((_, i) => i % 2 === 1).map((item, i, arr) => (
-                <div key={item.label} className={`flex flex-col justify-center flex-1 py-4${i < arr.length - 1 ? " border-b border-border" : ""}`}>
-                  <p className="text-sm text-muted-foreground">{item.label}</p>
-                  <p className="text-sm font-semibold mt-0.5 break-all">{item.value}</p>
-                </div>
-              ))}
+              {detailItems
+                .filter((_, i) => i % 2 === 1)
+                .map((item, i, arr) => (
+                  <div
+                    key={item.label}
+                    className={`flex flex-col justify-center flex-1 py-4${i < arr.length - 1 ? " border-b border-border" : ""}`}
+                  >
+                    <p className="text-sm text-muted-foreground">
+                      {item.label}
+                    </p>
+                    <p className="text-sm font-semibold mt-0.5 break-all">
+                      {item.value}
+                    </p>
+                  </div>
+                ))}
             </div>
           </div>
         </div>

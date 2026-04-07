@@ -4,7 +4,12 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
 import { useDateRange } from "@/lib/useDateRange";
-import { SkeletonMetricCard, SkeletonChart, SkeletonRadialChart, SkeletonTable } from "@/components/ui/Skeleton";
+import {
+  SkeletonMetricCard,
+  SkeletonChart,
+  SkeletonRadialChart,
+  SkeletonTable,
+} from "@/components/ui/Skeleton";
 import { useSkeletonTransition } from "@/components/ui/SkeletonTransition";
 import { MetricCard } from "@/app/components/MetricCard";
 import { LeadsChart } from "@/app/components/LeadsChart";
@@ -124,7 +129,9 @@ export function AccountPerformance({ lawFirmId }: AccountPerformanceProps) {
 
   if (showSkeleton)
     return (
-      <div className={`flex flex-col gap-4${fading ? " skeleton-fade-out" : ""}`}>
+      <div
+        className={`flex flex-col gap-4${fading ? " skeleton-fade-out" : ""}`}
+      >
         <div className="flex flex-col gap-4 @lg:flex-row">
           <div className="flex flex-col gap-4 flex-1">
             <SkeletonMetricCard className="h-full" />
@@ -145,14 +152,11 @@ export function AccountPerformance({ lawFirmId }: AccountPerformanceProps) {
   const totalPages = funnels ? Math.ceil(funnels.data.length / pageSize) : 0;
   const currentPage = Math.min(page, totalPages || 1);
   const paginatedFunnels = funnels
-    ? funnels.data.slice(
-        (currentPage - 1) * pageSize,
-        currentPage * pageSize,
-      )
+    ? funnels.data.slice((currentPage - 1) * pageSize, currentPage * pageSize)
     : [];
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 flex-1">
       {/* Top row: Metrics + Chart + Conversion Rate */}
       <div className="flex flex-col gap-4 @lg:flex-row skeleton-stagger">
         <div className="flex flex-col gap-4 flex-1">
@@ -180,7 +184,7 @@ export function AccountPerformance({ lawFirmId }: AccountPerformanceProps) {
       </div>
 
       {/* Bottom row: Comparison Chart + Funnels Table */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 skeleton-stagger">
+      <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-[1fr] gap-4 flex-1 min-h-0 skeleton-stagger">
         <ConversionComparisonChart data={comparison} />
 
         <Table
