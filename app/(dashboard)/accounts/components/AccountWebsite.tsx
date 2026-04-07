@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
-import { Spinner } from "@/components/ui/Spinner";
+import { SkeletonStatusCard, SkeletonValueCard, SkeletonTable } from "@/components/ui/Skeleton";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge/Badge";
 import type { BadgeVariant } from "@/components/ui/badge/Badge";
@@ -88,7 +88,23 @@ export function AccountWebsite({ lawFirmId }: AccountWebsiteProps) {
     };
   }, [user, getAccessToken, lawFirmId]);
 
-  if (!status) return <Spinner />;
+  if (!status)
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <SkeletonStatusCard />
+          <SkeletonStatusCard />
+          <SkeletonStatusCard />
+          <SkeletonStatusCard />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <SkeletonStatusCard />
+          <SkeletonValueCard />
+          <SkeletonValueCard />
+        </div>
+        <SkeletonTable rows={6} />
+      </div>
+    );
 
   const totalPages = links ? Math.ceil(links.data.length / PAGE_SIZE) : 0;
   const currentPage = Math.min(page, totalPages || 1);

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
 import { useDateRange } from "@/lib/useDateRange";
-import { Spinner } from "@/components/ui/Spinner";
+import { SkeletonMetricCard, SkeletonChart, SkeletonRadialChart, SkeletonTable } from "@/components/ui/Skeleton";
 import { MetricCard } from "@/app/components/MetricCard";
 import { LeadsChart } from "@/app/components/LeadsChart";
 import type { LeadsChartData } from "@/app/components/LeadsChart";
@@ -118,7 +118,23 @@ export function AccountPerformance({ lawFirmId }: AccountPerformanceProps) {
     };
   }, [user, getAccessToken, lawFirmId, dateQuery]);
 
-  if (!summary) return <Spinner />;
+  if (!summary)
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 @lg:flex-row">
+          <div className="flex flex-col gap-4 flex-1">
+            <SkeletonMetricCard className="h-full" />
+            <SkeletonMetricCard className="h-full" />
+          </div>
+          <SkeletonChart className="flex-[2]" />
+          <SkeletonRadialChart className="flex-1" />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <SkeletonChart />
+          <SkeletonTable rows={6} />
+        </div>
+      </div>
+    );
 
   const mom = summary.month_over_month;
   const totalPages = funnels ? Math.ceil(funnels.data.length / PAGE_SIZE) : 0;

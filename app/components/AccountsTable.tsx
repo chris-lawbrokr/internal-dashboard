@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/table/Table";
 import { Search, X, ArrowUpDown } from "lucide-react";
 import { Badge, StatusIcon } from "@/components/ui/badge/Badge";
-import { Spinner } from "@/components/ui/Spinner";
+import { SkeletonTable } from "@/components/ui/Skeleton";
 
 type HealthStatus = "success" | "warning" | "error";
 
@@ -78,7 +78,7 @@ export function AccountsTable() {
     };
   }, [user, getAccessToken, dateQuery]);
 
-  if (accounts === null) return <Spinner />;
+  if (accounts === null) return <SkeletonTable rows={10} />;
 
   const filtered = accounts.filter((a) => {
     const q = search.toLowerCase();

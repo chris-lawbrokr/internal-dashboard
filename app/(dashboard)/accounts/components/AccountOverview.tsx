@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
-import { Spinner } from "@/components/ui/Spinner";
+import { SkeletonGauge, SkeletonTable, SkeletonChart } from "@/components/ui/Skeleton";
 import { Badge } from "@/components/ui/badge/Badge";
 import {
   Table,
@@ -117,7 +117,24 @@ export function AccountOverview({
     };
   }, [user, getAccessToken, lawFirmId]);
 
-  if (!account || !users) return <Spinner />;
+  if (!account || !users)
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <SkeletonGauge />
+          <SkeletonGauge />
+          <SkeletonGauge />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <SkeletonChart className="min-h-[400px]" />
+          <SkeletonTable rows={5} />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <SkeletonChart className="min-h-[100px]" />
+          <SkeletonChart className="min-h-[100px]" />
+        </div>
+      </div>
+    );
 
   // Filter users
   const filtered = users.filter((u) => {

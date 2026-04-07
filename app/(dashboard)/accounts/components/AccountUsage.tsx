@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
 import { useDateRange } from "@/lib/useDateRange";
-import { Spinner } from "@/components/ui/Spinner";
+import { SkeletonChecklist, SkeletonStatusCard, SkeletonValueCard, SkeletonTable } from "@/components/ui/Skeleton";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge/Badge";
 import { StatusIcon } from "@/components/ui/badge/Badge";
@@ -222,7 +222,25 @@ export function AccountUsage({ lawFirmId }: AccountUsageProps) {
     return () => { cancelled = true; };
   }, [user, getAccessToken, lawFirmId, dateQuery]);
 
-  if (!usage) return <Spinner />;
+  if (!usage)
+    return (
+      <div className="flex flex-col gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-4">
+          <SkeletonChecklist />
+          <div className="grid grid-cols-2 gap-4">
+            <SkeletonStatusCard />
+            <SkeletonValueCard />
+            <SkeletonValueCard />
+            <SkeletonValueCard />
+            <SkeletonValueCard />
+            <SkeletonValueCard />
+          </div>
+        </div>
+        <SkeletonTable rows={5} />
+        <SkeletonTable rows={5} />
+        <SkeletonTable rows={5} />
+      </div>
+    );
 
   const checklist = [
     { label: "Account status is active", ok: usage.active },
