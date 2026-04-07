@@ -80,10 +80,10 @@ export const Table = React.forwardRef<
           )
         )}
         <div className="px-4 py-4 flex-1 min-h-0 flex flex-col">
-          <div className="overflow-auto flex-1 min-h-0">
+          <div className="overflow-auto flex-1 min-h-0 max-h-[70vh]">
             <table
               ref={ref}
-              className={cn("w-full caption-bottom text-sm", className)}
+              className={cn("w-full caption-bottom text-sm border-separate border-spacing-0", className)}
               {...props}
             />
           </div>
@@ -118,7 +118,7 @@ export const TableHeader = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
-  <thead ref={ref} className={cn("[&_tr]:border-b", className)} {...props} />
+  <thead ref={ref} className={cn("sticky top-0 z-10 bg-card [&_th]:border-b", className)} {...props} />
 ));
 TableHeader.displayName = "TableHeader";
 
