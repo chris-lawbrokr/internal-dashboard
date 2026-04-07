@@ -122,14 +122,6 @@ rm -rf .next node_modules && npm install && npm run dev:https
 https://dev.lawbrokr.ca:3000
 ```
 
----
-
 TODO
-datepicker
-next.js best practive for degmenting url accounts - url params
 
----
-
-add time filter to tables
-
----
+- add time filter to tables
