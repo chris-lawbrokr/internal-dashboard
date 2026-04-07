@@ -137,7 +137,7 @@ export function AccountWebsite({ lawFirmId }: AccountWebsiteProps) {
   const isPositive = s.live_links_change >= 0;
 
   return (
-    <div className="flex flex-col gap-4 h-full">
+    <div className="flex flex-col gap-4 flex-1">
       {/* Status cards - top row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 skeleton-stagger">
         <Card className="p-4 flex flex-col gap-2">
@@ -225,54 +225,53 @@ export function AccountWebsite({ lawFirmId }: AccountWebsiteProps) {
         </Card>
       </div>
 
-      <div className="h-full">
-        {/* Links table */}
-        <Table
-          title="Lawbrokr Links"
-          footer={
-            links && links.data.length > pageSize ? (
-              <TablePagination
-                page={currentPage}
-                totalPages={totalPages}
-                totalItems={links.data.length}
-                pageSize={pageSize}
-                onPageChange={setPage}
-                onPageSizeChange={setPageSize}
-              />
-            ) : undefined
-          }
-        >
-          <TableHeader>
-            <TableRow className="border-b border-border">
-              <TableHead>Website URL</TableHead>
-              <TableHead>Lawbrokr URL</TableHead>
-              <TableHead className="text-right">Status</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {paginatedLinks.map((link, i) => {
-              const cfg = getLinkStatus(link.status);
-              return (
-                <TableRow key={i} className="border-b border-background">
-                  <TableCell className="text-sm">{link.website_url}</TableCell>
-                  <TableCell className="text-sm">
-                    {link.lawbrokr_url ?? "—"}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Badge
-                      variant={cfg.variant}
-                      dot
-                      className="px-2 py-1 text-sm"
-                    >
-                      {cfg.label}
-                    </Badge>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </div>
+      {/* Links table */}
+      <Table
+        title="Lawbrokr Links"
+        wrapperClassName="flex-1"
+        footer={
+          links && links.data.length > pageSize ? (
+            <TablePagination
+              page={currentPage}
+              totalPages={totalPages}
+              totalItems={links.data.length}
+              pageSize={pageSize}
+              onPageChange={setPage}
+              onPageSizeChange={setPageSize}
+            />
+          ) : undefined
+        }
+      >
+        <TableHeader>
+          <TableRow className="border-b border-border">
+            <TableHead>Website URL</TableHead>
+            <TableHead>Lawbrokr URL</TableHead>
+            <TableHead className="text-right">Status</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {paginatedLinks.map((link, i) => {
+            const cfg = getLinkStatus(link.status);
+            return (
+              <TableRow key={i} className="border-b border-background">
+                <TableCell className="text-sm">{link.website_url}</TableCell>
+                <TableCell className="text-sm">
+                  {link.lawbrokr_url ?? "—"}
+                </TableCell>
+                <TableCell className="text-right">
+                  <Badge
+                    variant={cfg.variant}
+                    dot
+                    className="px-2 py-1 text-sm"
+                  >
+                    {cfg.label}
+                  </Badge>
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
     </div>
   );
 }
