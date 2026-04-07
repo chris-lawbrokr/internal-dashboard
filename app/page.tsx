@@ -73,10 +73,9 @@ export default function Home() {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="sticky top-0 z-10 bg-surface ">
+      <div className="sticky top-0 z-10 bg-surface">
         <PageHeader title={`Welcome back, ${firstname}`} />
       </div>
-
       <div className="m-4 mt-0 overflow-y-scroll">
         <div>
           {showSkeleton || !data || !accounts ? (
