@@ -168,15 +168,16 @@ function BoolIcon({ value }: { value: boolean }) {
 
 // ── Paginated table hook ────────────────────────────────────────────
 
-function usePagination<T>(items: T[], pageSize: number) {
+function usePagination<T>(items: T[], defaultSize: number) {
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(defaultSize);
   const totalPages = Math.ceil(items.length / pageSize);
   const currentPage = Math.min(page, totalPages || 1);
   const paginated = items.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize,
   );
-  return { page: currentPage, totalPages, paginated, setPage, total: items.length };
+  return { page: currentPage, totalPages, paginated, setPage, total: items.length, pageSize, setPageSize };
 }
 
 // ── Component ───────────────────────────────────────────────────────
@@ -185,7 +186,7 @@ interface AccountUsageProps {
   lawFirmId: string;
 }
 
-const PAGE_SIZE = 5;
+const DEFAULT_PAGE_SIZE = 5;
 
 export function AccountUsage({ lawFirmId }: AccountUsageProps) {
   const { user, getAccessToken } = useAuth();
@@ -333,19 +334,20 @@ function TopSection({
 // ── Users Table ─────────────────────────────────────────────────────
 
 function UsersTable({ users }: { users: UsageUser[] }) {
-  const { page, totalPages, paginated, setPage, total } = usePagination(users, PAGE_SIZE);
+  const { page, totalPages, paginated, setPage, total, pageSize, setPageSize } = usePagination(users, DEFAULT_PAGE_SIZE);
 
   return (
     <Table
       title="Account Users"
       footer={
-        total > PAGE_SIZE ? (
+        total > pageSize ? (
           <TablePagination
             page={page}
             totalPages={totalPages}
             totalItems={total}
-            pageSize={PAGE_SIZE}
+            pageSize={pageSize}
             onPageChange={setPage}
+            onPageSizeChange={setPageSize}
           />
         ) : undefined
       }
@@ -408,11 +410,11 @@ function DetailTables({ details }: { details: UsageDetails }) {
 }
 
 function FunnelsTable({ items }: { items: UsageDetails["funnels"] }) {
-  const { page, totalPages, paginated, setPage, total } = usePagination(items, PAGE_SIZE);
+  const { page, totalPages, paginated, setPage, total, pageSize, setPageSize } = usePagination(items, DEFAULT_PAGE_SIZE);
   return (
     <Table
       title="Funnels"
-      footer={total > PAGE_SIZE ? <TablePagination page={page} totalPages={totalPages} totalItems={total} pageSize={PAGE_SIZE} onPageChange={setPage} /> : undefined}
+      footer={total > pageSize ? <TablePagination page={page} totalPages={totalPages} totalItems={total} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={setPageSize} /> : undefined}
     >
       <TableHeader>
         <TableRow className="border-b border-border">
@@ -445,11 +447,11 @@ function FunnelsTable({ items }: { items: UsageDetails["funnels"] }) {
 }
 
 function WorkflowsTable({ items }: { items: UsageDetails["workflows"] }) {
-  const { page, totalPages, paginated, setPage, total } = usePagination(items, PAGE_SIZE);
+  const { page, totalPages, paginated, setPage, total, pageSize, setPageSize } = usePagination(items, DEFAULT_PAGE_SIZE);
   return (
     <Table
       title="Workflows"
-      footer={total > PAGE_SIZE ? <TablePagination page={page} totalPages={totalPages} totalItems={total} pageSize={PAGE_SIZE} onPageChange={setPage} /> : undefined}
+      footer={total > pageSize ? <TablePagination page={page} totalPages={totalPages} totalItems={total} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={setPageSize} /> : undefined}
     >
       <TableHeader>
         <TableRow className="border-b border-border">
@@ -484,11 +486,11 @@ function WorkflowsTable({ items }: { items: UsageDetails["workflows"] }) {
 }
 
 function LandingPagesTable({ items }: { items: UsageDetails["landing_pages"] }) {
-  const { page, totalPages, paginated, setPage, total } = usePagination(items, PAGE_SIZE);
+  const { page, totalPages, paginated, setPage, total, pageSize, setPageSize } = usePagination(items, DEFAULT_PAGE_SIZE);
   return (
     <Table
       title="Landing Pages"
-      footer={total > PAGE_SIZE ? <TablePagination page={page} totalPages={totalPages} totalItems={total} pageSize={PAGE_SIZE} onPageChange={setPage} /> : undefined}
+      footer={total > pageSize ? <TablePagination page={page} totalPages={totalPages} totalItems={total} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={setPageSize} /> : undefined}
     >
       <TableHeader>
         <TableRow className="border-b border-border">
@@ -513,11 +515,11 @@ function LandingPagesTable({ items }: { items: UsageDetails["landing_pages"] }) 
 }
 
 function AdCampaignsTable({ items }: { items: UsageDetails["ad_campaigns"] }) {
-  const { page, totalPages, paginated, setPage, total } = usePagination(items, PAGE_SIZE);
+  const { page, totalPages, paginated, setPage, total, pageSize, setPageSize } = usePagination(items, DEFAULT_PAGE_SIZE);
   return (
     <Table
       title="Ad Campaigns"
-      footer={total > PAGE_SIZE ? <TablePagination page={page} totalPages={totalPages} totalItems={total} pageSize={PAGE_SIZE} onPageChange={setPage} /> : undefined}
+      footer={total > pageSize ? <TablePagination page={page} totalPages={totalPages} totalItems={total} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={setPageSize} /> : undefined}
     >
       <TableHeader>
         <TableRow className="border-b border-border">
@@ -550,11 +552,11 @@ function AdCampaignsTable({ items }: { items: UsageDetails["ad_campaigns"] }) {
 }
 
 function ClipsTable({ items }: { items: UsageDetails["clips"] }) {
-  const { page, totalPages, paginated, setPage, total } = usePagination(items, PAGE_SIZE);
+  const { page, totalPages, paginated, setPage, total, pageSize, setPageSize } = usePagination(items, DEFAULT_PAGE_SIZE);
   return (
     <Table
       title="Clips"
-      footer={total > PAGE_SIZE ? <TablePagination page={page} totalPages={totalPages} totalItems={total} pageSize={PAGE_SIZE} onPageChange={setPage} /> : undefined}
+      footer={total > pageSize ? <TablePagination page={page} totalPages={totalPages} totalItems={total} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={setPageSize} /> : undefined}
     >
       <TableHeader>
         <TableRow className="border-b border-border">
@@ -583,11 +585,11 @@ function ClipsTable({ items }: { items: UsageDetails["clips"] }) {
 }
 
 function AutomationsTable({ items }: { items: UsageDetails["automations"] }) {
-  const { page, totalPages, paginated, setPage, total } = usePagination(items, PAGE_SIZE);
+  const { page, totalPages, paginated, setPage, total, pageSize, setPageSize } = usePagination(items, DEFAULT_PAGE_SIZE);
   return (
     <Table
       title="Automations"
-      footer={total > PAGE_SIZE ? <TablePagination page={page} totalPages={totalPages} totalItems={total} pageSize={PAGE_SIZE} onPageChange={setPage} /> : undefined}
+      footer={total > pageSize ? <TablePagination page={page} totalPages={totalPages} totalItems={total} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={setPageSize} /> : undefined}
     >
       <TableHeader>
         <TableRow className="border-b border-border">

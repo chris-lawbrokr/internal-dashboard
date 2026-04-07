@@ -62,7 +62,7 @@ interface AccountPerformanceProps {
   lawFirmId: string;
 }
 
-const PAGE_SIZE = 6;
+const DEFAULT_pageSize = 6;
 
 export function AccountPerformance({ lawFirmId }: AccountPerformanceProps) {
   const { user, getAccessToken } = useAuth();
@@ -72,6 +72,7 @@ export function AccountPerformance({ lawFirmId }: AccountPerformanceProps) {
   const [comparison, setComparison] = useState<ComparisonChart | null>(null);
   const [funnels, setFunnels] = useState<FunnelsResponse | null>(null);
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(DEFAULT_pageSize);
 
   useEffect(() => {
     if (!user) return;
@@ -141,12 +142,12 @@ export function AccountPerformance({ lawFirmId }: AccountPerformanceProps) {
 
   const s = summary!;
   const mom = s.month_over_month;
-  const totalPages = funnels ? Math.ceil(funnels.data.length / PAGE_SIZE) : 0;
+  const totalPages = funnels ? Math.ceil(funnels.data.length / pageSize) : 0;
   const currentPage = Math.min(page, totalPages || 1);
   const paginatedFunnels = funnels
     ? funnels.data.slice(
-        (currentPage - 1) * PAGE_SIZE,
-        currentPage * PAGE_SIZE,
+        (currentPage - 1) * pageSize,
+        currentPage * pageSize,
       )
     : [];
 
@@ -185,13 +186,14 @@ export function AccountPerformance({ lawFirmId }: AccountPerformanceProps) {
         <Table
           title="Funnels"
           footer={
-            funnels && funnels.data.length > PAGE_SIZE ? (
+            funnels && funnels.data.length > pageSize ? (
               <TablePagination
                 page={currentPage}
                 totalPages={totalPages}
                 totalItems={funnels.data.length}
-                pageSize={PAGE_SIZE}
+                pageSize={pageSize}
                 onPageChange={setPage}
+                onPageSizeChange={setPageSize}
               />
             ) : undefined
           }

@@ -49,15 +49,17 @@ function healthToVariant(health: string): HealthStatus {
   }
 }
 
-const PAGE_SIZE = 10;
+const DEFAULT_pageSize = 10;
 
 type SortField = "visits" | "conversions" | "conversion_rate";
 type SortDir = "asc" | "desc";
 
 export function AccountsTable({
   accounts: externalAccounts,
+  defaultPageSize = DEFAULT_pageSize,
 }: {
   accounts?: Account[];
+  defaultPageSize?: number;
 }) {
   const { user, getAccessToken } = useAuth();
   const { dateQuery } = useDateRange();
@@ -66,6 +68,7 @@ export function AccountsTable({
   );
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(defaultPageSize);
   const [sortField, setSortField] = useState<SortField | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>("asc");
   const router = useRouter();
@@ -113,11 +116,11 @@ export function AccountsTable({
       })
     : filtered;
 
-  const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
+  const totalPages = Math.ceil(sorted.length / pageSize);
   const currentPage = Math.min(page, totalPages || 1);
   const paginated = sorted.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE,
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize,
   );
 
   const handleSort = (field: SortField) => {
@@ -172,8 +175,9 @@ export function AccountsTable({
             page={currentPage}
             totalPages={totalPages}
             totalItems={sorted.length}
-            pageSize={PAGE_SIZE}
+            pageSize={pageSize}
             onPageChange={setPage}
+            onPageSizeChange={setPageSize}
           />
         }
       >

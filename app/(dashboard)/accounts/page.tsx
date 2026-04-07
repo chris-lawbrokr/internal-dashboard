@@ -10,7 +10,7 @@ export default function AccountsPage() {
         <PageHeader title="Accounts" />
       </div>
       <div className="overflow-clip flex-1 flex flex-col">
-        <AccountsTable />
+        <AccountsTable defaultPageSize={20} />
       </div>
     </div>
   );

@@ -71,7 +71,7 @@ function formatDate(dateStr: string): string {
   });
 }
 
-const PAGE_SIZE = 5;
+const DEFAULT_pageSize = 5;
 
 interface AccountOverviewProps {
   lawFirmId: string;
@@ -87,6 +87,7 @@ export function AccountOverview({
   const [users, setUsers] = useState<AccountUser[] | null>(null);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(DEFAULT_pageSize);
   const [sortField, setSortField] = useState<"role" | null>(null);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
 
@@ -161,11 +162,11 @@ export function AccountOverview({
       })
     : filtered;
 
-  const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
+  const totalPages = Math.ceil(sorted.length / pageSize);
   const currentPage = Math.min(page, totalPages || 1);
   const paginated = sorted.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE,
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize,
   );
 
   const handleSort = (field: "role") => {
@@ -305,8 +306,9 @@ export function AccountOverview({
               page={currentPage}
               totalPages={totalPages}
               totalItems={sorted.length}
-              pageSize={PAGE_SIZE}
+              pageSize={pageSize}
               onPageChange={setPage}
+              onPageSizeChange={setPageSize}
             />
           }
         >

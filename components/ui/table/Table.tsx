@@ -187,6 +187,8 @@ interface TablePaginationProps {
   totalItems: number;
   pageSize: number;
   onPageChange: (page: number) => void;
+  onPageSizeChange?: (size: number) => void;
+  pageSizeOptions?: number[];
   info?: React.ReactNode;
 }
 
@@ -196,6 +198,8 @@ export function TablePagination({
   totalItems,
   pageSize,
   onPageChange,
+  onPageSizeChange,
+  pageSizeOptions = [5, 6, 10, 20, 25, 50, 100],
   info,
 }: TablePaginationProps) {
   const start = totalItems === 0 ? 0 : (page - 1) * pageSize + 1;
@@ -203,15 +207,37 @@ export function TablePagination({
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm">
-      {info ?? (
-        <span className="text-muted-foreground">
-          Showing{" "}
-          <span className="font-bold">
-            {start}-{end}
-          </span>{" "}
-          of <span className="font-bold">{totalItems}</span>
-        </span>
-      )}
+      <div className="flex items-center gap-4">
+        {info ?? (
+          <span className="text-muted-foreground">
+            Showing{" "}
+            <span className="font-bold">
+              {start}-{end}
+            </span>{" "}
+            of <span className="font-bold">{totalItems}</span>
+          </span>
+        )}
+        {onPageSizeChange && (
+          <div className="flex items-center gap-1.5 text-muted-foreground">
+            <label htmlFor="page-size-select">Rows</label>
+            <select
+              id="page-size-select"
+              value={pageSize}
+              onChange={(e) => {
+                onPageSizeChange(Number(e.target.value));
+                onPageChange(1);
+              }}
+              className="h-7 rounded-md border border-input bg-background px-1.5 text-sm cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {pageSizeOptions.map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+      </div>
       <div className="flex gap-2">
         <button
           type="button"

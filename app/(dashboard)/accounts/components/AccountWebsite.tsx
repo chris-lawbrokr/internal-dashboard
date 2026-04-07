@@ -44,7 +44,7 @@ interface AccountWebsiteProps {
   lawFirmId: string;
 }
 
-const PAGE_SIZE = 6;
+const DEFAULT_pageSize = 6;
 
 const linkStatusConfig: Record<string, { label: string; variant: BadgeVariant }> = {
   active: { label: "Active", variant: "success" },
@@ -61,6 +61,7 @@ export function AccountWebsite({ lawFirmId }: AccountWebsiteProps) {
   const [status, setStatus] = useState<WebsiteStatus | null>(null);
   const [links, setLinks] = useState<WebsiteLinksResponse | null>(null);
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(DEFAULT_pageSize);
 
   useEffect(() => {
     if (!user) return;
@@ -109,12 +110,12 @@ export function AccountWebsite({ lawFirmId }: AccountWebsiteProps) {
       </div>
     );
 
-  const totalPages = links ? Math.ceil(links.data.length / PAGE_SIZE) : 0;
+  const totalPages = links ? Math.ceil(links.data.length / pageSize) : 0;
   const currentPage = Math.min(page, totalPages || 1);
   const paginatedLinks = links
     ? links.data.slice(
-        (currentPage - 1) * PAGE_SIZE,
-        currentPage * PAGE_SIZE,
+        (currentPage - 1) * pageSize,
+        currentPage * pageSize,
       )
     : [];
 
@@ -213,13 +214,14 @@ export function AccountWebsite({ lawFirmId }: AccountWebsiteProps) {
       <Table
         title="Lawbrokr Links"
         footer={
-          links && links.data.length > PAGE_SIZE ? (
+          links && links.data.length > pageSize ? (
             <TablePagination
               page={currentPage}
               totalPages={totalPages}
               totalItems={links.data.length}
-              pageSize={PAGE_SIZE}
+              pageSize={pageSize}
               onPageChange={setPage}
+              onPageSizeChange={setPageSize}
             />
           ) : undefined
         }
