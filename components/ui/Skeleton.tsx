@@ -35,7 +35,7 @@ export function SkeletonRadialChart({ className }: { className?: string }) {
         <p className="text-2xl font-bold invisible">0%</p>
         <p className="text-xs invisible">↑ 0% vs last month</p>
       </div>
-      <div className="invisible" style={{ width: 140, height: 140 }} />
+      <div className="invisible w-[140px] h-[140px]" />
     </div>
   );
 }
@@ -46,7 +46,7 @@ export function SkeletonGauge() {
     <div className={cn(CARD, "p-5 flex flex-col items-center gap-1")}>
       <p className="text-sm self-start invisible">Health Label</p>
       <p className="text-xl font-semibold self-start invisible">Good</p>
-      <div className="invisible" style={{ width: 186, height: 93 }} />
+      <div className="invisible w-[186px] h-[93px]" />
       <p className="text-sm self-end invisible">View More ›</p>
     </div>
   );
