@@ -33,15 +33,25 @@ export default function AccountPage({
         if (!cancelled) setFirmName(data.name);
       })
       .catch(() => {});
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [user, getAccessToken, id]);
 
   return (
-    <div className="w-full h-full flex flex-col gap-4">
-      <PageHeader title={firmName ?? ""} back="/accounts" />
-      <Tabs tabs={accountTabs} activeTab={activeTab} onTabChange={setActiveTab} />
-      <div>
-        {activeTab === "overview" && <AccountOverview lawFirmId={id} onTabChange={setActiveTab} />}
+    <div className="w-full h-full flex flex-col">
+      <div className="sticky top-0 z-10 bg-surface flex flex-col gap-4 pb-4">
+        <PageHeader title={firmName ?? ""} back="/accounts" />
+        <Tabs
+          tabs={accountTabs}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
+      </div>
+      <div className="overflow-clip pb-1">
+        {activeTab === "overview" && (
+          <AccountOverview lawFirmId={id} onTabChange={setActiveTab} />
+        )}
         {activeTab === "performance" && <p>Performance content</p>}
         {activeTab === "website" && <p>Website content</p>}
         {activeTab === "usage" && <p>Usage content</p>}
