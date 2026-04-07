@@ -12,7 +12,12 @@ import { LeadsChart } from "@/app/components/LeadsChart";
 import type { LeadsChartData } from "@/app/components/LeadsChart";
 import { AccountsTable } from "@/app/components/AccountsTable";
 import type { Account, AccountsResponse } from "@/app/components/AccountsTable";
-import { SkeletonMetricCard, SkeletonChart, SkeletonRadialChart, SkeletonTable } from "@/components/ui/Skeleton";
+import {
+  SkeletonMetricCard,
+  SkeletonChart,
+  SkeletonRadialChart,
+  SkeletonTable,
+} from "@/components/ui/Skeleton";
 import { useSkeletonTransition } from "@/components/ui/SkeletonTransition";
 
 interface AnalyticsSummary {
@@ -68,50 +73,57 @@ export default function Home() {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="sticky top-0 z-10 bg-surface pt-16 min-[480px]:pt-4 @md:pt-6 pb-4">
+      <div className="sticky top-0 z-10 bg-surface ">
         <PageHeader title={`Welcome back, ${firstname}`} />
       </div>
-      {showSkeleton || !data || !accounts ? (
-        <div className={`overflow-clip flex-1 flex flex-col gap-4${fading ? " skeleton-fade-out" : ""}`}>
-          <div className="flex flex-col gap-4 @lg:flex-row">
-            <div className="flex flex-col gap-4 flex-1">
-              <SkeletonMetricCard className="h-full" />
-              <SkeletonMetricCard className="h-full" />
+
+      <div className="m-4 mt-0 overflow-y-scroll">
+        <div>
+          {showSkeleton || !data || !accounts ? (
+            <div
+              className={`overflow-clip flex-1 flex flex-col gap-4${fading ? " skeleton-fade-out" : ""}`}
+            >
+              <div className="flex flex-col gap-4 @lg:flex-row">
+                <div className="flex flex-col gap-4 flex-1">
+                  <SkeletonMetricCard className="h-full" />
+                  <SkeletonMetricCard className="h-full" />
+                </div>
+                <SkeletonChart className="flex-[2]" />
+                <SkeletonRadialChart className="flex-1" />
+              </div>
+              <SkeletonTable rows={10} />
             </div>
-            <SkeletonChart className="flex-[2]" />
-            <SkeletonRadialChart className="flex-1" />
-          </div>
-          <SkeletonTable rows={10} />
-        </div>
-      ) : (
-        <div className="overflow-clip flex-1 flex flex-col gap-4 skeleton-stagger">
-          <div className="flex flex-col gap-4 @lg:flex-row skeleton-stagger">
-            <div className="flex flex-col gap-4 flex-1">
-              <MetricCard
-                label="Total Visits"
-                value={data.summary.visits}
-                change={data.month_over_month.visits_change}
-                sparkline={data.series.visits}
-                className="h-full"
-              />
-              <MetricCard
-                label="Responses"
-                value={data.summary.conversions}
-                change={data.month_over_month.conversions_change}
-                sparkline={data.series.conversions}
-                className="h-full"
-              />
+          ) : (
+            <div className="overflow-clip flex-1 flex flex-col gap-4 skeleton-stagger">
+              <div className="flex flex-col gap-4 @lg:flex-row skeleton-stagger">
+                <div className="flex flex-col gap-4 flex-1">
+                  <MetricCard
+                    label="Total Visits"
+                    value={data.summary.visits}
+                    change={data.month_over_month.visits_change}
+                    sparkline={data.series.visits}
+                    className="h-full"
+                  />
+                  <MetricCard
+                    label="Responses"
+                    value={data.summary.conversions}
+                    change={data.month_over_month.conversions_change}
+                    sparkline={data.series.conversions}
+                    className="h-full"
+                  />
+                </div>
+                <LeadsChart data={chartData} className="flex-[2]" />
+                <ConversionRateChart
+                  value={data.summary.conversion_rate}
+                  change={data.month_over_month.conversion_rate_change}
+                  className="flex-1"
+                />
+              </div>
+              <AccountsTable accounts={accounts} />
             </div>
-            <LeadsChart data={chartData} className="flex-[2]" />
-            <ConversionRateChart
-              value={data.summary.conversion_rate}
-              change={data.month_over_month.conversion_rate_change}
-              className="flex-1"
-            />
-          </div>
-          <AccountsTable accounts={accounts} />
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

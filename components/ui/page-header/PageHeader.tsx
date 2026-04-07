@@ -26,11 +26,12 @@ export function PageHeader({
         flex
         flex-col
         gap-4
-        py-4
         justify-start
         lg:flex-row
         lg:items-start
         lg:justify-between
+        p-4
+        py-8
     "
     >
       <div

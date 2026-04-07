@@ -8,7 +8,6 @@ import { usePathname } from "next/navigation";
 import {
   Home,
   Users,
-  BarChart3,
   LogOut,
   Bell,
   Settings,
@@ -24,7 +23,7 @@ import { useAuth } from "@/lib/auth";
 const navLabels: Record<string, string> = {
   home: "Home",
   accounts: "Accounts",
-  analytics: "Analytics",
+
   logout: "Log out",
 };
 
@@ -42,13 +41,6 @@ interface NavItem {
 const navItems: NavItem[] = [
   { id: "home", labelKey: "home", href: "/", icon: Home },
   { id: "accounts", labelKey: "accounts", href: "/accounts", icon: Users },
-  {
-    id: "analytics",
-    labelKey: "analytics",
-    href: "/analytics",
-    icon: BarChart3,
-    disabled: true,
-  },
 ];
 
 const BARE_ROUTES = ["/login"];
@@ -65,7 +57,9 @@ export function Nav({ children }: { children: React.ReactNode }) {
 
   const isBare = BARE_ROUTES.some((r) => pathname.startsWith(r));
 
-  const displayName = [user?.first_name, user?.last_name].filter(Boolean).join(" ");
+  const displayName = [user?.first_name, user?.last_name]
+    .filter(Boolean)
+    .join(" ");
   const displayEmail = user?.email ?? "";
   const initials = displayName
     .split(" ")
@@ -412,7 +406,7 @@ export function Nav({ children }: { children: React.ReactNode }) {
         </div>
       </div>
 
-      <div className="flex-1 min-w-0 p-4 pt-16 min-[480px]:pt-4 @md:p-6 overflow-y-auto overflow-x-hidden @container flex flex-col gap-6 bg-surface">
+      <div className="flex-1 min-w-0 p-0 overflow-y-auto overflow-x-hidden @container flex flex-col gap-6 bg-surface">
         {children}
       </div>
     </div>
