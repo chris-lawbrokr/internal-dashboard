@@ -251,7 +251,7 @@ export function Nav({ children }: { children: React.ReactNode }) {
           <div
             className={`overflow-hidden transition-[max-height] duration-300 ease-in-out ${open ? "max-h-[400px]" : "max-h-0"}`}
           >
-            <nav className="flex flex-col gap-1 px-4 pb-4">
+            <nav className="flex flex-col gap-1 px-2 pb-2">
               <NavLinks pathname={pathname} size={18} onNavigate={toggle} />
             </nav>
             <div className="flex items-center justify-between border-t border-border px-4 py-3">
@@ -300,10 +300,11 @@ export function Nav({ children }: { children: React.ReactNode }) {
         </div>
       </div>
 
-      <div className="flex-1 min-w-0 overflow-y-auto overflow-x-hidden bg-surface">
-        <div className="px-4 pb-4 @md:px-6 @md:pb-6 @container flex flex-col gap-6 min-h-full flex">
+      <div className="flex-1 min-w-0 flex flex-col overflow-hidden bg-surface">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden px-4 @md:px-6 @container flex flex-col gap-6 min-h-0">
           {children}
         </div>
+        <div className="h-4 @md:h-6 shrink-0 bg-surface" />
       </div>
     </div>
   );
