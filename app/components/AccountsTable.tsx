@@ -21,7 +21,7 @@ import { useSkeletonTransition } from "@/components/ui/SkeletonTransition";
 
 type HealthStatus = "success" | "warning" | "error";
 
-interface Account {
+export interface Account {
   id: number;
   name: string;
   website: string;
@@ -34,7 +34,7 @@ interface Account {
   website_health: string;
 }
 
-interface AccountsResponse {
+export interface AccountsResponse {
   data: Account[];
 }
 
@@ -54,22 +54,24 @@ const PAGE_SIZE = 10;
 type SortField = "visits" | "conversions" | "conversion_rate";
 type SortDir = "asc" | "desc";
 
-export function AccountsTable() {
+export function AccountsTable({ accounts: externalAccounts }: { accounts?: Account[] }) {
   const { user, getAccessToken } = useAuth();
   const { dateQuery } = useDateRange();
-  const [accounts, setAccounts] = useState<Account[] | null>(null);
+  const [internalAccounts, setInternalAccounts] = useState<Account[] | null>(null);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [sortField, setSortField] = useState<SortField | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>("asc");
   const router = useRouter();
 
+  const managed = externalAccounts === undefined;
+
   useEffect(() => {
-    if (!user) return;
+    if (!managed || !user) return;
     let cancelled = false;
     api<AccountsResponse>(`admin/accounts?${dateQuery}`, getAccessToken)
       .then((data) => {
-        if (!cancelled) setAccounts(data.data);
+        if (!cancelled) setInternalAccounts(data.data);
       })
       .catch((err: unknown) => {
         console.error("Failed to fetch accounts:", err);
@@ -77,7 +79,9 @@ export function AccountsTable() {
     return () => {
       cancelled = true;
     };
-  }, [user, getAccessToken, dateQuery]);
+  }, [managed, user, getAccessToken, dateQuery]);
+
+  const accounts = externalAccounts ?? internalAccounts;
 
   const { showSkeleton, fading } = useSkeletonTransition(accounts === null);
 
