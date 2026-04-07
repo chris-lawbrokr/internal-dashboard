@@ -48,7 +48,7 @@ export default function AccountPage({
           onTabChange={setActiveTab}
         />
       </div>
-      <div className="overflow-clip pb-1">
+      <div className="overflow-clip flex-1 flex flex-col pb-1">
         {activeTab === "overview" && (
           <AccountOverview lawFirmId={id} onTabChange={setActiveTab} />
         )}

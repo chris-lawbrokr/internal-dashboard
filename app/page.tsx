@@ -62,7 +62,7 @@ export default function Home() {
       <div className="sticky top-0 z-10 bg-surface pt-16 min-[480px]:pt-4 @md:pt-6 pb-4">
         <PageHeader title={`Welcome back, ${firstname}`} />
       </div>
-      <div className="overflow-clip flex flex-col gap-4">
+      <div className="overflow-clip flex-1 flex flex-col gap-4">
         <div className="flex flex-col gap-4 @lg:flex-row">
           {/* consolidate request for all cards */}
           <div className="flex flex-col gap-4 flex-1">
