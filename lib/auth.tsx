@@ -299,6 +299,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  // When the tab regains visibility, check if the token has expired
+  // while the tab was hidden (browsers throttle timers in background tabs)
+  // and trigger a refresh if needed.
+  useEffect(() => {
+    function handleVisibilityChange() {
+      if (document.visibilityState === "visible" && getCookie("session")) {
+        const token = accessTokenRef.current;
+        if (!token) {
+          doRefreshRef.current();
+          return;
+        }
+        try {
+          const expiresIn = getJwtExpiry(token) * 1000 - Date.now();
+          if (expiresIn < REFRESH_BUFFER_MS) {
+            doRefreshRef.current();
+          }
+        } catch {
+          doRefreshRef.current();
+        }
+      }
+    }
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, []);
+
   // Login
   // Sends credentials to the server.
   // On success server sets httpOnly refresh-token cookie

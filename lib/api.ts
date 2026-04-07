@@ -5,9 +5,21 @@ const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.lawbrokr.ca/v1/legacy";
 
 let refreshHandler: (() => Promise<string | null>) | null = null;
+let inflightRefresh: Promise<string | null> | null = null;
+
 // AuthProvider on mount - 401 response triggers refresh attempt before giving up
 export function setRefreshHandler(fn: () => Promise<string | null>) {
   refreshHandler = fn;
+}
+
+// Deduplicate concurrent refresh calls so only one hits the server at a time
+function deduplicatedRefresh(): Promise<string | null> {
+  if (!refreshHandler) return Promise.resolve(null);
+  if (inflightRefresh) return inflightRefresh;
+  inflightRefresh = refreshHandler().finally(() => {
+    inflightRefresh = null;
+  });
+  return inflightRefresh;
 }
 
 // wrapper around native fetch() API. Used for 401-retry
@@ -69,33 +81,21 @@ export async function api<T>(
   try {
     res = await doFetch(path, token, options);
   } catch {
-    console.log(`[api] ${method} /${path} → network error`);
-    window.location.href = "/login";
-    throw new Error("Network error — redirecting to login");
+    throw new Error(`Network error on ${method} /${path}`);
   }
   console.log(`[api] ${method} /${path} → ${res.status}`);
 
   // 401 handling
-  // catch 401 and attempt silent token refresh
-  // TODO: remove debug logs after verifying auth flows
+  // catch 401 and attempt silent token refresh via deduplicated handler
   if (res.status === 401) {
     if (!refreshHandler) {
-      console.log(
-        `[api] ${method} /${path} → ${res.status} (no refresh handler, redirecting)`,
-      );
-      window.location.href = "/login";
-      throw new Error("Session expired");
+      throw new Error("Session expired — no refresh handler");
     }
-    console.log(`[api] ${method} /${path} → ${res.status}, refreshing token…`);
-    const newToken = await refreshHandler();
+    const newToken = await deduplicatedRefresh();
     if (!newToken) {
-      console.log(`[api] ${method} /${path} → refresh failed, redirecting`);
-      window.location.href = "/login";
-      throw new Error("Session expired");
+      throw new Error("Session expired — refresh failed");
     }
-    console.log(`[api] ${method} /${path} → retrying with new token…`);
     res = await doFetch(path, newToken, options);
-    console.log(`[api] ${method} /${path} (retry) → ${res.status}`);
   }
 
   // Error handling
