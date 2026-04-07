@@ -199,7 +199,7 @@ export function TablePagination({
   pageSize,
   onPageChange,
   onPageSizeChange,
-  pageSizeOptions = [5, 6, 10, 20, 25, 50, 100],
+  pageSizeOptions = [5, 10, 20, 25, 50, 100],
   info,
 }: TablePaginationProps) {
   const start = totalItems === 0 ? 0 : (page - 1) * pageSize + 1;

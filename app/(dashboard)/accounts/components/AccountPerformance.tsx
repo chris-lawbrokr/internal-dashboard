@@ -67,7 +67,7 @@ interface AccountPerformanceProps {
   lawFirmId: string;
 }
 
-const DEFAULT_pageSize = 6;
+const DEFAULT_pageSize = 5;
 
 export function AccountPerformance({ lawFirmId }: AccountPerformanceProps) {
   const { user, getAccessToken } = useAuth();

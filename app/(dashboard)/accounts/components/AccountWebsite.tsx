@@ -44,7 +44,7 @@ interface AccountWebsiteProps {
   lawFirmId: string;
 }
 
-const DEFAULT_pageSize = 6;
+const DEFAULT_pageSize = 5;
 
 const linkStatusConfig: Record<string, { label: string; variant: BadgeVariant }> = {
   active: { label: "Active", variant: "success" },
