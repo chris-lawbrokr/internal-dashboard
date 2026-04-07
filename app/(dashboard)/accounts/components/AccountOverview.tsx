@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
 import { SkeletonGauge, SkeletonTable, SkeletonChart } from "@/components/ui/Skeleton";
+import { useSkeletonTransition } from "@/components/ui/SkeletonTransition";
 import { Badge } from "@/components/ui/badge/Badge";
 import {
   Table,
@@ -117,9 +118,11 @@ export function AccountOverview({
     };
   }, [user, getAccessToken, lawFirmId]);
 
-  if (!account || !users)
+  const { showSkeleton, fading } = useSkeletonTransition(!account || !users);
+
+  if (showSkeleton)
     return (
-      <div className="flex flex-col gap-4">
+      <div className={`flex flex-col gap-4${fading ? " skeleton-fade-out" : ""}`}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <SkeletonGauge />
           <SkeletonGauge />
@@ -136,8 +139,12 @@ export function AccountOverview({
       </div>
     );
 
+  // Past this point, data is guaranteed loaded
+  const acct = account!;
+  const usrs = users!;
+
   // Filter users
-  const filtered = users.filter((u) => {
+  const filtered = usrs.filter((u) => {
     const q = search.toLowerCase();
     return (
       u.name.toLowerCase().includes(q) ||
@@ -171,31 +178,31 @@ export function AccountOverview({
   };
 
   const detailItems: { label: string; value: string }[] = [
-    { label: "Company Name", value: account.name },
+    { label: "Company Name", value: acct.name },
     {
       label: "Company Size",
       value:
-        account.employees != null ? `${account.employees} employees` : "N/A",
+        acct.employees != null ? `${acct.employees} employees` : "N/A",
     },
-    { label: "Location", value: account.location || "N/A" },
-    { label: "Marketing Agency", value: account.marketing_agency || "N/A" },
-    { label: "Website", value: account.website || "N/A" },
+    { label: "Location", value: acct.location || "N/A" },
+    { label: "Marketing Agency", value: acct.marketing_agency || "N/A" },
+    { label: "Website", value: acct.website || "N/A" },
     {
       label: "Marketing Spend",
       value:
-        account.marketing_spend != null
-          ? `$${account.marketing_spend.toLocaleString()}`
+        acct.marketing_spend != null
+          ? `$${acct.marketing_spend.toLocaleString()}`
           : "N/A",
     },
-    { label: "Activation Date", value: formatDate(account.activation_date) },
+    { label: "Activation Date", value: formatDate(acct.activation_date) },
     {
       label: "Status",
-      value: account.status === "active" ? "Active" : "Inactive",
+      value: acct.status === "active" ? "Active" : "Inactive",
     },
-    { label: "Username", value: account.username },
+    { label: "Username", value: acct.username },
     {
       label: "Integrations",
-      value: account.integrations?.length ? "Active" : "N/A",
+      value: acct.integrations?.length ? "Active" : "N/A",
     },
   ];
 
@@ -206,37 +213,37 @@ export function AccountOverview({
   }[] = [
     {
       title: "Practice Areas",
-      items: account.practice_areas,
+      items: acct.practice_areas,
       variant: "neutral",
     },
-    { title: "Integrations", items: account.integrations, variant: "error" },
-    { title: "Tech Stack", items: account.tech_stack, variant: "info" },
-    { title: "Lawbrokr Features", items: account.features, variant: "error" },
+    { title: "Integrations", items: acct.integrations, variant: "error" },
+    { title: "Tech Stack", items: acct.tech_stack, variant: "info" },
+    { title: "Lawbrokr Features", items: acct.features, variant: "error" },
   ];
 
   return (
     <div className="flex flex-col gap-4">
       {/* Health Gauges */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 skeleton-stagger">
         <HealthGauge
           title="Onboarding Health"
-          health={account.onboarding_health}
+          health={acct.onboarding_health}
           onViewMore={() => onTabChange("usage")}
         />
         <HealthGauge
           title="Performance Health"
-          health={account.performance_health}
+          health={acct.performance_health}
           onViewMore={() => onTabChange("performance")}
         />
         <HealthGauge
           title="Website Health"
-          health={account.website_health}
+          health={acct.website_health}
           onViewMore={() => onTabChange("website")}
         />
       </div>
 
       {/* Account Details + Users Table */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 skeleton-stagger">
         {/* Account Details */}
         <div className="rounded-xl bg-card text-card-foreground shadow-[0px_2px_4px_0px_rgba(59,37,89,0.1),0px_4px_6px_0px_rgba(59,37,89,0.05)] h-full">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 h-full px-6">
@@ -344,7 +351,7 @@ export function AccountOverview({
       </div>
 
       {/* Badge Sections */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 skeleton-stagger">
         {badgeSections.map((section) => (
           <div
             key={section.title}

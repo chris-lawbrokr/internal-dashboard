@@ -17,6 +17,7 @@ import {
 import { Search, X, ArrowUpDown } from "lucide-react";
 import { Badge, StatusIcon } from "@/components/ui/badge/Badge";
 import { SkeletonTable } from "@/components/ui/Skeleton";
+import { useSkeletonTransition } from "@/components/ui/SkeletonTransition";
 
 type HealthStatus = "success" | "warning" | "error";
 
@@ -78,9 +79,17 @@ export function AccountsTable() {
     };
   }, [user, getAccessToken, dateQuery]);
 
-  if (accounts === null) return <SkeletonTable rows={10} />;
+  const { showSkeleton, fading } = useSkeletonTransition(accounts === null);
 
-  const filtered = accounts.filter((a) => {
+  if (showSkeleton)
+    return (
+      <div className={fading ? "skeleton-fade-out" : ""}>
+        <SkeletonTable rows={10} />
+      </div>
+    );
+
+  const accts = accounts!;
+  const filtered = accts.filter((a) => {
     const q = search.toLowerCase();
     return (
       a.name.toLowerCase().includes(q) || a.website.toLowerCase().includes(q)
@@ -111,7 +120,7 @@ export function AccountsTable() {
   };
 
   return (
-    <div className="pb-1">
+    <div className="pb-1 skeleton-stagger">
       <Table
         toolbar={
           <div className="flex flex-col gap-2 @md/table:flex-row @md/table:items-center justify-between">

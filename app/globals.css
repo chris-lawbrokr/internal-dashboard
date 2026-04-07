@@ -53,7 +53,7 @@
   --color-brand-dark: #250d53;
   --color-surface: #fbfbfb;
   --color-border-light: #e8e8e8;
-  --color-skeleton: #e4e4e7;
+  --color-skeleton: #f3f4f6;
   --color-border-purple: #a18dbe;
 
   /* Status: Success / Active */
@@ -118,4 +118,49 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Skeleton shimmer — a single wave that reverberates across the whole page */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 37%, #f3f4f6 50%);
+  background-size: 400% 100%;
+  animation: skeleton-shimmer 2.4s ease-in-out infinite;
+}
+
+/* Fade-out for skeleton exit */
+.skeleton-fade-out {
+  animation: skeleton-out 0.35s ease-in forwards;
+}
+
+@keyframes skeleton-out {
+  to { opacity: 0; }
+}
+
+/* Staggered fade-in for populated content — applied per card */
+.skeleton-stagger > * {
+  opacity: 0;
+  animation: skeleton-in 0.4s ease-out forwards;
+}
+.skeleton-stagger > *:nth-child(1)  { animation-delay: 0.00s; }
+.skeleton-stagger > *:nth-child(2)  { animation-delay: 0.08s; }
+.skeleton-stagger > *:nth-child(3)  { animation-delay: 0.16s; }
+.skeleton-stagger > *:nth-child(4)  { animation-delay: 0.24s; }
+.skeleton-stagger > *:nth-child(5)  { animation-delay: 0.32s; }
+.skeleton-stagger > *:nth-child(6)  { animation-delay: 0.40s; }
+.skeleton-stagger > *:nth-child(7)  { animation-delay: 0.48s; }
+.skeleton-stagger > *:nth-child(8)  { animation-delay: 0.56s; }
+.skeleton-stagger > *:nth-child(n+9) { animation-delay: 0.64s; }
+
+@keyframes skeleton-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }

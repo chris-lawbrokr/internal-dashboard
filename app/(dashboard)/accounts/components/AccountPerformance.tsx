@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
 import { useDateRange } from "@/lib/useDateRange";
 import { SkeletonMetricCard, SkeletonChart, SkeletonRadialChart, SkeletonTable } from "@/components/ui/Skeleton";
+import { useSkeletonTransition } from "@/components/ui/SkeletonTransition";
 import { MetricCard } from "@/app/components/MetricCard";
 import { LeadsChart } from "@/app/components/LeadsChart";
 import type { LeadsChartData } from "@/app/components/LeadsChart";
@@ -118,9 +119,11 @@ export function AccountPerformance({ lawFirmId }: AccountPerformanceProps) {
     };
   }, [user, getAccessToken, lawFirmId, dateQuery]);
 
-  if (!summary)
+  const { showSkeleton, fading } = useSkeletonTransition(!summary);
+
+  if (showSkeleton)
     return (
-      <div className="flex flex-col gap-4">
+      <div className={`flex flex-col gap-4${fading ? " skeleton-fade-out" : ""}`}>
         <div className="flex flex-col gap-4 @lg:flex-row">
           <div className="flex flex-col gap-4 flex-1">
             <SkeletonMetricCard className="h-full" />
@@ -136,7 +139,8 @@ export function AccountPerformance({ lawFirmId }: AccountPerformanceProps) {
       </div>
     );
 
-  const mom = summary.month_over_month;
+  const s = summary!;
+  const mom = s.month_over_month;
   const totalPages = funnels ? Math.ceil(funnels.data.length / PAGE_SIZE) : 0;
   const currentPage = Math.min(page, totalPages || 1);
   const paginatedFunnels = funnels
@@ -149,33 +153,33 @@ export function AccountPerformance({ lawFirmId }: AccountPerformanceProps) {
   return (
     <div className="flex flex-col gap-4">
       {/* Top row: Metrics + Chart + Conversion Rate */}
-      <div className="flex flex-col gap-4 @lg:flex-row">
+      <div className="flex flex-col gap-4 @lg:flex-row skeleton-stagger">
         <div className="flex flex-col gap-4 flex-1">
           <MetricCard
             label="Total Visits"
-            value={summary.summary.visits}
+            value={s.summary.visits}
             change={mom.visits_change}
-            sparkline={summary.series.visits}
+            sparkline={s.series.visits}
             className="h-full"
           />
           <MetricCard
             label="Total Responses"
-            value={summary.summary.conversions}
+            value={s.summary.conversions}
             change={mom.conversions_change}
-            sparkline={summary.series.conversions}
+            sparkline={s.series.conversions}
             className="h-full"
           />
         </div>
         <LeadsChart data={chartData} className="flex-[2]" />
         <ConversionRateChart
-          value={summary.summary.conversion_rate}
+          value={s.summary.conversion_rate}
           change={mom.conversion_rate_change}
           className="flex-1"
         />
       </div>
 
       {/* Bottom row: Comparison Chart + Funnels Table */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 skeleton-stagger">
         <ConversionComparisonChart data={comparison} />
 
         <Table

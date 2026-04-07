@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
 import { useDateRange } from "@/lib/useDateRange";
 import { SkeletonChecklist, SkeletonStatusCard, SkeletonValueCard, SkeletonTable } from "@/components/ui/Skeleton";
+import { useSkeletonTransition } from "@/components/ui/SkeletonTransition";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge/Badge";
 import { StatusIcon } from "@/components/ui/badge/Badge";
@@ -222,9 +223,11 @@ export function AccountUsage({ lawFirmId }: AccountUsageProps) {
     return () => { cancelled = true; };
   }, [user, getAccessToken, lawFirmId, dateQuery]);
 
-  if (!usage)
+  const { showSkeleton, fading } = useSkeletonTransition(!usage);
+
+  if (showSkeleton)
     return (
-      <div className="flex flex-col gap-6">
+      <div className={`flex flex-col gap-6${fading ? " skeleton-fade-out" : ""}`}>
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-4">
           <SkeletonChecklist />
           <div className="grid grid-cols-2 gap-4">
@@ -242,18 +245,19 @@ export function AccountUsage({ lawFirmId }: AccountUsageProps) {
       </div>
     );
 
+  const u = usage!;
   const checklist = [
-    { label: "Account status is active", ok: usage.active },
-    { label: "A funnel with a workflow is live", ok: usage.funnel_live },
-    { label: "At least one Lawbrokr URL is live on website", ok: usage.lawbrokr_url_live },
-    { label: "At least one integration is connected", ok: usage.integrations_active > 0 },
-    { label: "At least one team member added", ok: usage.users_added > 0 },
+    { label: "Account status is active", ok: u.active },
+    { label: "A funnel with a workflow is live", ok: u.funnel_live },
+    { label: "At least one Lawbrokr URL is live on website", ok: u.lawbrokr_url_live },
+    { label: "At least one integration is connected", ok: u.integrations_active > 0 },
+    { label: "At least one team member added", ok: u.users_added > 0 },
   ];
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 skeleton-stagger">
       {/* Top section */}
-      <TopSection usage={usage} checklist={checklist} />
+      <TopSection usage={u} checklist={checklist} />
 
       {/* Account Users */}
       <UsersTable users={users} />

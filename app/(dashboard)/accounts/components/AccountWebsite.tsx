@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
 import { SkeletonStatusCard, SkeletonValueCard, SkeletonTable } from "@/components/ui/Skeleton";
+import { useSkeletonTransition } from "@/components/ui/SkeletonTransition";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge/Badge";
 import type { BadgeVariant } from "@/components/ui/badge/Badge";
@@ -88,9 +89,11 @@ export function AccountWebsite({ lawFirmId }: AccountWebsiteProps) {
     };
   }, [user, getAccessToken, lawFirmId]);
 
-  if (!status)
+  const { showSkeleton, fading } = useSkeletonTransition(!status);
+
+  if (showSkeleton)
     return (
-      <div className="flex flex-col gap-4">
+      <div className={`flex flex-col gap-4${fading ? " skeleton-fade-out" : ""}`}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <SkeletonStatusCard />
           <SkeletonStatusCard />
@@ -115,47 +118,48 @@ export function AccountWebsite({ lawFirmId }: AccountWebsiteProps) {
       )
     : [];
 
-  const isPositive = status.live_links_change >= 0;
+  const s = status!;
+  const isPositive = s.live_links_change >= 0;
 
   return (
     <div className="flex flex-col gap-4">
       {/* Status cards - top row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 skeleton-stagger">
         <Card className="p-4 flex flex-col gap-2">
           <p className="text-sm text-muted-foreground">Website Status</p>
           <Badge
-            variant={status.status === "live" ? "success" : "error"}
+            variant={s.status === "live" ? "success" : "error"}
             dot
             className="px-2 py-1 text-sm w-fit capitalize"
           >
-            {status.status === "live" ? "Live" : "Down"}
+            {s.status === "live" ? "Live" : "Down"}
           </Badge>
         </Card>
         <Card className="p-4 flex flex-col gap-2">
           <p className="text-sm text-muted-foreground">Source Attribution</p>
           <Badge
-            variant={status.source_attribution === "enabled" ? "success" : "error"}
+            variant={s.source_attribution === "enabled" ? "success" : "error"}
             dot
             className="px-2 py-1 text-sm w-fit capitalize"
           >
-            {status.source_attribution === "enabled" ? "Enabled" : "Disabled"}
+            {s.source_attribution === "enabled" ? "Enabled" : "Disabled"}
           </Badge>
         </Card>
         <Card className="p-4 flex flex-col gap-2">
           <p className="text-sm text-muted-foreground">Lawbrokr Link Status</p>
           <Badge
-            variant={status.link_status === "up" ? "success" : "error"}
+            variant={s.link_status === "up" ? "success" : "error"}
             dot
             className="px-2 py-1 text-sm w-fit capitalize"
           >
-            {status.link_status === "up" ? "Up" : "Down"}
+            {s.link_status === "up" ? "Up" : "Down"}
           </Badge>
         </Card>
         <Card className="p-4 flex flex-col gap-2">
           <p className="text-sm text-muted-foreground">Active Integrations</p>
           <div className="flex flex-wrap gap-1.5">
-            {status.integrations?.length ? (
-              status.integrations.map((name) => (
+            {s.integrations?.length ? (
+              s.integrations.map((name) => (
                 <Badge
                   key={name}
                   variant="neutral"
@@ -172,24 +176,24 @@ export function AccountWebsite({ lawFirmId }: AccountWebsiteProps) {
       </div>
 
       {/* Status cards - bottom row */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 skeleton-stagger">
         <Card className="p-4 flex flex-col gap-2">
           <p className="text-sm text-muted-foreground">SSL Status</p>
           <Badge
-            variant={status.ssl_status === "enabled" ? "success" : "error"}
+            variant={s.ssl_status === "enabled" ? "success" : "error"}
             dot
             className="px-2 py-1 text-sm w-fit capitalize"
           >
-            {status.ssl_status === "enabled" ? "Enabled" : "Disabled"}
+            {s.ssl_status === "enabled" ? "Enabled" : "Disabled"}
           </Badge>
         </Card>
         <Card className="p-4 flex flex-col gap-1">
           <p className="text-sm text-muted-foreground">Website Load Time</p>
-          <p className="text-2xl font-bold">{status.load_time} seconds</p>
+          <p className="text-2xl font-bold">{s.load_time} seconds</p>
         </Card>
         <Card className="p-4 flex flex-col gap-1">
           <p className="text-sm text-muted-foreground">Live Lawbrokr Links</p>
-          <p className="text-2xl font-bold">{status.live_links}</p>
+          <p className="text-2xl font-bold">{s.live_links}</p>
           <p className="text-xs text-muted-foreground">
             <span
               className={
@@ -198,7 +202,7 @@ export function AccountWebsite({ lawFirmId }: AccountWebsiteProps) {
                   : "text-status-error-border"
               }
             >
-              {isPositive ? "↑" : "↓"} {Math.abs(Math.round(status.live_links_change))}%
+              {isPositive ? "↑" : "↓"} {Math.abs(Math.round(s.live_links_change))}%
             </span>{" "}
             vs last month
           </p>
