@@ -19,7 +19,6 @@ export function PageHeader({
 }: PageHeaderProps) {
   const router = useRouter();
   const { setDateRange } = useDateRange();
-
   return (
     <div
       className="
