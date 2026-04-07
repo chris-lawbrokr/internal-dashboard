@@ -1,9 +1,12 @@
 "use client";
 
-import { use } from "react";
+import { use, useState, useEffect } from "react";
+import { useAuth } from "@/lib/auth";
+import { api } from "@/lib/api";
 import { PageHeader } from "@/components/ui/page-header/PageHeader";
 import { Tabs, useTabSearchParam } from "@/components/ui/tabs/Tabs";
 import type { Tab } from "@/components/ui/tabs/Tabs";
+import { AccountOverview } from "../components/AccountOverview";
 
 const accountTabs: Tab[] = [
   { id: "overview", label: "Overview" },
@@ -18,14 +21,27 @@ export default function AccountPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
+  const { user, getAccessToken } = useAuth();
   const [activeTab, setActiveTab] = useTabSearchParam(accountTabs);
+  const [firmName, setFirmName] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+    api<{ name: string }>(`admin/account?law_firm_id=${id}`, getAccessToken)
+      .then((data) => {
+        if (!cancelled) setFirmName(data.name);
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [user, getAccessToken, id]);
 
   return (
     <div className="w-full h-full flex flex-col gap-4">
-      <PageHeader title={`Account ${id}`} back="/accounts" />
+      <PageHeader title={firmName ?? ""} back="/accounts" />
       <Tabs tabs={accountTabs} activeTab={activeTab} onTabChange={setActiveTab} />
       <div>
-        {activeTab === "overview" && <p>Overview content</p>}
+        {activeTab === "overview" && <AccountOverview lawFirmId={id} onTabChange={setActiveTab} />}
         {activeTab === "performance" && <p>Performance content</p>}
         {activeTab === "website" && <p>Website content</p>}
         {activeTab === "usage" && <p>Usage content</p>}
