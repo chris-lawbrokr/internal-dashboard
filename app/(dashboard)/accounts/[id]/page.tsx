@@ -7,6 +7,9 @@ import { PageHeader } from "@/components/ui/page-header/PageHeader";
 import { Tabs, useTabSearchParam } from "@/components/ui/tabs/Tabs";
 import type { Tab } from "@/components/ui/tabs/Tabs";
 import { AccountOverview } from "../components/AccountOverview";
+import { AccountPerformance } from "../components/AccountPerformance";
+import { AccountWebsite } from "../components/AccountWebsite";
+import { AccountUsage } from "../components/AccountUsage";
 
 const accountTabs: Tab[] = [
   { id: "overview", label: "Overview" },
@@ -52,9 +55,11 @@ export default function AccountPage({
         {activeTab === "overview" && (
           <AccountOverview lawFirmId={id} onTabChange={setActiveTab} />
         )}
-        {activeTab === "performance" && <p>Performance content</p>}
-        {activeTab === "website" && <p>Website content</p>}
-        {activeTab === "usage" && <p>Usage content</p>}
+        {activeTab === "performance" && (
+          <AccountPerformance lawFirmId={id} />
+        )}
+        {activeTab === "website" && <AccountWebsite lawFirmId={id} />}
+        {activeTab === "usage" && <AccountUsage lawFirmId={id} />}
       </div>
     </div>
   );

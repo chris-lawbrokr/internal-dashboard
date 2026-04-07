@@ -125,8 +125,6 @@ https://dev.lawbrokr.ca:3000
 ---
 
 TODO
-date picker use localstorage instead of url params
-
 next.js best practive for degmenting url accounts - url params
 
 ---
@@ -142,3 +140,5 @@ add a check to trigger refresh when closing tab then opening page agan
 ---
 
 add time filter to tables
+
+--
