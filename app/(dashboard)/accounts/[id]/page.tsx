@@ -40,7 +40,7 @@ export default function AccountPage({
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="sticky top-0 z-10 bg-surface flex flex-col gap-4 pb-4">
+      <div className="sticky top-0 z-10 bg-surface pt-16 min-[480px]:pt-4 @md:pt-6 flex flex-col gap-4 pb-4">
         <PageHeader title={firmName ?? ""} back="/accounts" />
         <Tabs
           tabs={accountTabs}

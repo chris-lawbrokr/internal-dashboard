@@ -111,147 +111,151 @@ export function AccountsTable() {
   };
 
   return (
-    <Table
-      toolbar={
-        <div className="flex flex-col gap-2 @md/table:flex-row @md/table:items-center justify-between">
-          <div className="relative">
-            <Search
-              size={16}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-            />
-            <input
-              type="text"
-              aria-label="Search accounts"
-              placeholder="Search accounts..."
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
-              className="h-9 w-full @md/table:w-56 rounded-md border border-input pl-9 pr-8 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            />
-            {search && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSearch("");
+    <div className="pb-1">
+      <Table
+        toolbar={
+          <div className="flex flex-col gap-2 @md/table:flex-row @md/table:items-center justify-between">
+            <div className="relative">
+              <Search
+                size={16}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+              />
+              <input
+                type="text"
+                aria-label="Search accounts"
+                placeholder="Search accounts..."
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
                   setPage(1);
                 }}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
-                aria-label="Clear search"
-              >
-                <X size={14} />
-              </button>
-            )}
+                className="h-9 w-full @md/table:w-56 rounded-md border border-input pl-9 pr-8 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              />
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearch("");
+                    setPage(1);
+                  }}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
+                  aria-label="Clear search"
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-      }
-      footer={
-        <TablePagination
-          page={currentPage}
-          totalPages={totalPages}
-          totalItems={sorted.length}
-          pageSize={PAGE_SIZE}
-          onPageChange={setPage}
-        />
-      }
-    >
-      <TableHeader>
-        <TableRow className="border-b border-border">
-          <TableHead>Account Name</TableHead>
-          <TableHead>Website</TableHead>
-          <TableHead>
-            <button
-              type="button"
-              className="flex items-center gap-1 cursor-pointer"
-              onClick={() => {
-                handleSort("visits");
-              }}
-            >
-              Visits
-              <ArrowUpDown size={14} />
-            </button>
-          </TableHead>
-          <TableHead>
-            <button
-              type="button"
-              className="flex items-center gap-1 cursor-pointer"
-              onClick={() => {
-                handleSort("conversions");
-              }}
-            >
-              Responses
-              <ArrowUpDown size={14} />
-            </button>
-          </TableHead>
-          <TableHead>
-            <button
-              type="button"
-              className="flex items-center gap-1 cursor-pointer"
-              onClick={() => {
-                handleSort("conversion_rate");
-              }}
-            >
-              Conv. Rate
-              <ArrowUpDown size={14} />
-            </button>
-          </TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead className="text-center">Onboarding</TableHead>
-          <TableHead className="text-center">Performance</TableHead>
-          <TableHead className="text-center">Website</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {paginated.map((account, i) => (
-          <TableRow
-            key={`${account.name}-${String(i)}`}
-            className="border-b border-background cursor-pointer"
-            onClick={() => {
-              router.push(`/accounts/${String(account.id)}`);
-            }}
-          >
-            <TableCell className="font-medium">{account.name}</TableCell>
-            <TableCell className="font-medium">{account.website}</TableCell>
-            <TableCell className="font-medium">
-              {account.visits.toLocaleString()}
-            </TableCell>
-            <TableCell className="font-medium">
-              {account.conversions.toLocaleString()}
-            </TableCell>
-            <TableCell className="font-medium">
-              {Math.round(account.conversion_rate)}%
-            </TableCell>
-            <TableCell>
-              <Badge
-                variant={account.status === "active" ? "success" : "error"}
-                className="px-2 py-1 text-sm"
+        }
+        footer={
+          <TablePagination
+            page={currentPage}
+            totalPages={totalPages}
+            totalItems={sorted.length}
+            pageSize={PAGE_SIZE}
+            onPageChange={setPage}
+          />
+        }
+      >
+        <TableHeader>
+          <TableRow className="border-b border-border">
+            <TableHead>Account Name</TableHead>
+            <TableHead>Website</TableHead>
+            <TableHead>
+              <button
+                type="button"
+                className="flex items-center gap-1 cursor-pointer"
+                onClick={() => {
+                  handleSort("visits");
+                }}
               >
-                {account.status === "active" ? "Active" : "Inactive"}
-              </Badge>
-            </TableCell>
-            <TableCell className="text-center">
-              <div className="flex justify-center">
-                <StatusIcon
-                  variant={healthToVariant(account.onboarding_health)}
-                />
-              </div>
-            </TableCell>
-            <TableCell className="text-center">
-              <div className="flex justify-center">
-                <StatusIcon
-                  variant={healthToVariant(account.performance_health)}
-                />
-              </div>
-            </TableCell>
-            <TableCell className="text-center">
-              <div className="flex justify-center">
-                <StatusIcon variant={healthToVariant(account.website_health)} />
-              </div>
-            </TableCell>
+                Visits
+                <ArrowUpDown size={14} />
+              </button>
+            </TableHead>
+            <TableHead>
+              <button
+                type="button"
+                className="flex items-center gap-1 cursor-pointer"
+                onClick={() => {
+                  handleSort("conversions");
+                }}
+              >
+                Responses
+                <ArrowUpDown size={14} />
+              </button>
+            </TableHead>
+            <TableHead>
+              <button
+                type="button"
+                className="flex items-center gap-1 cursor-pointer"
+                onClick={() => {
+                  handleSort("conversion_rate");
+                }}
+              >
+                Conv. Rate
+                <ArrowUpDown size={14} />
+              </button>
+            </TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead className="text-center">Onboarding</TableHead>
+            <TableHead className="text-center">Performance</TableHead>
+            <TableHead className="text-center">Website</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {paginated.map((account, i) => (
+            <TableRow
+              key={`${account.name}-${String(i)}`}
+              className="border-b border-background cursor-pointer"
+              onClick={() => {
+                router.push(`/accounts/${String(account.id)}`);
+              }}
+            >
+              <TableCell className="font-medium">{account.name}</TableCell>
+              <TableCell className="font-medium">{account.website}</TableCell>
+              <TableCell className="font-medium">
+                {account.visits.toLocaleString()}
+              </TableCell>
+              <TableCell className="font-medium">
+                {account.conversions.toLocaleString()}
+              </TableCell>
+              <TableCell className="font-medium">
+                {Math.round(account.conversion_rate)}%
+              </TableCell>
+              <TableCell>
+                <Badge
+                  variant={account.status === "active" ? "success" : "error"}
+                  className="px-2 py-1 text-sm"
+                >
+                  {account.status === "active" ? "Active" : "Inactive"}
+                </Badge>
+              </TableCell>
+              <TableCell className="text-center">
+                <div className="flex justify-center">
+                  <StatusIcon
+                    variant={healthToVariant(account.onboarding_health)}
+                  />
+                </div>
+              </TableCell>
+              <TableCell className="text-center">
+                <div className="flex justify-center">
+                  <StatusIcon
+                    variant={healthToVariant(account.performance_health)}
+                  />
+                </div>
+              </TableCell>
+              <TableCell className="text-center">
+                <div className="flex justify-center">
+                  <StatusIcon
+                    variant={healthToVariant(account.website_health)}
+                  />
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 }

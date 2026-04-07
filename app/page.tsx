@@ -58,34 +58,38 @@ export default function Home() {
   const mom = data?.month_over_month;
   const series = data?.series;
   return (
-    <div className="w-full h-full flex flex-col gap-4">
-      <PageHeader title={`Welcome back, ${firstname}`} />
-      <div className="flex flex-col gap-4 @lg:flex-row">
-        {/* consolidate request for all cards */}
-        <div className="flex flex-col gap-4 flex-1">
-          <MetricCard
-            label="Total Visits"
-            value={visits}
-            change={mom?.visits_change}
-            sparkline={series?.visits}
-            className="h-full"
-          />
-          <MetricCard
-            label="Responses"
-            value={conversions}
-            change={mom?.conversions_change}
-            sparkline={series?.conversions}
-            className="h-full"
+    <div className="w-full h-full flex flex-col">
+      <div className="sticky top-0 z-10 bg-surface pt-16 min-[480px]:pt-4 @md:pt-6 pb-4">
+        <PageHeader title={`Welcome back, ${firstname}`} />
+      </div>
+      <div className="overflow-clip flex flex-col gap-4">
+        <div className="flex flex-col gap-4 @lg:flex-row">
+          {/* consolidate request for all cards */}
+          <div className="flex flex-col gap-4 flex-1">
+            <MetricCard
+              label="Total Visits"
+              value={visits}
+              change={mom?.visits_change}
+              sparkline={series?.visits}
+              className="h-full"
+            />
+            <MetricCard
+              label="Responses"
+              value={conversions}
+              change={mom?.conversions_change}
+              sparkline={series?.conversions}
+              className="h-full"
+            />
+          </div>
+          <LeadsChart data={chartData} className="flex-[2]" />
+          <ConversionRateChart
+            value={conversionRate}
+            change={mom?.conversion_rate_change}
+            className="flex-1"
           />
         </div>
-        <LeadsChart data={chartData} className="flex-[2]" />
-        <ConversionRateChart
-          value={conversionRate}
-          change={mom?.conversion_rate_change}
-          className="flex-1"
-        />
+        <AccountsTable />
       </div>
-      <AccountsTable />
     </div>
   );
 }
