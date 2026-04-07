@@ -916,17 +916,25 @@ export function DateRangePickerWithPresets({
   function handleDateSelect(date: Date) {
     setPreset("custom");
     if (selecting === "start") {
+      setStartDate(date);
       if (endDate && date.getTime() > endDate.getTime()) {
-        setStartDate(date);
+        // New start is after current end — clear end, wait for new end pick
         setEndDate(null);
+        setSelecting("end");
+      } else if (endDate) {
+        // Valid range — fire immediately with new start + existing end
+        setSelecting("end");
+        onChange?.(date, endDate, "custom");
       } else {
-        setStartDate(date);
+        setSelecting("end");
       }
-      setSelecting("end");
     } else {
       if (startDate && date.getTime() < startDate.getTime()) {
+        // Picked date before start — swap: use it as new start, keep old start as end
         setStartDate(date);
-        setSelecting("end");
+        setEndDate(startDate);
+        setSelecting("start");
+        onChange?.(date, startDate, "custom");
       } else {
         setEndDate(date);
         setSelecting("start");
