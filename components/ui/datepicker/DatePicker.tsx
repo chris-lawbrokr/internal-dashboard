@@ -910,7 +910,6 @@ export function DateRangePickerWithPresets({
     setStartDate(newStart);
     setEndDate(newEnd);
     onChange?.(newStart, newEnd, p.key);
-    setOpen(false);
     setPresetsOpen(false);
   }
 
