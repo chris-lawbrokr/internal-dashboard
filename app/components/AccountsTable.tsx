@@ -16,8 +16,8 @@ import {
 } from "@/components/ui/table/Table";
 import { Search, X, ArrowUpDown } from "lucide-react";
 import { Badge, StatusIcon } from "@/components/ui/badge/Badge";
-import { SkeletonTable } from "@/components/ui/Skeleton";
-import { useSkeletonTransition } from "@/components/ui/SkeletonTransition";
+import { SkeletonTable } from "@/components/ui/skeleton/Skeleton";
+import { useSkeletonTransition } from "@/components/ui/skeleton/SkeletonTransition";
 
 type HealthStatus = "success" | "warning" | "error";
 

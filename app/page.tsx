@@ -17,8 +17,8 @@ import {
   SkeletonChart,
   SkeletonRadialChart,
   SkeletonTable,
-} from "@/components/ui/Skeleton";
-import { useSkeletonTransition } from "@/components/ui/SkeletonTransition";
+} from "@/components/ui/skeleton/Skeleton";
+import { useSkeletonTransition } from "@/components/ui/skeleton/SkeletonTransition";
 
 interface AnalyticsSummary {
   summary: {

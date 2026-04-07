@@ -3,12 +3,13 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
+import { useDateRange } from "@/lib/useDateRange";
 import {
   SkeletonGauge,
   SkeletonTable,
   SkeletonChart,
-} from "@/components/ui/Skeleton";
-import { useSkeletonTransition } from "@/components/ui/SkeletonTransition";
+} from "@/components/ui/skeleton/Skeleton";
+import { useSkeletonTransition } from "@/components/ui/skeleton/SkeletonTransition";
 import { Badge } from "@/components/ui/badge/Badge";
 import {
   Table,
@@ -87,6 +88,7 @@ export function AccountOverview({
   onTabChange,
 }: AccountOverviewProps) {
   const { user, getAccessToken } = useAuth();
+  const { dateQuery } = useDateRange();
   const [account, setAccount] = useState<AccountDetail | null>(null);
   const [users, setUsers] = useState<AccountUser[] | null>(null);
   const [search, setSearch] = useState("");
@@ -96,36 +98,35 @@ export function AccountOverview({
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
 
   useEffect(() => {
+    setAccount(null);
+    setUsers(null);
     if (!user) return;
     let cancelled = false;
+    const qs = dateQuery ? `&${dateQuery}` : "";
 
-    api<AccountDetail>(`admin/account?law_firm_id=${lawFirmId}`, getAccessToken)
+    api<AccountDetail>(`admin/account?law_firm_id=${lawFirmId}${qs}`, getAccessToken)
       .then((data) => {
         if (!cancelled) setAccount(data);
       })
-      .catch((err: unknown) => {
-        console.error("Failed to fetch account detail:", err);
-      });
+      .catch(() => {});
 
     api<AccountUsersResponse>(
-      `admin/account/users?law_firm_id=${lawFirmId}`,
+      `admin/account/users?law_firm_id=${lawFirmId}${qs}`,
       getAccessToken,
     )
       .then((data) => {
         if (!cancelled) setUsers(data.data);
       })
-      .catch((err: unknown) => {
-        console.error("Failed to fetch account users:", err);
-      });
+      .catch(() => {});
 
     return () => {
       cancelled = true;
     };
-  }, [user, getAccessToken, lawFirmId]);
+  }, [user, getAccessToken, lawFirmId, dateQuery]);
 
   const { showSkeleton, fading } = useSkeletonTransition(!account || !users);
 
-  if (showSkeleton)
+  if (showSkeleton || !account || !users)
     return (
       <div
         className={`flex flex-col gap-4${fading ? " skeleton-fade-out" : ""}`}

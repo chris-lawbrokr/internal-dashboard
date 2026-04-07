@@ -9,8 +9,8 @@ import {
   SkeletonChart,
   SkeletonRadialChart,
   SkeletonTable,
-} from "@/components/ui/Skeleton";
-import { useSkeletonTransition } from "@/components/ui/SkeletonTransition";
+} from "@/components/ui/skeleton/Skeleton";
+import { useSkeletonTransition } from "@/components/ui/skeleton/SkeletonTransition";
 import { MetricCard } from "@/app/components/MetricCard";
 import { LeadsChart } from "@/app/components/LeadsChart";
 import type { LeadsChartData } from "@/app/components/LeadsChart";

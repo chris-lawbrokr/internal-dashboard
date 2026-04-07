@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
-import { SkeletonStatusCard, SkeletonValueCard, SkeletonTable } from "@/components/ui/Skeleton";
-import { useSkeletonTransition } from "@/components/ui/SkeletonTransition";
+import { useDateRange } from "@/lib/useDateRange";
+import { SkeletonStatusCard, SkeletonValueCard, SkeletonTable } from "@/components/ui/skeleton/Skeleton";
+import { useSkeletonTransition } from "@/components/ui/skeleton/SkeletonTransition";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge/Badge";
 import type { BadgeVariant } from "@/components/ui/badge/Badge";
@@ -58,17 +59,21 @@ function getLinkStatus(status: string): { label: string; variant: BadgeVariant }
 
 export function AccountWebsite({ lawFirmId }: AccountWebsiteProps) {
   const { user, getAccessToken } = useAuth();
+  const { dateQuery } = useDateRange();
   const [status, setStatus] = useState<WebsiteStatus | null>(null);
   const [links, setLinks] = useState<WebsiteLinksResponse | null>(null);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(DEFAULT_pageSize);
 
   useEffect(() => {
+    setStatus(null);
+    setLinks(null);
     if (!user) return;
     let cancelled = false;
+    const qs = dateQuery ? `&${dateQuery}` : "";
 
     api<WebsiteStatus>(
-      `admin/account/website?law_firm_id=${lawFirmId}`,
+      `admin/account/website?law_firm_id=${lawFirmId}${qs}`,
       getAccessToken,
     )
       .then((data) => {
@@ -77,7 +82,7 @@ export function AccountWebsite({ lawFirmId }: AccountWebsiteProps) {
       .catch(() => {});
 
     api<WebsiteLinksResponse>(
-      `admin/account/website/links?law_firm_id=${lawFirmId}`,
+      `admin/account/website/links?law_firm_id=${lawFirmId}${qs}`,
       getAccessToken,
     )
       .then((data) => {
@@ -88,11 +93,11 @@ export function AccountWebsite({ lawFirmId }: AccountWebsiteProps) {
     return () => {
       cancelled = true;
     };
-  }, [user, getAccessToken, lawFirmId]);
+  }, [user, getAccessToken, lawFirmId, dateQuery]);
 
   const { showSkeleton, fading } = useSkeletonTransition(!status);
 
-  if (showSkeleton)
+  if (showSkeleton || !status)
     return (
       <div className={`flex flex-col gap-4${fading ? " skeleton-fade-out" : ""}`}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
