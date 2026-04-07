@@ -41,6 +41,9 @@ export default function Home() {
   const [accounts, setAccounts] = useState<Account[] | null>(null);
 
   useEffect(() => {
+    setData(null);
+    setChartData(null);
+    setAccounts(null);
     if (!user) return;
     const qs = dateQuery ? `?${dateQuery}` : "";
     api<AnalyticsSummary>(`admin/analytics/summary${qs}`, getAccessToken)
@@ -68,7 +71,7 @@ export default function Home() {
       <div className="sticky top-0 z-10 bg-surface pt-16 min-[480px]:pt-4 @md:pt-6 pb-4">
         <PageHeader title={`Welcome back, ${firstname}`} />
       </div>
-      {showSkeleton ? (
+      {showSkeleton || !data || !accounts ? (
         <div className={`overflow-clip flex-1 flex flex-col gap-4${fading ? " skeleton-fade-out" : ""}`}>
           <div className="flex flex-col gap-4 @lg:flex-row">
             <div className="flex flex-col gap-4 flex-1">
@@ -86,27 +89,27 @@ export default function Home() {
             <div className="flex flex-col gap-4 flex-1">
               <MetricCard
                 label="Total Visits"
-                value={data!.summary.visits}
-                change={data!.month_over_month.visits_change}
-                sparkline={data!.series.visits}
+                value={data.summary.visits}
+                change={data.month_over_month.visits_change}
+                sparkline={data.series.visits}
                 className="h-full"
               />
               <MetricCard
                 label="Responses"
-                value={data!.summary.conversions}
-                change={data!.month_over_month.conversions_change}
-                sparkline={data!.series.conversions}
+                value={data.summary.conversions}
+                change={data.month_over_month.conversions_change}
+                sparkline={data.series.conversions}
                 className="h-full"
               />
             </div>
             <LeadsChart data={chartData} className="flex-[2]" />
             <ConversionRateChart
-              value={data!.summary.conversion_rate}
-              change={data!.month_over_month.conversion_rate_change}
+              value={data.summary.conversion_rate}
+              change={data.month_over_month.conversion_rate_change}
               className="flex-1"
             />
           </div>
-          <AccountsTable accounts={accounts!} />
+          <AccountsTable accounts={accounts} />
         </div>
       )}
     </div>

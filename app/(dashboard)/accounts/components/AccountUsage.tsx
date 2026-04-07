@@ -196,6 +196,9 @@ export function AccountUsage({ lawFirmId }: AccountUsageProps) {
   const [details, setDetails] = useState<UsageDetails | null>(null);
 
   useEffect(() => {
+    setUsage(null);
+    setUsers([]);
+    setDetails(null);
     if (!user) return;
     let cancelled = false;
     const qs = dateQuery ? `&${dateQuery}` : "";
@@ -226,7 +229,7 @@ export function AccountUsage({ lawFirmId }: AccountUsageProps) {
 
   const { showSkeleton, fading } = useSkeletonTransition(!usage);
 
-  if (showSkeleton)
+  if (showSkeleton || !usage)
     return (
       <div className={`flex flex-col gap-6${fading ? " skeleton-fade-out" : ""}`}>
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-4">

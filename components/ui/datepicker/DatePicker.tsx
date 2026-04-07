@@ -880,6 +880,10 @@ export function DateRangePickerWithPresets({
         return;
       }
     }
+    // Apply custom dates on close so the query always updates
+    if (startDate && endDate) {
+      onChange?.(startDate, endDate, preset);
+    }
     setOpen(false);
     setPresetsOpen(false);
   }

@@ -80,6 +80,10 @@ export function AccountPerformance({ lawFirmId }: AccountPerformanceProps) {
   const [pageSize, setPageSize] = useState(DEFAULT_pageSize);
 
   useEffect(() => {
+    setSummary(null);
+    setChartData(null);
+    setComparison(null);
+    setFunnels(null);
     if (!user) return;
     let cancelled = false;
     const qs = dateQuery ? `&${dateQuery}` : "";
@@ -127,7 +131,7 @@ export function AccountPerformance({ lawFirmId }: AccountPerformanceProps) {
 
   const { showSkeleton, fading } = useSkeletonTransition(!summary);
 
-  if (showSkeleton)
+  if (showSkeleton || !summary)
     return (
       <div
         className={`flex flex-col gap-4${fading ? " skeleton-fade-out" : ""}`}

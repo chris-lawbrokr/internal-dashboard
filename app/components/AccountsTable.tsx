@@ -76,6 +76,7 @@ export function AccountsTable({
   const managed = externalAccounts === undefined;
 
   useEffect(() => {
+    if (managed) setInternalAccounts(null);
     if (!managed || !user) return;
     let cancelled = false;
     api<AccountsResponse>(`admin/accounts?${dateQuery}`, getAccessToken)
@@ -94,7 +95,7 @@ export function AccountsTable({
 
   const { showSkeleton, fading } = useSkeletonTransition(accounts === null);
 
-  if (showSkeleton)
+  if (showSkeleton || accounts === null)
     return (
       <div className={`h-full flex-1 flex flex-col min-h-0${fading ? " skeleton-fade-out" : ""}`}>
         <SkeletonTable rows={10} className="flex-1" />
