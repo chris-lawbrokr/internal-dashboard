@@ -54,10 +54,16 @@ const PAGE_SIZE = 10;
 type SortField = "visits" | "conversions" | "conversion_rate";
 type SortDir = "asc" | "desc";
 
-export function AccountsTable({ accounts: externalAccounts }: { accounts?: Account[] }) {
+export function AccountsTable({
+  accounts: externalAccounts,
+}: {
+  accounts?: Account[];
+}) {
   const { user, getAccessToken } = useAuth();
   const { dateQuery } = useDateRange();
-  const [internalAccounts, setInternalAccounts] = useState<Account[] | null>(null);
+  const [internalAccounts, setInternalAccounts] = useState<Account[] | null>(
+    null,
+  );
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [sortField, setSortField] = useState<SortField | null>(null);
@@ -87,8 +93,8 @@ export function AccountsTable({ accounts: externalAccounts }: { accounts?: Accou
 
   if (showSkeleton)
     return (
-      <div className={fading ? "skeleton-fade-out" : ""}>
-        <SkeletonTable rows={10} />
+      <div className={`h-full flex-1 flex flex-col min-h-0${fading ? " skeleton-fade-out" : ""}`}>
+        <SkeletonTable rows={10} className="flex-1" />
       </div>
     );
 
@@ -124,8 +130,9 @@ export function AccountsTable({ accounts: externalAccounts }: { accounts?: Accou
   };
 
   return (
-    <div className="pb-1 skeleton-stagger">
+    <div className="pb-1 skeleton-stagger h-full flex-1 flex flex-col min-h-0">
       <Table
+        wrapperClassName="flex-1 flex flex-col min-h-0"
         toolbar={
           <div className="flex flex-col gap-2 @md/table:flex-row @md/table:items-center justify-between">
             <div className="relative">

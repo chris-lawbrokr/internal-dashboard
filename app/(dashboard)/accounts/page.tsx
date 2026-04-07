@@ -9,7 +9,7 @@ export default function AccountsPage() {
       <div className="sticky top-0 z-10 bg-surface pt-16 \min-[480px]:pt-4 @md:pt-6 pb-4">
         <PageHeader title="Accounts" />
       </div>
-      <div className="overflow-clip flex-1 flex flex-col justify-center">
+      <div className="overflow-clip flex-1 flex flex-col">
         <AccountsTable />
       </div>
     </div>
