@@ -3,20 +3,19 @@ function cn(...values: Array<string | undefined | null | false>): string {
 }
 
 const CARD = "animate-pulse rounded-xl bg-skeleton";
+const skeletonBg = { backgroundColor: "var(--color-skeleton)" } as const;
 
 /** Base pulse block */
 export function Skeleton({ className }: { className?: string }) {
   return (
-    <div
-      className={cn("animate-pulse rounded-md bg-skeleton", className)}
-    />
+    <div className={cn("animate-pulse rounded-md", className)} style={skeletonBg} />
   );
 }
 
-/** MetricCard: uses invisible text at the same sizes to hold height */
+/** MetricCard */
 export function SkeletonMetricCard({ className }: { className?: string }) {
   return (
-    <div className={cn(CARD, "p-4", className)}>
+    <div className={cn(CARD, "p-4", className)} style={skeletonBg}>
       <p className="text-sm invisible">Label</p>
       <p className="text-2xl font-bold invisible">0,000</p>
       <p className="text-xs invisible">↑ 0% vs last month</p>
@@ -26,15 +25,13 @@ export function SkeletonMetricCard({ className }: { className?: string }) {
 
 /** LeadsChart */
 export function SkeletonChart({ className }: { className?: string }) {
-  return <div className={cn(CARD, "p-4 min-w-0", className)}>&nbsp;</div>;
+  return <div className={cn(CARD, "p-4 min-w-0", className)} style={skeletonBg}>&nbsp;</div>;
 }
 
 /** ConversionRateChart */
 export function SkeletonRadialChart({ className }: { className?: string }) {
   return (
-    <div
-      className={cn(CARD, "p-4 flex items-center justify-center", className)}
-    >
+    <div className={cn(CARD, "p-4 flex items-center justify-center", className)} style={skeletonBg}>
       <div className="w-full">
         <p className="text-sm invisible">Conversion Rate</p>
         <p className="text-2xl font-bold invisible">0%</p>
@@ -48,7 +45,7 @@ export function SkeletonRadialChart({ className }: { className?: string }) {
 /** HealthGauge */
 export function SkeletonGauge() {
   return (
-    <div className={cn(CARD, "p-5 flex flex-col items-center gap-1")}>
+    <div className={cn(CARD, "p-5 flex flex-col items-center gap-1")} style={skeletonBg}>
       <p className="text-sm self-start invisible">Health Label</p>
       <p className="text-xl font-semibold self-start invisible">Good</p>
       <div className="invisible" style={{ width: 186, height: 93 }} />
@@ -57,20 +54,20 @@ export function SkeletonGauge() {
   );
 }
 
-/** Small status card (label + badge) */
+/** Small status card */
 export function SkeletonStatusCard() {
   return (
-    <div className={cn(CARD, "p-4")}>
+    <div className={cn(CARD, "p-4")} style={skeletonBg}>
       <p className="text-sm invisible">Label</p>
       <div className="mt-2 invisible inline-flex h-6 w-16 rounded-md" />
     </div>
   );
 }
 
-/** Value card (label + big number + change) */
+/** Value card */
 export function SkeletonValueCard() {
   return (
-    <div className={cn(CARD, "p-4")}>
+    <div className={cn(CARD, "p-4")} style={skeletonBg}>
       <p className="text-sm invisible">Label</p>
       <p className="text-2xl font-bold invisible">000</p>
     </div>
@@ -78,15 +75,9 @@ export function SkeletonValueCard() {
 }
 
 /** Table */
-export function SkeletonTable({
-  rows = 5,
-  className,
-}: {
-  rows?: number;
-  className?: string;
-}) {
+export function SkeletonTable({ rows = 5, className }: { rows?: number; className?: string }) {
   return (
-    <div className={cn(CARD, "w-full min-w-0", className)}>
+    <div className={cn(CARD, "w-full min-w-0", className)} style={skeletonBg}>
       <div className="p-4 pb-0">
         <div className="invisible h-5">Title</div>
       </div>
@@ -106,10 +97,8 @@ export function SkeletonTable({
 /** Onboarding checklist */
 export function SkeletonChecklist() {
   return (
-    <div className={cn(CARD, "p-5")}>
-      <div className="invisible text-base font-semibold mb-2">
-        Onboarding Checklist
-      </div>
+    <div className={cn(CARD, "p-5")} style={skeletonBg}>
+      <div className="invisible text-base font-semibold mb-2">Onboarding Checklist</div>
       {Array.from({ length: 5 }).map((_, i) => (
         <div key={i} className="invisible py-2 border-b border-transparent">
           <span className="text-sm">Checklist item placeholder text</span>
