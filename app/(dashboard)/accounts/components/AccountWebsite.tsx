@@ -4,7 +4,11 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
 import { useDateRange } from "@/lib/useDateRange";
-import { SkeletonStatusCard, SkeletonValueCard, SkeletonTable } from "@/components/ui/skeleton/Skeleton";
+import {
+  SkeletonStatusCard,
+  SkeletonValueCard,
+  SkeletonTable,
+} from "@/components/ui/skeleton/Skeleton";
 import { useSkeletonTransition } from "@/components/ui/skeleton/SkeletonTransition";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge/Badge";
@@ -47,13 +51,19 @@ interface AccountWebsiteProps {
 
 const DEFAULT_pageSize = 5;
 
-const linkStatusConfig: Record<string, { label: string; variant: BadgeVariant }> = {
+const linkStatusConfig: Record<
+  string,
+  { label: string; variant: BadgeVariant }
+> = {
   active: { label: "Active", variant: "success" },
   review: { label: "Review", variant: "warning" },
   broken: { label: "Broken", variant: "error" },
 } as const;
 
-function getLinkStatus(status: string): { label: string; variant: BadgeVariant } {
+function getLinkStatus(status: string): {
+  label: string;
+  variant: BadgeVariant;
+} {
   return linkStatusConfig[status] ?? { label: "Active", variant: "success" };
 }
 
@@ -99,7 +109,9 @@ export function AccountWebsite({ lawFirmId }: AccountWebsiteProps) {
 
   if (showSkeleton || !status)
     return (
-      <div className={`flex flex-col gap-4${fading ? " skeleton-fade-out" : ""}`}>
+      <div
+        className={`flex flex-col gap-4${fading ? " skeleton-fade-out" : ""}`}
+      >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <SkeletonStatusCard />
           <SkeletonStatusCard />
@@ -118,17 +130,14 @@ export function AccountWebsite({ lawFirmId }: AccountWebsiteProps) {
   const totalPages = links ? Math.ceil(links.data.length / pageSize) : 0;
   const currentPage = Math.min(page, totalPages || 1);
   const paginatedLinks = links
-    ? links.data.slice(
-        (currentPage - 1) * pageSize,
-        currentPage * pageSize,
-      )
+    ? links.data.slice((currentPage - 1) * pageSize, currentPage * pageSize)
     : [];
 
   const s = status!;
   const isPositive = s.live_links_change >= 0;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 h-full">
       {/* Status cards - top row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 skeleton-stagger">
         <Card className="p-4 flex flex-col gap-2">
@@ -208,55 +217,62 @@ export function AccountWebsite({ lawFirmId }: AccountWebsiteProps) {
                   : "text-status-error-border"
               }
             >
-              {isPositive ? "↑" : "↓"} {Math.abs(Math.round(s.live_links_change))}%
+              {isPositive ? "↑" : "↓"}{" "}
+              {Math.abs(Math.round(s.live_links_change))}%
             </span>{" "}
             vs last month
           </p>
         </Card>
       </div>
 
-      {/* Links table */}
-      <Table
-        title="Lawbrokr Links"
-        footer={
-          links && links.data.length > pageSize ? (
-            <TablePagination
-              page={currentPage}
-              totalPages={totalPages}
-              totalItems={links.data.length}
-              pageSize={pageSize}
-              onPageChange={setPage}
-              onPageSizeChange={setPageSize}
-            />
-          ) : undefined
-        }
-      >
-        <TableHeader>
-          <TableRow className="border-b border-border">
-            <TableHead>Website URL</TableHead>
-            <TableHead>Lawbrokr URL</TableHead>
-            <TableHead className="text-right">Status</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {paginatedLinks.map((link, i) => {
-            const cfg = getLinkStatus(link.status);
-            return (
-              <TableRow key={i} className="border-b border-background">
-                <TableCell className="text-sm">{link.website_url}</TableCell>
-                <TableCell className="text-sm">
-                  {link.lawbrokr_url ?? "—"}
-                </TableCell>
-                <TableCell className="text-right">
-                  <Badge variant={cfg.variant} dot className="px-2 py-1 text-sm">
-                    {cfg.label}
-                  </Badge>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+      <div className="h-full">
+        {/* Links table */}
+        <Table
+          title="Lawbrokr Links"
+          footer={
+            links && links.data.length > pageSize ? (
+              <TablePagination
+                page={currentPage}
+                totalPages={totalPages}
+                totalItems={links.data.length}
+                pageSize={pageSize}
+                onPageChange={setPage}
+                onPageSizeChange={setPageSize}
+              />
+            ) : undefined
+          }
+        >
+          <TableHeader>
+            <TableRow className="border-b border-border">
+              <TableHead>Website URL</TableHead>
+              <TableHead>Lawbrokr URL</TableHead>
+              <TableHead className="text-right">Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {paginatedLinks.map((link, i) => {
+              const cfg = getLinkStatus(link.status);
+              return (
+                <TableRow key={i} className="border-b border-background">
+                  <TableCell className="text-sm">{link.website_url}</TableCell>
+                  <TableCell className="text-sm">
+                    {link.lawbrokr_url ?? "—"}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Badge
+                      variant={cfg.variant}
+                      dot
+                      className="px-2 py-1 text-sm"
+                    >
+                      {cfg.label}
+                    </Badge>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }

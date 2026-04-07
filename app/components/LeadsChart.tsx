@@ -79,7 +79,12 @@ export function LeadsChart({ data, className }: LeadsChartProps) {
             </div>
           ))}
         </div>
-        <Chart options={options} series={seriesData} type="area" height="100%" />
+        <Chart
+          options={options}
+          series={seriesData}
+          type="area"
+          height="100%"
+        />
       </CardContent>
     </Card>
   );

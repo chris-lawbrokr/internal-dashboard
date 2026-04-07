@@ -53,7 +53,7 @@ export default function AccountPage({
           />
         </div>
       </div>
-      <div className="m-4 overflow-y-scroll pb-1">
+      <div className="m-4 overflow-y-scroll h-full pb-1">
         {activeTab === "overview" && (
           <AccountOverview lawFirmId={id} onTabChange={setActiveTab} />
         )}

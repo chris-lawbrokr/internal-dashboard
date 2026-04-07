@@ -160,7 +160,7 @@ export function AccountPerformance({ lawFirmId }: AccountPerformanceProps) {
     : [];
 
   return (
-    <div className="flex flex-col gap-4 flex-1">
+    <div className="flex flex-col gap-4 h-full">
       {/* Top row: Metrics + Chart + Conversion Rate */}
       <div className="flex flex-col gap-4 @lg:flex-row skeleton-stagger">
         <div className="flex flex-col gap-4 flex-1">
