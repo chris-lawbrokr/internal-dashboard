@@ -9,8 +9,10 @@ interface SparklineChartProps {
   color?: string;
 }
 
-export function SparklineChart({ data, color = "var(--color-primary)" }: SparklineChartProps) {
-
+export function SparklineChart({
+  data,
+  color = "var(--color-primary)",
+}: SparklineChartProps) {
   const options: ApexCharts.ApexOptions = {
     chart: {
       type: "line",
@@ -27,5 +29,13 @@ export function SparklineChart({ data, color = "var(--color-primary)" }: Sparkli
 
   const series = [{ data }];
 
-  return <Chart options={options} series={series} type="line" height={40} width={80} />;
+  return (
+    <Chart
+      options={options}
+      series={series}
+      type="line"
+      height={40}
+      width={80}
+    />
+  );
 }
