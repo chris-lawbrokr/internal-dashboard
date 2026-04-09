@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
@@ -14,7 +14,7 @@ import {
   TableCell,
   TablePagination,
 } from "@/components/ui/table/Table";
-import { Search, X, ArrowUpDown } from "lucide-react";
+import { Search, X, ArrowUpDown, ListFilter } from "lucide-react";
 import { Badge, StatusIcon } from "@/components/ui/badge/Badge";
 import { SkeletonTable } from "@/components/ui/skeleton/Skeleton";
 import { useSkeletonTransition } from "@/components/ui/skeleton/SkeletonTransition";
@@ -54,6 +54,50 @@ const DEFAULT_pageSize = 10;
 type SortField = "visits" | "conversions" | "conversion_rate";
 type SortDir = "asc" | "desc";
 
+type FilterColumn =
+  | "status"
+  | "onboarding_health"
+  | "performance_health"
+  | "website_health"
+  | "visits"
+  | "conversions"
+  | "conversion_rate";
+
+const FILTER_COLUMNS: { key: FilterColumn; label: string }[] = [
+  { key: "status", label: "Status" },
+  { key: "visits", label: "Visits" },
+  { key: "conversions", label: "Responses" },
+  { key: "conversion_rate", label: "Conv. Rate" },
+  { key: "onboarding_health", label: "Onboarding" },
+  { key: "performance_health", label: "Performance" },
+  { key: "website_health", label: "Website" },
+];
+
+function getDistinctValues(
+  accounts: Account[],
+  column: FilterColumn,
+): string[] {
+  const values = new Set<string>();
+  for (const a of accounts) {
+    const raw = a[column];
+    values.add(String(raw));
+  }
+  return [...values].sort();
+}
+
+function formatFilterValue(column: FilterColumn, value: string): string {
+  if (column === "status") return value === "active" ? "Active" : "Inactive";
+  if (column === "conversion_rate") return `${Math.round(Number(value))}%`;
+  if (column === "visits" || column === "conversions")
+    return Number(value).toLocaleString();
+  if (column.endsWith("_health")) {
+    if (value === "good") return "Good";
+    if (value === "fair") return "Fair";
+    return "Poor";
+  }
+  return value;
+}
+
 export function AccountsTable({
   accounts: externalAccounts,
   defaultPageSize = DEFAULT_pageSize,
@@ -71,6 +115,10 @@ export function AccountsTable({
   const [pageSize, setPageSize] = useState(defaultPageSize);
   const [sortField, setSortField] = useState<SortField | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>("asc");
+  const [filterColumn, setFilterColumn] = useState<FilterColumn | null>(null);
+  const [filterValue, setFilterValue] = useState<string | null>(null);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const filterRef = React.useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   const managed = externalAccounts === undefined;
@@ -93,11 +141,24 @@ export function AccountsTable({
 
   const accounts = externalAccounts ?? internalAccounts;
 
+  // Close filter dropdown on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (filterRef.current && !filterRef.current.contains(e.target as Node)) {
+        setFilterOpen(false);
+      }
+    }
+    if (filterOpen) document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [filterOpen]);
+
   const { showSkeleton, fading } = useSkeletonTransition(accounts === null);
 
   if (showSkeleton || accounts === null)
     return (
-      <div className={`h-full flex-1 flex flex-col min-h-0${fading ? " skeleton-fade-out" : ""}`}>
+      <div
+        className={`h-full flex-1 flex flex-col min-h-0${fading ? " skeleton-fade-out" : ""}`}
+      >
         <SkeletonTable rows={10} className="flex-1" />
       </div>
     );
@@ -105,9 +166,11 @@ export function AccountsTable({
   const accts = accounts!;
   const filtered = accts.filter((a) => {
     const q = search.toLowerCase();
-    return (
-      a.name.toLowerCase().includes(q) || a.website.toLowerCase().includes(q)
-    );
+    const matchesSearch =
+      a.name.toLowerCase().includes(q) || a.website.toLowerCase().includes(q);
+    const matchesFilter =
+      !filterColumn || !filterValue || String(a[filterColumn]) === filterValue;
+    return matchesSearch && matchesFilter;
   });
 
   const sorted = sortField
@@ -166,6 +229,78 @@ export function AccountsTable({
                   aria-label="Clear search"
                 >
                   <X size={14} />
+                </button>
+              )}
+            </div>
+            <div ref={filterRef} className="relative">
+              <button
+                type="button"
+                onClick={() => setFilterOpen((o) => !o)}
+                className={`h-9 flex items-center gap-1.5 rounded-md border px-3 text-sm cursor-pointer transition-colors ${filterColumn ? "border-brand-dark text-brand-dark" : "border-input text-muted-foreground hover:text-foreground"}`}
+              >
+                <ListFilter size={14} />
+                {filterColumn
+                  ? `${FILTER_COLUMNS.find((c) => c.key === filterColumn)!.label}: ${formatFilterValue(filterColumn, filterValue!)}`
+                  : "Filter"}
+              </button>
+              {filterOpen && (
+                <div className="absolute right-0 top-full mt-1 z-20 min-w-[200px] max-h-[300px] overflow-y-auto rounded-lg border border-input bg-card shadow-lg">
+                  {!filterColumn ? (
+                    <div className="py-1">
+                      {FILTER_COLUMNS.map((col) => (
+                        <button
+                          key={col.key}
+                          type="button"
+                          onClick={() => setFilterColumn(col.key)}
+                          className="w-full text-left px-3 py-2 text-sm hover:bg-muted cursor-pointer"
+                        >
+                          {col.label}
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFilterColumn(null);
+                          setFilterValue(null);
+                          setPage(1);
+                        }}
+                        className="sticky top-0 w-full text-left px-3 py-2 text-sm text-muted-foreground hover:bg-muted cursor-pointer border-b border-input bg-card z-10"
+                      >
+                        ← Back
+                      </button>
+                      {getDistinctValues(accts, filterColumn).map((val) => (
+                        <button
+                          key={val}
+                          type="button"
+                          onClick={() => {
+                            setFilterValue(val);
+                            setPage(1);
+                            setFilterOpen(false);
+                          }}
+                          className={`w-full text-left px-3 py-2 text-sm hover:bg-muted cursor-pointer ${filterValue === val ? "font-semibold text-brand-dark" : ""}`}
+                        >
+                          {formatFilterValue(filterColumn, val)}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+              {filterColumn && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFilterColumn(null);
+                    setFilterValue(null);
+                    setPage(1);
+                  }}
+                  className="absolute -right-1 -top-1 h-4 w-4 flex items-center justify-center rounded-full bg-brand-dark text-white cursor-pointer"
+                  aria-label="Clear filter"
+                >
+                  <X size={10} />
                 </button>
               )}
             </div>
