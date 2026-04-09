@@ -21,7 +21,11 @@ export function ConversionRateChart({
   const options: ApexCharts.ApexOptions = {
     chart: {
       type: "radialBar",
-      sparkline: { enabled: true },
+      sparkline: { enabled: false },
+      toolbar: { show: false },
+    },
+    grid: {
+      padding: { top: -25, bottom: -25, left: -15, right: -15 },
     },
     colors: ["var(--color-chart-purple)"],
     plotOptions: {
@@ -77,7 +81,6 @@ export function ConversionRateChart({
         type="radialBar"
         height={140}
         width={140}
-        className="w-full h-full flex items-center justify-center"
       />
     </Card>
   );
