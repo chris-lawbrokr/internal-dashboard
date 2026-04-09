@@ -32,7 +32,7 @@ import {
   useRef,
 } from "react";
 import { useRouter } from "next/navigation";
-import { setRefreshHandler } from "@/lib/api";
+import { setRefreshHandler, triggerRefresh } from "@/lib/api";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.lawbrokr.ca/v1/legacy";
@@ -45,8 +45,9 @@ const REFRESH_BUFFER_SECONDS = Number(
 );
 const REFRESH_BUFFER_MS = REFRESH_BUFFER_SECONDS * 1000;
 
-const HARD_LOGOUT_MINUTES = 2;
-const HARD_LOGOUT_DAYS = HARD_LOGOUT_MINUTES / (60 * 24);
+const SESSION_EXPIRY_DAYS = Number(
+  process.env.NEXT_PUBLIC_SESSION_EXPIRY_DAYS ?? "1",
+);
 
 // Context
 export interface User {
@@ -145,9 +146,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Session cookie triggers a doRefresh() on mount if there was an existing session
   const session = {
     save(user: User) {
-      setCookie("session", "1", HARD_LOGOUT_DAYS);
+      setCookie("session", "1", SESSION_EXPIRY_DAYS);
       // Store the user object to restore on reload without completing refresh.
-      setCookie("session_user", JSON.stringify(user), HARD_LOGOUT_DAYS);
+      setCookie("session_user", JSON.stringify(user), SESSION_EXPIRY_DAYS);
     },
     clear() {
       deleteCookie("session");
@@ -293,7 +294,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     try {
       setUser(JSON.parse(raw));
-      doRefresh();
+      triggerRefresh();
     } catch {
       session.clear();
     }

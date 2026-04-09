@@ -12,6 +12,12 @@ export function setRefreshHandler(fn: () => Promise<string | null>) {
   refreshHandler = fn;
 }
 
+// Trigger a refresh through the shared deduplication layer.
+// AuthProvider calls this on mount so api() calls can join the same promise.
+export function triggerRefresh(): Promise<string | null> {
+  return deduplicatedRefresh();
+}
+
 // Deduplicate concurrent refresh calls so only one hits the server at a time
 function deduplicatedRefresh(): Promise<string | null> {
   if (!refreshHandler) return Promise.resolve(null);
@@ -74,16 +80,19 @@ export async function api<T>(
   // Attempt fetch with current access token
   // Thrown error here means network-level failure - send user to /login
   const method = options?.method ?? "GET";
-  const token = getAccessToken();
-  console.log(
-    `[api] ${method} /${path} → sending… (token: ${token ? "yes" : "none"})`,
-  );
+  let token = getAccessToken();
+
+  // If no token but a refresh is already in-flight (e.g. page reload),
+  // wait for it instead of sending a request we know will 401.
+  if (!token && inflightRefresh) {
+    token = await inflightRefresh;
+  }
+
   try {
     res = await doFetch(path, token, options);
   } catch {
     throw new Error(`Network error on ${method} /${path}`);
   }
-  console.log(`[api] ${method} /${path} → ${res.status}`);
 
   // 401 handling
   // catch 401 and attempt silent token refresh via deduplicated handler
