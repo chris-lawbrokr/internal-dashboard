@@ -254,9 +254,9 @@ export function AccountWebsite({ lawFirmId }: AccountWebsiteProps) {
             const cfg = getLinkStatus(link.status);
             return (
               <TableRow key={i} className="border-b border-background">
-                <TableCell className="text-sm">{link.website_url}</TableCell>
+                <TableCell className="text-sm">{link.website_url ? <a href={link.website_url.startsWith("http") ? link.website_url : `https://${link.website_url}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{link.website_url}</a> : null}</TableCell>
                 <TableCell className="text-sm">
-                  {link.lawbrokr_url ?? "—"}
+                  {link.lawbrokr_url ? <a href={link.lawbrokr_url.startsWith("http") ? link.lawbrokr_url : `https://${link.lawbrokr_url}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{link.lawbrokr_url}</a> : "—"}
                 </TableCell>
                 <TableCell className="text-right">
                   <Badge

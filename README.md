@@ -121,3 +121,14 @@ rm -rf .next node_modules && npm install && npm run dev:https
 ```bash
 https://dev.lawbrokr.ca:3000
 ```
+
+---
+
+info i dots
+
+---
+
+performance tab Funnels add link in new tab
+all table links in new tab
+
+---

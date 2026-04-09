@@ -435,7 +435,7 @@ function FunnelsTable({ items }: { items: UsageDetails["funnels"] }) {
         {paginated.map((f, i) => (
           <TableRow key={i} className="border-b border-background">
             <TableCell className="font-medium">{f.name}</TableCell>
-            <TableCell className="text-sm">{f.url}</TableCell>
+            <TableCell className="text-sm">{f.url ? <a href={f.url.startsWith("http") ? f.url : `https://${f.url}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{f.url}</a> : null}</TableCell>
             <TableCell className="text-right">{f.visits.toLocaleString()}</TableCell>
             <TableCell className="text-right">{f.conversions.toLocaleString()}</TableCell>
             <TableCell className="text-right">{Math.round(f.conversion_rate)}%</TableCell>
@@ -473,7 +473,7 @@ function WorkflowsTable({ items }: { items: UsageDetails["workflows"] }) {
         {paginated.map((w, i) => (
           <TableRow key={i} className="border-b border-background">
             <TableCell className="font-medium">{w.name}</TableCell>
-            <TableCell className="text-sm">{w.url}</TableCell>
+            <TableCell className="text-sm">{w.url ? <a href={w.url.startsWith("http") ? w.url : `https://${w.url}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{w.url}</a> : null}</TableCell>
             <TableCell className="text-right">{w.questions}</TableCell>
             <TableCell className="text-right">{w.visits.toLocaleString()}</TableCell>
             <TableCell className="text-right">{w.conversions.toLocaleString()}</TableCell>
@@ -507,7 +507,7 @@ function LandingPagesTable({ items }: { items: UsageDetails["landing_pages"] }) 
         {paginated.map((lp, i) => (
           <TableRow key={i} className="border-b border-background">
             <TableCell className="font-medium">{lp.name}</TableCell>
-            <TableCell className="text-sm">{lp.url}</TableCell>
+            <TableCell className="text-sm">{lp.url ? <a href={lp.url.startsWith("http") ? lp.url : `https://${lp.url}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{lp.url}</a> : null}</TableCell>
             <TableCell className="text-sm">{formatEpoch(lp.created_at)}</TableCell>
             <TableCell className="text-right"><StatusBadge status={lp.status} /></TableCell>
           </TableRow>
@@ -540,7 +540,7 @@ function AdCampaignsTable({ items }: { items: UsageDetails["ad_campaigns"] }) {
         {paginated.map((c, i) => (
           <TableRow key={i} className="border-b border-background">
             <TableCell className="font-medium">{c.name}</TableCell>
-            <TableCell className="text-sm">{c.url}</TableCell>
+            <TableCell className="text-sm">{c.url ? <a href={c.url.startsWith("http") ? c.url : `https://${c.url}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{c.url}</a> : null}</TableCell>
             <TableCell className="text-right">{c.impressions.toLocaleString()}</TableCell>
             <TableCell className="text-right">{c.conversions.toLocaleString()}</TableCell>
             <TableCell className="text-right">{Math.round(c.click_through_rate)}%</TableCell>

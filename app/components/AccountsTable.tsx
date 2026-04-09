@@ -523,7 +523,7 @@ export function AccountsTable({
               }}
             >
               <TableCell className="font-medium">{account.name}</TableCell>
-              <TableCell className="font-medium">{account.website}</TableCell>
+              <TableCell className="font-medium">{account.website ? <a href={account.website.startsWith("http") ? account.website : `https://${account.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline" onClick={(e) => e.stopPropagation()}>{account.website}</a> : null}</TableCell>
               <TableCell className="font-medium">
                 {account.visits.toLocaleString()}
               </TableCell>

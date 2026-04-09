@@ -27,8 +27,8 @@ export function ConversionComparisonChart({
 }: ConversionComparisonChartProps) {
   const labels = data?.labels ?? [];
   const seriesData = [
-    { name: "Current", data: data?.series.current ?? [] },
     { name: "Previous", data: data?.series.previous ?? [] },
+    { name: "Current", data: data?.series.current ?? [] },
   ];
 
   const options: ApexCharts.ApexOptions = {

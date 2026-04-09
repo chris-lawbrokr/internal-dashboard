@@ -251,6 +251,7 @@ export function Nav({ children }: { children: React.ReactNode }) {
           <Image
             src="/images/Logo.svg"
             alt="Logo"
+            priority
             height="100"
             width="100"
             style={{ width: "auto", height: "auto" }}
@@ -289,9 +290,9 @@ export function Nav({ children }: { children: React.ReactNode }) {
             <Image
               src="/images/Logo.svg"
               alt="Logo"
+              priority
               height={24}
               width={80}
-              loading="eager"
               style={{ height: "auto" }}
             />
             <button
@@ -406,7 +407,7 @@ export function Nav({ children }: { children: React.ReactNode }) {
         </div>
       </div>
 
-      <div className="flex-1 min-w-0 p-0 overflow-y-auto overflow-x-hidden @container flex flex-col gap-6 bg-surface">
+      <div className={`flex-1 min-w-0 p-0 overflow-y-auto overflow-x-hidden @container flex flex-col gap-6 bg-surface ${isMobile ? "pt-[52px]" : ""}`}>
         {children}
       </div>
     </div>

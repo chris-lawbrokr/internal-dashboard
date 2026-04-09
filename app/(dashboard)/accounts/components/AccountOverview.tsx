@@ -188,7 +188,7 @@ export function AccountOverview({
     }
   };
 
-  const detailItems: { label: string; value: string }[] = [
+  const detailItems: { label: string; value: React.ReactNode }[] = [
     { label: "Company Name", value: acct.name },
     {
       label: "Company Size",
@@ -196,7 +196,7 @@ export function AccountOverview({
     },
     { label: "Location", value: acct.location || "N/A" },
     { label: "Marketing Agency", value: acct.marketing_agency || "N/A" },
-    { label: "Website", value: acct.website || "N/A" },
+    { label: "Website", value: acct.website ? <a href={acct.website.startsWith("http") ? acct.website : `https://${acct.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{acct.website}</a> : "N/A" },
     {
       label: "Marketing Spend",
       value:
