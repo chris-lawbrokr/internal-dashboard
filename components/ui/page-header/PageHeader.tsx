@@ -30,7 +30,7 @@ export function PageHeader({
         lg:items-start
         lg:justify-between
         p-4
-        py-8
+        sm:py-8
     "
     >
       <div

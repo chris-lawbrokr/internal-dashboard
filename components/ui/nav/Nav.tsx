@@ -407,7 +407,7 @@ export function Nav({ children }: { children: React.ReactNode }) {
         </div>
       </div>
 
-      <div className="flex-1 min-w-0 p-0 overflow-y-auto overflow-x-hidden @container flex flex-col gap-6 bg-surface">
+      <div className={`flex-1 min-w-0 p-0 overflow-y-auto overflow-x-hidden @container flex flex-col gap-6 bg-surface ${isMobile ? "pt-[52px]" : ""}`}>
         {children}
       </div>
     </div>
