@@ -121,7 +121,3 @@ rm -rf .next node_modules && npm install && npm run dev:https
 ```bash
 https://dev.lawbrokr.ca:3000
 ```
-
-TODO
-
-- add time filter to tables

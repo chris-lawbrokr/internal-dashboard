@@ -161,13 +161,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = useCallback(async () => {
     // server invalidates refresh-token cookie
     try {
-      const res = await fetch(`${API_BASE}/auth/logout`, {
+      await fetch(`${API_BASE}/auth/logout`, {
         method: "POST",
         credentials: "include", // sends the httpOnly refresh-token cookie
       });
-      console.log(`[auth] POST /auth/logout → ${res.status}`);
-    } catch (err) {
-      console.log("[auth] POST /auth/logout → network error", err);
+    } catch {
+      // network error on logout is non-critical
     }
 
     // Wipe in-memory token so in-flight api() calls get null
@@ -202,10 +201,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // If can't be decoded trigger immediate refresh
     }
 
-    console.log(
-      `[auth] scheduleRefresh: next refresh in ${Math.round(delay / 1000)}s`,
-    );
-
     if (delay <= 0) {
       // Token expired refresh immediately
       return void doRefreshRef.current();
@@ -217,8 +212,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // /auth/refresh endpoint exchanges httpOnly refresh-token cookie for a new access token.
   // Also registered with api.ts via setRefreshHandler() so api() trigger on 401
   const doRefresh = useCallback(async (): Promise<string | null> => {
-    // TODO: remove debug logs after verifying auth flows
-    console.log("[auth] POST /auth/refresh → sending…");
     try {
       const res = await fetch(`${API_BASE}/auth/refresh`, {
         method: "POST",
@@ -227,19 +220,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (res.status === 401) {
         // refresh token expired or revoked
-        const body = await res.json().catch(() => null);
-        console.log(`[auth] POST /auth/refresh → ${res.status}`, body);
         logout();
         return null;
       }
 
       if (!res.ok) {
         const body = await res.text().catch(() => "");
-        console.log(`[auth] POST /auth/refresh → ${res.status}`, body);
         throw new Error(body);
       }
 
-      console.log(`[auth] POST /auth/refresh → ${res.status} ✓`);
       const { access_token } = await res.json();
 
       // Store new token and reset failure counter
@@ -249,21 +238,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       clearTimer(retryTimerRef);
       scheduleRefresh(access_token);
       return access_token;
-    } catch (err) {
+    } catch {
       // Network error or non-401
       // retry up to MAX_REFRESH_RETRIES times
       retryCountRef.current++;
-      console.log(
-        `[auth] POST /auth/refresh → error (retry ${retryCountRef.current}/${MAX_REFRESH_RETRIES})`,
-        err,
-      );
 
       if (retryCountRef.current <= MAX_REFRESH_RETRIES) {
         clearTimer(retryTimerRef);
         retryTimerRef.current = setTimeout(doRefresh, RETRY_INTERVAL_MS);
       } else {
         // Exhausted retries. Log out cleanly
-        console.log("[auth] POST /auth/refresh → max retries, logging out");
         retryCountRef.current = 0;
         logout();
       }
@@ -333,7 +317,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = useCallback(
     async (email: string, password: string) => {
       try {
-        console.log("[auth] POST /auth/login → sending…");
         const res = await fetch(`${API_BASE}/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -343,11 +326,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         if (!res.ok) {
           const err = await res.json().catch(() => null);
-          console.log(`[auth] POST /auth/login → ${res.status}`, err);
           return { error: err?.message ?? "Login failed" };
         }
 
-        console.log(`[auth] POST /auth/login → ${res.status} ✓`);
         const data = await res.json();
 
         // Store the access token in memory

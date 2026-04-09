@@ -110,7 +110,6 @@ export async function api<T>(
   // Error handling
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    console.log(`[api] ${method} /${path} → ${res.status} ERROR`, body);
     throw new Error(`API error ${String(res.status)}: ${body}`);
   }
   return res.json() as Promise<T>;
