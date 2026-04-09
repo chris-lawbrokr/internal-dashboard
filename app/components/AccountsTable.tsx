@@ -107,14 +107,27 @@ function formatFilterValue(column: FilterColumn, value: string): string {
   return value;
 }
 
-function formatNumericLabel(
-  column: FilterColumn,
-  op: NumericOp,
-  value: number,
-): string {
-  const symbol = op === "gt" ? ">" : "<";
-  if (column === "conversion_rate") return `${symbol} ${value}%`;
-  return `${symbol} ${value.toLocaleString()}`;
+interface ActiveFilter {
+  column: FilterColumn;
+  value?: string;
+  op?: NumericOp;
+  numeric?: number;
+}
+
+function formatActiveFilter(f: ActiveFilter): string {
+  const label = FILTER_COLUMNS.find((c) => c.key === f.column)!.label;
+  if (f.op && f.numeric != null) {
+    const symbol = f.op === "gt" ? ">" : "<";
+    const val =
+      f.column === "conversion_rate"
+        ? `${f.numeric}%`
+        : f.numeric.toLocaleString();
+    return `${label}: ${symbol} ${val}`;
+  }
+  if (f.value) {
+    return `${label}: ${formatFilterValue(f.column, f.value)}`;
+  }
+  return label;
 }
 
 export function AccountsTable({
@@ -134,11 +147,8 @@ export function AccountsTable({
   const [pageSize, setPageSize] = useState(defaultPageSize);
   const [sortField, setSortField] = useState<SortField | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>("asc");
-  // Active filter (what's actually applied to the data)
-  const [activeFilterColumn, setActiveFilterColumn] = useState<FilterColumn | null>(null);
-  const [activeFilterValue, setActiveFilterValue] = useState<string | null>(null);
-  const [activeFilterOp, setActiveFilterOp] = useState<NumericOp | null>(null);
-  const [activeFilterNumeric, setActiveFilterNumeric] = useState<number | null>(null);
+  // Active filters (applied to data, one per column)
+  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
   // Dropdown navigation state
   const [filterColumn, setFilterColumn] = useState<FilterColumn | null>(null);
   const [filterOp, setFilterOp] = useState<NumericOp>("gt");
@@ -146,6 +156,20 @@ export function AccountsTable({
   const [filterOpen, setFilterOpen] = useState(false);
   const filterRef = React.useRef<HTMLDivElement>(null);
   const router = useRouter();
+
+  const upsertFilter = (f: ActiveFilter) => {
+    setActiveFilters((prev) => {
+      const next = prev.filter((p) => p.column !== f.column);
+      next.push(f);
+      return next;
+    });
+    setPage(1);
+  };
+
+  const removeFilter = (column: FilterColumn) => {
+    setActiveFilters((prev) => prev.filter((p) => p.column !== column));
+    setPage(1);
+  };
 
   const managed = externalAccounts === undefined;
 
@@ -194,17 +218,17 @@ export function AccountsTable({
     const q = search.toLowerCase();
     const matchesSearch =
       a.name.toLowerCase().includes(q) || a.website.toLowerCase().includes(q);
-    let matchesFilter = true;
-    if (activeFilterColumn) {
-      if (isNumericColumn(activeFilterColumn) && activeFilterOp && activeFilterNumeric !== null) {
-        const val = Number(a[activeFilterColumn]);
-        matchesFilter =
-          activeFilterOp === "gt" ? val > activeFilterNumeric : val < activeFilterNumeric;
-      } else if (!isNumericColumn(activeFilterColumn) && activeFilterValue) {
-        matchesFilter = String(a[activeFilterColumn]) === activeFilterValue;
+    const matchesFilters = activeFilters.every((f) => {
+      if (isNumericColumn(f.column) && f.op && f.numeric != null) {
+        const val = Number(a[f.column]);
+        return f.op === "gt" ? val > f.numeric : val < f.numeric;
       }
-    }
-    return matchesSearch && matchesFilter;
+      if (f.value) {
+        return String(a[f.column]) === f.value;
+      }
+      return true;
+    });
+    return matchesSearch && matchesFilters;
   });
 
   const sorted = sortField
@@ -266,148 +290,169 @@ export function AccountsTable({
                 </button>
               )}
             </div>
-            <div ref={filterRef} className="relative">
-              <button
-                type="button"
-                onClick={() => setFilterOpen((o) => !o)}
-                className={`h-9 flex items-center gap-1.5 rounded-md border px-3 text-sm cursor-pointer transition-colors ${activeFilterColumn ? "border-brand-dark text-brand-dark" : "border-input text-muted-foreground hover:text-foreground"}`}
-              >
-                <ListFilter size={14} />
-                {activeFilterColumn
-                  ? isNumericColumn(activeFilterColumn) &&
-                    activeFilterOp &&
-                    activeFilterNumeric !== null
-                    ? `${FILTER_COLUMNS.find((c) => c.key === activeFilterColumn)!.label}: ${formatNumericLabel(activeFilterColumn, activeFilterOp, activeFilterNumeric)}`
-                    : `${FILTER_COLUMNS.find((c) => c.key === activeFilterColumn)!.label}: ${formatFilterValue(activeFilterColumn, activeFilterValue!)}`
-                  : "Filter"}
-              </button>
-              {filterOpen && (
-                <div className="absolute right-0 top-full mt-1 z-20 min-w-[220px] max-h-[300px] overflow-y-auto overscroll-contain rounded-lg border border-input bg-card shadow-lg">
-                  {!filterColumn ? (
-                    <div>
-                      {FILTER_COLUMNS.map((col) => (
-                        <button
-                          key={col.key}
-                          type="button"
-                          onClick={() => {
-                            setFilterColumn(col.key);
-                            setFilterOp("gt");
-                            const defaults: Record<string, number> = {
-                              visits: 100,
-                              conversions: 10,
-                              conversion_rate: 5,
-                            };
-                            const defaultVal = defaults[col.key];
-                            setFilterCustomInput(defaultVal != null ? String(defaultVal) : "");
-                            if (isNumericColumn(col.key) && defaultVal != null) {
-                              setActiveFilterColumn(col.key);
-                              setActiveFilterOp("gt");
-                              setActiveFilterNumeric(defaultVal);
-                              setPage(1);
-                            }
-                          }}
-                          className="w-full text-left px-3 py-2 text-sm hover:bg-muted cursor-pointer"
-                        >
-                          {col.label}
-                        </button>
-                      ))}
-                    </div>
-                  ) : isNumericColumn(filterColumn) ? (
-                    <div>
-                      <button
-                        type="button"
-                        onClick={() => setFilterColumn(null)}
-                        className="sticky top-0 w-full text-left px-3 py-2 text-sm text-muted-foreground hover:bg-muted cursor-pointer border-b border-input bg-card z-10"
-                      >
-                        ← Back
-                      </button>
-                      <div className="px-3 py-2 flex flex-col gap-2">
-                        <input
-                          type="number"
-                          value={filterCustomInput}
-                          onChange={(e) => {
-                            setFilterCustomInput(e.target.value);
-                            const num = Number(e.target.value);
-                            if (!isNaN(num) && e.target.value.trim()) {
-                              setActiveFilterColumn(filterColumn);
-                              setActiveFilterOp(filterOp);
-                              setActiveFilterNumeric(num);
-                              setPage(1);
-                            }
-                          }}
-                          placeholder="Value"
-                          className="h-8 w-full rounded-md border border-input px-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                        />
-                        <select
-                          aria-label="Filter comparison"
-                          value={filterOp}
-                          onChange={(e) => {
-                            const op = e.target.value as NumericOp;
-                            setFilterOp(op);
-                            const num = Number(filterCustomInput);
-                            if (!isNaN(num) && filterCustomInput.trim()) {
-                              setActiveFilterColumn(filterColumn);
-                              setActiveFilterOp(op);
-                              setActiveFilterNumeric(num);
-                              setPage(1);
-                            }
-                          }}
-                          className="h-8 w-full rounded-md border border-input bg-background px-1.5 text-sm cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                        >
-                          <option value="gt">Greater than</option>
-                          <option value="lt">Less than</option>
-                        </select>
-                      </div>
-                    </div>
-                  ) : (
-                    <div>
-                      <button
-                        type="button"
-                        onClick={() => setFilterColumn(null)}
-                        className="sticky top-0 w-full text-left px-3 py-2 text-sm text-muted-foreground hover:bg-muted cursor-pointer border-b border-input bg-card z-10"
-                      >
-                        ← Back
-                      </button>
-                      {getDistinctValues(accts, filterColumn).map((val) => (
-                        <button
-                          key={val}
-                          type="button"
-                          onClick={() => {
-                            setActiveFilterColumn(filterColumn);
-                            setActiveFilterValue(val);
-                            setActiveFilterOp(null);
-                            setActiveFilterNumeric(null);
-                            setPage(1);
-                            setFilterOpen(false);
-                          }}
-                          className={`w-full text-left px-3 py-2 text-sm hover:bg-muted cursor-pointer ${activeFilterColumn === filterColumn && activeFilterValue === val ? "font-semibold text-brand-dark" : ""}`}
-                        >
-                          {formatFilterValue(filterColumn, val)}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-              {activeFilterColumn && (
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {activeFilters.map((f) => (
+                <span
+                  key={f.column}
+                  className="h-7 flex items-center gap-1 rounded-md border border-brand-dark bg-brand-dark/5 px-2 text-xs text-brand-dark"
+                >
+                  {formatActiveFilter(f)}
+                  <button
+                    type="button"
+                    onClick={() => removeFilter(f.column)}
+                    className="ml-0.5 hover:text-foreground cursor-pointer"
+                    aria-label={`Remove ${f.column} filter`}
+                  >
+                    <X size={12} />
+                  </button>
+                </span>
+              ))}
+              <div ref={filterRef} className="relative">
                 <button
                   type="button"
-                  onClick={() => {
-                    setActiveFilterColumn(null);
-                    setActiveFilterValue(null);
-                    setActiveFilterOp(null);
-                    setActiveFilterNumeric(null);
-                    setFilterColumn(null);
-                    setFilterOp("gt");
-                    setFilterCustomInput("");
-                    setPage(1);
-                  }}
-                  className="absolute -right-1 -top-1 h-4 w-4 flex items-center justify-center rounded-full bg-brand-dark text-white cursor-pointer"
-                  aria-label="Clear filter"
+                  onClick={() => setFilterOpen((o) => !o)}
+                  className="h-7 flex items-center gap-1 rounded-md border border-input px-2 text-xs text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
                 >
-                  <X size={10} />
+                  <ListFilter size={12} />
+                  Filter
                 </button>
-              )}
+                {filterOpen && (
+                  <div className="absolute right-0 top-full mt-1 z-20 min-w-[220px] max-h-[300px] overflow-y-auto overscroll-contain rounded-lg border border-input bg-card shadow-lg">
+                    {!filterColumn ? (
+                      <div>
+                        {FILTER_COLUMNS.map((col) => {
+                          const existing = activeFilters.find(
+                            (f) => f.column === col.key,
+                          );
+                          return (
+                            <button
+                              key={col.key}
+                              type="button"
+                              onClick={() => {
+                                setFilterColumn(col.key);
+                                if (isNumericColumn(col.key)) {
+                                  const defaults: Record<string, number> = {
+                                    visits: 100,
+                                    conversions: 10,
+                                    conversion_rate: 5,
+                                  };
+                                  const prev = existing;
+                                  setFilterOp(prev?.op ?? "gt");
+                                  setFilterCustomInput(
+                                    prev?.numeric != null
+                                      ? String(prev.numeric)
+                                      : String(defaults[col.key] ?? ""),
+                                  );
+                                  const num = prev?.numeric ?? defaults[col.key];
+                                  if (num != null) {
+                                    upsertFilter({
+                                      column: col.key,
+                                      op: prev?.op ?? "gt",
+                                      numeric: num,
+                                    });
+                                  }
+                                } else {
+                                  setFilterOp("gt");
+                                  setFilterCustomInput("");
+                                }
+                              }}
+                              className={`w-full text-left px-3 py-2 text-sm hover:bg-muted cursor-pointer flex items-center justify-between ${existing ? "text-brand-dark font-medium" : ""}`}
+                            >
+                              {col.label}
+                              {existing && (
+                                <span className="text-xs text-muted-foreground">
+                                  ✓
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ) : isNumericColumn(filterColumn) ? (
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => setFilterColumn(null)}
+                          className="sticky top-0 w-full text-left px-3 py-2 text-sm text-muted-foreground hover:bg-muted cursor-pointer border-b border-input bg-card z-10"
+                        >
+                          ← Back
+                        </button>
+                        <div className="px-3 py-2 flex flex-col gap-2">
+                          <input
+                            type="number"
+                            value={filterCustomInput}
+                            onChange={(e) => {
+                              setFilterCustomInput(e.target.value);
+                              const num = Number(e.target.value);
+                              if (!isNaN(num) && e.target.value.trim()) {
+                                upsertFilter({
+                                  column: filterColumn,
+                                  op: filterOp,
+                                  numeric: num,
+                                });
+                              }
+                            }}
+                            placeholder="Value"
+                            className="h-8 w-full rounded-md border border-input px-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          />
+                          <select
+                            aria-label="Filter comparison"
+                            value={filterOp}
+                            onChange={(e) => {
+                              const op = e.target.value as NumericOp;
+                              setFilterOp(op);
+                              const num = Number(filterCustomInput);
+                              if (!isNaN(num) && filterCustomInput.trim()) {
+                                upsertFilter({
+                                  column: filterColumn,
+                                  op,
+                                  numeric: num,
+                                });
+                              }
+                            }}
+                            className="h-8 w-full rounded-md border border-input bg-background px-1.5 text-sm cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          >
+                            <option value="gt">Greater than</option>
+                            <option value="lt">Less than</option>
+                          </select>
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => setFilterColumn(null)}
+                          className="sticky top-0 w-full text-left px-3 py-2 text-sm text-muted-foreground hover:bg-muted cursor-pointer border-b border-input bg-card z-10"
+                        >
+                          ← Back
+                        </button>
+                        {getDistinctValues(accts, filterColumn).map((val) => {
+                          const isActive = activeFilters.some(
+                            (f) =>
+                              f.column === filterColumn && f.value === val,
+                          );
+                          return (
+                            <button
+                              key={val}
+                              type="button"
+                              onClick={() => {
+                                upsertFilter({
+                                  column: filterColumn,
+                                  value: val,
+                                });
+                                setFilterColumn(null);
+                              }}
+                              className={`w-full text-left px-3 py-2 text-sm hover:bg-muted cursor-pointer ${isActive ? "font-semibold text-brand-dark" : ""}`}
+                            >
+                              {formatFilterValue(filterColumn, val)}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         }
