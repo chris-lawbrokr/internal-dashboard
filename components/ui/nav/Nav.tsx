@@ -251,6 +251,7 @@ export function Nav({ children }: { children: React.ReactNode }) {
           <Image
             src="/images/Logo.svg"
             alt="Logo"
+            priority
             height="100"
             width="100"
             style={{ width: "auto", height: "auto" }}
@@ -289,9 +290,9 @@ export function Nav({ children }: { children: React.ReactNode }) {
             <Image
               src="/images/Logo.svg"
               alt="Logo"
+              priority
               height={24}
               width={80}
-              loading="eager"
               style={{ height: "auto" }}
             />
             <button

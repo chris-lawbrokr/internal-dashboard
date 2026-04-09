@@ -55,9 +55,9 @@ export default function LoginPage() {
                 <Image
                   src="/images/Logo.svg"
                   alt="Logo"
+                  priority
                   height={30}
                   width={117}
-                  loading="eager"
                   style={{ height: "auto" }}
                 />
                 <CardDescription>Enter your credentials</CardDescription>
