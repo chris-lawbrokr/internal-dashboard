@@ -11,7 +11,31 @@ import {
   Eraser,
   X,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const WEEKDAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+
+const dpStrings: Record<string, unknown> = {
+  months: MONTHS,
+  shortMonths: SHORT_MONTHS,
+  weekdays: WEEKDAYS,
+  selectDate: "Select date",
+  noDateSelected: "No date selected",
+  previousMonth: "Previous month",
+  nextMonth: "Next month",
+  openDatePicker: "Open date picker",
+  closeDatePicker: "Close date picker",
+  today: "Today",
+  clear: "Clear",
+  start: "Start",
+  end: "End",
+};
+
+function useDatePickerStrings() {
+  const t = (key: string) => (dpStrings[key] as string | undefined) ?? key;
+  t.raw = (key: string) => dpStrings[key];
+  return t;
+}
 
 function cn(...values: Array<string | undefined | null | false>): string {
   return values.filter(Boolean).join(" ");
@@ -87,15 +111,13 @@ export const DatePickerInput = React.forwardRef<
   HTMLButtonElement,
   DatePickerInputProps
 >(({ label, required, value, placeholder, onClick, disabled }, ref) => {
-  const t = useTranslations("datepicker");
-  const resolvedPlaceholder = placeholder ?? t("selectDate");
+  const resolvedPlaceholder = placeholder ?? "Select date";
 
   function formatDate(date: Date): string {
-    const shortMonths: string[] = t.raw("shortMonths");
     const day = date.getDate();
-    const month = shortMonths[date.getMonth()];
+    const month = SHORT_MONTHS[date.getMonth()];
     const year = date.getFullYear();
-    return `${day} ${month} ${year}`;
+    return `${String(day)} ${month ?? ""} ${String(year)}`;
   }
 
   return (
@@ -139,10 +161,10 @@ export interface CalendarProps {
   onDateSelect: (date: Date) => void;
   onMonthChange: (month: number, year: number) => void;
   showNav?: "left" | "right" | "both" | "none";
-  startClassName?: string;
-  endClassName?: string;
-  minDate?: Date | null;
-  maxDate?: Date | null;
+  startClassName?: string | undefined;
+  endClassName?: string | undefined;
+  minDate?: Date | null | undefined;
+  maxDate?: Date | null | undefined;
 }
 
 export function Calendar({
@@ -158,9 +180,9 @@ export function Calendar({
   minDate = null,
   maxDate = null,
 }: CalendarProps) {
-  const t = useTranslations("datepicker");
-  const months: string[] = t.raw("months");
-  const weekdays: string[] = t.raw("weekdays");
+  const t = (key: string) => (dpStrings[key] as string | undefined) ?? key;
+  const months = MONTHS;
+  const weekdays = WEEKDAYS;
 
   const totalDays = daysInMonth(year, month);
   const firstDay = startDayOfWeek(year, month);
@@ -425,14 +447,17 @@ export interface DatePickerProps {
 }
 
 export function DatePicker({
-  label,
-  required,
+  label: _label,
+  required: _required,
   value = null,
   onChange,
-  placeholder,
+  placeholder: _placeholder,
   disabled,
 }: DatePickerProps) {
-  const t = useTranslations("datepicker");
+  void _label;
+  void _required;
+  void _placeholder;
+  const t = useDatePickerStrings();
   const [open, setOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
@@ -459,7 +484,7 @@ export function DatePicker({
   }, [open]);
 
   function formatDate(date: Date): string {
-    const shortMonths: string[] = t.raw("shortMonths");
+    const shortMonths = SHORT_MONTHS;
     const day = date.getDate();
     const month = shortMonths[date.getMonth()];
     const year = date.getFullYear();
@@ -570,13 +595,13 @@ export interface DateRangePickerProps {
   endDate?: Date | null;
   onChange?: (start: Date | null, end: Date | null) => void;
   disabled?: boolean;
-  startClassName?: string;
-  endClassName?: string;
+  startClassName?: string | undefined;
+  endClassName?: string | undefined;
 }
 
 export function DateRangePicker({
-  labels,
-  required,
+  labels: _labels,
+  required: _required,
   startDate = null,
   endDate = null,
   onChange,
@@ -584,11 +609,9 @@ export function DateRangePicker({
   startClassName,
   endClassName,
 }: DateRangePickerProps) {
-  const t = useTranslations("datepicker");
-  const resolvedLabels = {
-    start: labels?.start ?? t("start"),
-    end: labels?.end ?? t("end"),
-  };
+  const t = useDatePickerStrings();
+  void _labels;
+  void _required;
 
   const [open, setOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -622,7 +645,7 @@ export function DateRangePicker({
   }, [open]);
 
   function formatDate(date: Date): string {
-    const shortMonths: string[] = t.raw("shortMonths");
+    const shortMonths = SHORT_MONTHS;
     const day = date.getDate();
     const month = shortMonths[date.getMonth()];
     const year = date.getFullYear();
@@ -671,14 +694,20 @@ export function DateRangePicker({
         }}
         disabled={disabled}
         className={cn(
-          "h-9 w-9 flex items-center justify-center rounded-md border border-input bg-background",
+          "h-9 flex items-center gap-2 rounded-md border border-input bg-background px-3",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           "disabled:cursor-not-allowed disabled:opacity-50",
           !disabled && "cursor-pointer",
+          !(startDate || endDate) && "text-muted-foreground",
         )}
         aria-label={open ? t("closeDatePicker") : t("openDatePicker")}
       >
-        <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+        <CalendarIcon className="h-4 w-4 text-muted-foreground shrink-0" />
+        <span className="text-sm whitespace-nowrap">
+          {startDate || endDate
+            ? `${startDate ? formatDate(startDate) : t("start")} — ${endDate ? formatDate(endDate) : t("end")}`
+            : t("selectDate")}
+        </span>
       </button>
 
       {open && (
@@ -788,7 +817,7 @@ DateRangePicker.displayName = "DateRangePicker";
 
 // ── DateRangePickerWithPresets ──────────────────────────────────────
 
-type Preset = "90d" | "30d" | "all" | "custom";
+// type Preset = "90d" | "30d" | "all" | "custom";
 
 function subDays(days: number): Date {
   const d = new Date();
@@ -825,7 +854,7 @@ export function DateRangePickerWithPresets({
   minDate = null,
   maxDate = null,
 }: DateRangePickerWithPresetsProps) {
-  const t = useTranslations("datepicker");
+  const t = useDatePickerStrings();
 
   const allStart = minDate ?? subDays(365);
   const allEnd = maxDate ?? today();
@@ -851,6 +880,10 @@ export function DateRangePickerWithPresets({
         return;
       }
     }
+    // Apply custom dates on close so the query always updates
+    if (startDate && endDate) {
+      onChange?.(startDate, endDate, preset);
+    }
     setOpen(false);
     setPresetsOpen(false);
   }
@@ -867,6 +900,7 @@ export function DateRangePickerWithPresets({
     }
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, startDate, endDate]);
 
   function applyPreset(p: { key: string; days: number | null }) {
@@ -876,24 +910,31 @@ export function DateRangePickerWithPresets({
     setStartDate(newStart);
     setEndDate(newEnd);
     onChange?.(newStart, newEnd, p.key);
-    setOpen(false);
     setPresetsOpen(false);
   }
 
   function handleDateSelect(date: Date) {
     setPreset("custom");
     if (selecting === "start") {
+      setStartDate(date);
       if (endDate && date.getTime() > endDate.getTime()) {
-        setStartDate(date);
+        // New start is after current end — clear end, wait for new end pick
         setEndDate(null);
+        setSelecting("end");
+      } else if (endDate) {
+        // Valid range — fire immediately with new start + existing end
+        setSelecting("end");
+        onChange?.(date, endDate, "custom");
       } else {
-        setStartDate(date);
+        setSelecting("end");
       }
-      setSelecting("end");
     } else {
       if (startDate && date.getTime() < startDate.getTime()) {
+        // Picked date before start — swap: use it as new start, keep old start as end
         setStartDate(date);
-        setSelecting("end");
+        setEndDate(startDate);
+        setSelecting("start");
+        onChange?.(date, startDate, "custom");
       } else {
         setEndDate(date);
         setSelecting("start");

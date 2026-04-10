@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { Search } from "lucide-react";
-import { useTranslations } from "next-intl";
 
 function cn(...values: Array<string | undefined | null | false>): string {
   return values.filter(Boolean).join(" ");
@@ -46,7 +45,6 @@ export const Table = React.forwardRef<
     },
     ref,
   ) => {
-    const t = useTranslations("table");
     return (
       <div
         className={cn(
@@ -81,11 +79,11 @@ export const Table = React.forwardRef<
             </div>
           )
         )}
-        <div className="px-4 py-4">
-          <div className="overflow-auto">
+        <div className="px-4 py-4 flex-1 min-h-0 flex flex-col">
+          <div className="overflow-auto flex-1 min-h-0 max-h-[70vh]">
             <table
               ref={ref}
-              className={cn("w-full caption-bottom text-sm", className)}
+              className={cn("w-full caption-bottom text-sm border-separate border-spacing-0", className)}
               {...props}
             />
           </div>
@@ -120,7 +118,7 @@ export const TableHeader = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
-  <thead ref={ref} className={cn("[&_tr]:border-b", className)} {...props} />
+  <thead ref={ref} className={cn("sticky top-0 z-10 bg-card [&_th]:border-b", className)} {...props} />
 ));
 TableHeader.displayName = "TableHeader";
 
@@ -189,6 +187,8 @@ interface TablePaginationProps {
   totalItems: number;
   pageSize: number;
   onPageChange: (page: number) => void;
+  onPageSizeChange?: (size: number) => void;
+  pageSizeOptions?: number[];
   info?: React.ReactNode;
 }
 
@@ -198,24 +198,46 @@ export function TablePagination({
   totalItems,
   pageSize,
   onPageChange,
+  onPageSizeChange,
+  pageSizeOptions = [5, 10, 20, 25, 50, 100],
   info,
 }: TablePaginationProps) {
-  const t = useTranslations("table");
-  const tc = useTranslations("common");
   const start = totalItems === 0 ? 0 : (page - 1) * pageSize + 1;
   const end = Math.min(page * pageSize, totalItems);
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm">
-      {info ?? (
-        <span className="text-muted-foreground">
-          {t("showing")}{" "}
-          <span className="font-bold">
-            {start}-{end}
-          </span>{" "}
-          {t("of")} <span className="font-bold">{totalItems}</span>
-        </span>
-      )}
+      <div className="flex items-center gap-4">
+        {info ?? (
+          <span className="text-muted-foreground">
+            Showing{" "}
+            <span className="font-bold">
+              {start}-{end}
+            </span>{" "}
+            of <span className="font-bold">{totalItems}</span>
+          </span>
+        )}
+        {onPageSizeChange && (
+          <div className="flex items-center gap-1.5 text-muted-foreground">
+            <label htmlFor="page-size-select">Rows</label>
+            <select
+              id="page-size-select"
+              value={pageSize}
+              onChange={(e) => {
+                onPageSizeChange(Number(e.target.value));
+                onPageChange(1);
+              }}
+              className="h-7 rounded-md border border-input bg-background px-1.5 text-sm cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {pageSizeOptions.map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+      </div>
       <div className="flex gap-2">
         <button
           type="button"
@@ -223,7 +245,7 @@ export function TablePagination({
           onClick={() => onPageChange(page - 1)}
           className="flex-1 sm:flex-none flex items-center justify-center rounded-md border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
         >
-          {tc("back")}
+          Back
         </button>
         <button
           type="button"
@@ -231,7 +253,7 @@ export function TablePagination({
           onClick={() => onPageChange(page + 1)}
           className="flex-1 sm:flex-none flex items-center justify-center rounded-md border border-primary px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
         >
-          {tc("next")}
+          Next
         </button>
       </div>
     </div>

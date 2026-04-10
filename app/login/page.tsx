@@ -1,10 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { type SyntheticEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/auth";
+
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input, PasswordInput } from "@/components/ui/input";
 import {
   CardCentered,
   CardHeader,
@@ -13,12 +17,8 @@ import {
   CardFooter,
   CardLink,
 } from "@/components/ui/card";
-import { Input, PasswordInput } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useAuth } from "@/lib/auth";
 
-export default function Login() {
-  const t = useTranslations("login");
+export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
   const [email, setEmail] = useState("");
@@ -26,7 +26,7 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
@@ -50,17 +50,17 @@ export default function Login() {
       <div className="flex-1 flex gap-24">
         <div className="w-full">
           <CardCentered className="w-full h-full">
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={(e) => void handleSubmit(e)}>
               <CardHeader>
                 <Image
                   src="/images/Logo.svg"
                   alt="Logo"
-                  height="30"
-                  width="117"
-                  loading="eager"
+                  priority
+                  height={30}
+                  width={117}
                   style={{ height: "auto" }}
                 />
-                <CardDescription>{t("enterCredentials")}</CardDescription>
+                <CardDescription>Enter your credentials</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
                 {error && (
@@ -69,28 +69,32 @@ export default function Login() {
                 <Input
                   id="email"
                   type="email"
-                  label={t("email")}
+                  label="Email"
                   placeholder="you@example.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setEmail(e.target.value);
+                  }}
                   required
                 />
                 <PasswordInput
                   id="password"
-                  label={t("password")}
+                  label="Password"
                   placeholder="••••••••"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setPassword(e.target.value);
+                  }}
                   required
                 />
               </CardContent>
               <CardFooter>
                 <div className="flex items-center justify-between mt-4">
-                  <Checkbox id="remember" label={t("rememberMe")} />
-                  <CardLink href="/login">{t("forgotPassword")}</CardLink>
+                  <Checkbox id="remember" label="Remember me" />
+                  <CardLink href="/login">Forgot password?</CardLink>
                 </div>
                 <Button className="w-full" type="submit" disabled={loading}>
-                  {loading ? "..." : t("signIn")}
+                  {loading ? "Signing in..." : "Sign in"}
                 </Button>
               </CardFooter>
             </form>
@@ -100,8 +104,8 @@ export default function Login() {
           <Image
             src="/images/graphics/login.svg"
             alt="Logo"
-            height="494"
-            width="608"
+            height={494}
+            width={608}
             draggable={false}
             className="select-none"
           />

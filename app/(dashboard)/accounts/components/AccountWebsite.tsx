@@ -1,0 +1,277 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useAuth } from "@/lib/auth";
+import { api } from "@/lib/api";
+import { useDateRange } from "@/lib/useDateRange";
+import {
+  SkeletonStatusCard,
+  SkeletonValueCard,
+  SkeletonTable,
+} from "@/components/ui/skeleton/Skeleton";
+import { useSkeletonTransition } from "@/components/ui/skeleton/SkeletonTransition";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge/Badge";
+import type { BadgeVariant } from "@/components/ui/badge/Badge";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+  TablePagination,
+} from "@/components/ui/table/Table";
+
+interface WebsiteStatus {
+  status: "live" | "down";
+  source_attribution: "enabled" | "disabled";
+  link_status: "up" | "down";
+  ssl_status: "enabled" | "disabled";
+  load_time: number;
+  live_links: number;
+  live_links_prev: number;
+  live_links_change: number;
+  integrations: string[] | null;
+}
+
+interface WebsiteLink {
+  website_url: string;
+  lawbrokr_url: string | null;
+  status: "active" | "review" | "broken";
+}
+
+interface WebsiteLinksResponse {
+  data: WebsiteLink[];
+}
+
+interface AccountWebsiteProps {
+  lawFirmId: string;
+}
+
+const DEFAULT_pageSize = 5;
+
+const linkStatusConfig: Record<
+  string,
+  { label: string; variant: BadgeVariant }
+> = {
+  active: { label: "Active", variant: "success" },
+  review: { label: "Review", variant: "warning" },
+  broken: { label: "Broken", variant: "error" },
+} as const;
+
+function getLinkStatus(status: string): {
+  label: string;
+  variant: BadgeVariant;
+} {
+  return linkStatusConfig[status] ?? { label: "Active", variant: "success" };
+}
+
+export function AccountWebsite({ lawFirmId }: AccountWebsiteProps) {
+  const { user, getAccessToken } = useAuth();
+  const { dateQuery } = useDateRange();
+  const [status, setStatus] = useState<WebsiteStatus | null>(null);
+  const [links, setLinks] = useState<WebsiteLinksResponse | null>(null);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(DEFAULT_pageSize);
+
+  useEffect(() => {
+    setStatus(null);
+    setLinks(null);
+    if (!user) return;
+    let cancelled = false;
+    const qs = dateQuery ? `&${dateQuery}` : "";
+
+    api<WebsiteStatus>(
+      `admin/account/website?law_firm_id=${lawFirmId}${qs}`,
+      getAccessToken,
+    )
+      .then((data) => {
+        if (!cancelled) setStatus(data);
+      })
+      .catch(() => {});
+
+    api<WebsiteLinksResponse>(
+      `admin/account/website/links?law_firm_id=${lawFirmId}${qs}`,
+      getAccessToken,
+    )
+      .then((data) => {
+        if (!cancelled) setLinks(data);
+      })
+      .catch(() => {});
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user, getAccessToken, lawFirmId, dateQuery]);
+
+  const { showSkeleton, fading } = useSkeletonTransition(!status);
+
+  if (showSkeleton || !status)
+    return (
+      <div
+        className={`flex flex-col gap-4${fading ? " skeleton-fade-out" : ""}`}
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <SkeletonStatusCard />
+          <SkeletonStatusCard />
+          <SkeletonStatusCard />
+          <SkeletonStatusCard />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <SkeletonStatusCard />
+          <SkeletonValueCard />
+          <SkeletonValueCard />
+        </div>
+        <SkeletonTable rows={6} />
+      </div>
+    );
+
+  const totalPages = links ? Math.ceil(links.data.length / pageSize) : 0;
+  const currentPage = Math.min(page, totalPages || 1);
+  const paginatedLinks = links
+    ? links.data.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+    : [];
+
+  const s = status!;
+  const isPositive = s.live_links_change >= 0;
+
+  return (
+    <div className="flex flex-col gap-4 flex-1">
+      {/* Status cards - top row */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 skeleton-stagger">
+        <Card className="p-4 flex flex-col gap-2">
+          <p className="text-sm text-muted-foreground">Website Status</p>
+          <Badge
+            variant={s.status === "live" ? "success" : "error"}
+            dot
+            className="px-2 py-1 text-sm w-fit capitalize"
+          >
+            {s.status === "live" ? "Live" : "Down"}
+          </Badge>
+        </Card>
+        <Card className="p-4 flex flex-col gap-2">
+          <p className="text-sm text-muted-foreground">Source Attribution</p>
+          <Badge
+            variant={s.source_attribution === "enabled" ? "success" : "error"}
+            dot
+            className="px-2 py-1 text-sm w-fit capitalize"
+          >
+            {s.source_attribution === "enabled" ? "Enabled" : "Disabled"}
+          </Badge>
+        </Card>
+        <Card className="p-4 flex flex-col gap-2">
+          <p className="text-sm text-muted-foreground">Lawbrokr Link Status</p>
+          <Badge
+            variant={s.link_status === "up" ? "success" : "error"}
+            dot
+            className="px-2 py-1 text-sm w-fit capitalize"
+          >
+            {s.link_status === "up" ? "Up" : "Down"}
+          </Badge>
+        </Card>
+        <Card className="p-4 flex flex-col gap-2">
+          <p className="text-sm text-muted-foreground">Active Integrations</p>
+          <div className="flex flex-wrap gap-1.5">
+            {s.integrations?.length ? (
+              s.integrations.map((name) => (
+                <Badge
+                  key={name}
+                  variant="neutral"
+                  className="px-2 py-1 text-sm"
+                >
+                  {name}
+                </Badge>
+              ))
+            ) : (
+              <span className="text-sm text-muted-foreground">None</span>
+            )}
+          </div>
+        </Card>
+      </div>
+
+      {/* Status cards - bottom row */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 skeleton-stagger">
+        <Card className="p-4 flex flex-col gap-2">
+          <p className="text-sm text-muted-foreground">SSL Status</p>
+          <Badge
+            variant={s.ssl_status === "enabled" ? "success" : "error"}
+            dot
+            className="px-2 py-1 text-sm w-fit capitalize"
+          >
+            {s.ssl_status === "enabled" ? "Enabled" : "Disabled"}
+          </Badge>
+        </Card>
+        <Card className="p-4 flex flex-col gap-1">
+          <p className="text-sm text-muted-foreground">Website Load Time</p>
+          <p className="text-2xl font-bold">{s.load_time} seconds</p>
+        </Card>
+        <Card className="p-4 flex flex-col gap-1">
+          <p className="text-sm text-muted-foreground">Live Lawbrokr Links</p>
+          <p className="text-2xl font-bold">{s.live_links}</p>
+          <p className="text-xs text-muted-foreground">
+            <span
+              className={
+                isPositive
+                  ? "text-status-success-border"
+                  : "text-status-error-border"
+              }
+            >
+              {isPositive ? "↑" : "↓"}{" "}
+              {Math.abs(Math.round(s.live_links_change))}%
+            </span>{" "}
+            vs last month
+          </p>
+        </Card>
+      </div>
+
+      {/* Links table */}
+      <Table
+        title="Lawbrokr Links"
+        wrapperClassName="flex-1"
+        footer={
+          links && links.data.length > pageSize ? (
+            <TablePagination
+              page={currentPage}
+              totalPages={totalPages}
+              totalItems={links.data.length}
+              pageSize={pageSize}
+              onPageChange={setPage}
+              onPageSizeChange={setPageSize}
+            />
+          ) : undefined
+        }
+      >
+        <TableHeader>
+          <TableRow className="border-b border-border">
+            <TableHead>Website URL</TableHead>
+            <TableHead>Lawbrokr URL</TableHead>
+            <TableHead className="text-right">Status</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {paginatedLinks.map((link, i) => {
+            const cfg = getLinkStatus(link.status);
+            return (
+              <TableRow key={i} className="border-b border-background">
+                <TableCell className="text-sm">{link.website_url ? <a href={link.website_url.startsWith("http") ? link.website_url : `https://${link.website_url}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{link.website_url}</a> : null}</TableCell>
+                <TableCell className="text-sm">
+                  {link.lawbrokr_url ? <a href={link.lawbrokr_url.startsWith("http") ? link.lawbrokr_url : `https://${link.lawbrokr_url}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{link.lawbrokr_url}</a> : "—"}
+                </TableCell>
+                <TableCell className="text-right">
+                  <Badge
+                    variant={cfg.variant}
+                    dot
+                    className="px-2 py-1 text-sm"
+                  >
+                    {cfg.label}
+                  </Badge>
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </div>
+  );
+}

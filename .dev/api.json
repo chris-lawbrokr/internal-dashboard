@@ -1,0 +1,553 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_source": "manual",
+  "__export_date": "2026-03-25T00:00:00.000Z",
+  "resources": [
+    {
+      "_id": "wrk_lawbrokr_legacy",
+      "_type": "workspace",
+      "parentId": null,
+      "name": "Lawbrokr Legacy API",
+      "description": "Legacy admin API endpoints for the Lawbrokr platform. Run the Login request first to obtain an access token, then use the admin endpoints.",
+      "scope": "collection"
+    },
+    {
+      "_id": "env_base",
+      "_type": "environment",
+      "parentId": "wrk_lawbrokr_legacy",
+      "name": "Base Environment",
+      "data": {},
+      "isPrivate": false
+    },
+    {
+      "_id": "env_local_dev",
+      "_type": "environment",
+      "parentId": "env_base",
+      "name": "Local Dev",
+      "data": {
+        "base_url": "http://127.0.0.1:8000/v1/legacy",
+        "access_token": "",
+        "law_firm_id": "1",
+        "start_date": "2026-01-01",
+        "end_date": "2026-03-25"
+      },
+      "isPrivate": false
+    },
+
+    {
+      "_id": "fld_auth",
+      "_type": "request_group",
+      "parentId": "wrk_lawbrokr_legacy",
+      "name": "Auth",
+      "description": "Authentication endpoints. Run Login first to get an access token.",
+      "metaSortKey": 100
+    },
+    {
+      "_id": "req_login",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Login",
+      "description": "Authenticate and obtain an access token. The access_token is automatically saved to the environment after a successful response.",
+      "method": "POST",
+      "url": "{{ base_url }}/auth/login",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"email\": \"admin@example.com\",\n\t\"password\": \"password\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "parameters": [],
+      "metaSortKey": 100,
+      "afterResponseScript": "const body = insomnia.response.json();\ninsomnia.environment.set('access_token', body.access_token);"
+    },
+    {
+      "_id": "req_logout",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Logout",
+      "description": "Clear the refresh token cookie.",
+      "method": "POST",
+      "url": "{{ base_url }}/auth/logout",
+      "body": {},
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ access_token }}"
+      },
+      "parameters": [],
+      "metaSortKey": 200
+    },
+    {
+      "_id": "req_refresh",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Refresh Token",
+      "description": "Issue a new access token using the refresh cookie.",
+      "method": "POST",
+      "url": "{{ base_url }}/auth/refresh",
+      "body": {},
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ access_token }}"
+      },
+      "parameters": [],
+      "metaSortKey": 300
+    },
+    {
+      "_id": "req_me",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Get Current User",
+      "description": "Return the current authenticated user's profile.",
+      "method": "GET",
+      "url": "{{ base_url }}/auth/me",
+      "body": {},
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ access_token }}"
+      },
+      "parameters": [],
+      "metaSortKey": 400
+    },
+
+    {
+      "_id": "fld_analytics",
+      "_type": "request_group",
+      "parentId": "wrk_lawbrokr_legacy",
+      "name": "Admin - Analytics",
+      "description": "Platform-wide analytics endpoints.",
+      "metaSortKey": 200
+    },
+    {
+      "_id": "req_analytics_summary",
+      "_type": "request",
+      "parentId": "fld_analytics",
+      "name": "Analytics Summary",
+      "description": "Retrieve analytics summary with totals, month-over-month comparison, and sparkline series.",
+      "method": "GET",
+      "url": "{{ base_url }}/admin/analytics/summary",
+      "body": {},
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ access_token }}"
+      },
+      "parameters": [
+        {
+          "name": "start_date",
+          "value": "{{ start_date }}",
+          "description": "Start date (inclusive)"
+        },
+        {
+          "name": "end_date",
+          "value": "{{ end_date }}",
+          "description": "End date (inclusive)"
+        }
+      ],
+      "metaSortKey": 100
+    },
+    {
+      "_id": "req_analytics_summary_firm",
+      "_type": "request",
+      "parentId": "fld_analytics",
+      "name": "Analytics Summary (by firm)",
+      "description": "Analytics summary filtered to a single law firm.",
+      "method": "GET",
+      "url": "{{ base_url }}/admin/analytics/summary",
+      "body": {},
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ access_token }}"
+      },
+      "parameters": [
+        {
+          "name": "start_date",
+          "value": "{{ start_date }}",
+          "description": "Start date (inclusive)"
+        },
+        {
+          "name": "end_date",
+          "value": "{{ end_date }}",
+          "description": "End date (inclusive)"
+        },
+        {
+          "name": "law_firm_id",
+          "value": "{{ law_firm_id }}",
+          "description": "Law firm ID"
+        }
+      ],
+      "metaSortKey": 200
+    },
+    {
+      "_id": "req_chart_leads",
+      "_type": "request",
+      "parentId": "fld_analytics",
+      "name": "Chart Leads",
+      "description": "Return aggregated visits and conversions for a date range.",
+      "method": "GET",
+      "url": "{{ base_url }}/admin/analytics/chart/leads",
+      "body": {},
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ access_token }}"
+      },
+      "parameters": [
+        {
+          "name": "start_date",
+          "value": "{{ start_date }}",
+          "description": "Start date (inclusive)"
+        },
+        {
+          "name": "end_date",
+          "value": "{{ end_date }}",
+          "description": "End date (inclusive)"
+        }
+      ],
+      "metaSortKey": 300
+    },
+    {
+      "_id": "req_chart_leads_firm",
+      "_type": "request",
+      "parentId": "fld_analytics",
+      "name": "Chart Leads (by firm)",
+      "description": "Aggregated visits and conversions filtered to a single law firm.",
+      "method": "GET",
+      "url": "{{ base_url }}/admin/analytics/chart/leads",
+      "body": {},
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ access_token }}"
+      },
+      "parameters": [
+        {
+          "name": "start_date",
+          "value": "{{ start_date }}",
+          "description": "Start date (inclusive)"
+        },
+        {
+          "name": "end_date",
+          "value": "{{ end_date }}",
+          "description": "End date (inclusive)"
+        },
+        {
+          "name": "law_firm_id",
+          "value": "{{ law_firm_id }}",
+          "description": "Law firm ID"
+        }
+      ],
+      "metaSortKey": 400
+    },
+
+    {
+      "_id": "fld_accounts",
+      "_type": "request_group",
+      "parentId": "wrk_lawbrokr_legacy",
+      "name": "Admin - Accounts",
+      "description": "Law firm account management endpoints.",
+      "metaSortKey": 300
+    },
+    {
+      "_id": "req_list_accounts",
+      "_type": "request",
+      "parentId": "fld_accounts",
+      "name": "List Accounts",
+      "description": "Return all law firm accounts with summary metrics.",
+      "method": "GET",
+      "url": "{{ base_url }}/admin/accounts",
+      "body": {},
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ access_token }}"
+      },
+      "parameters": [
+        {
+          "name": "start_date",
+          "value": "{{ start_date }}",
+          "description": "Start date (inclusive)"
+        },
+        {
+          "name": "end_date",
+          "value": "{{ end_date }}",
+          "description": "End date (inclusive)"
+        }
+      ],
+      "metaSortKey": 100
+    },
+    {
+      "_id": "req_account_detail",
+      "_type": "request",
+      "parentId": "fld_accounts",
+      "name": "Account Detail",
+      "description": "Return detailed information for a single law firm account.",
+      "method": "GET",
+      "url": "{{ base_url }}/admin/account",
+      "body": {},
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ access_token }}"
+      },
+      "parameters": [
+        {
+          "name": "law_firm_id",
+          "value": "{{ law_firm_id }}",
+          "description": "Law firm ID"
+        }
+      ],
+      "metaSortKey": 200
+    },
+    {
+      "_id": "req_account_users",
+      "_type": "request",
+      "parentId": "fld_accounts",
+      "name": "Account Users",
+      "description": "Return all users belonging to a law firm.",
+      "method": "GET",
+      "url": "{{ base_url }}/admin/account/users",
+      "body": {},
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ access_token }}"
+      },
+      "parameters": [
+        {
+          "name": "law_firm_id",
+          "value": "{{ law_firm_id }}",
+          "description": "Law firm ID"
+        }
+      ],
+      "metaSortKey": 300
+    },
+
+    {
+      "_id": "fld_performance",
+      "_type": "request_group",
+      "parentId": "wrk_lawbrokr_legacy",
+      "name": "Admin - Performance",
+      "description": "Law firm performance analytics endpoints.",
+      "metaSortKey": 400
+    },
+    {
+      "_id": "req_perf_chart",
+      "_type": "request",
+      "parentId": "fld_performance",
+      "name": "Performance Chart",
+      "description": "Return conversion rate comparison chart for a law firm.",
+      "method": "GET",
+      "url": "{{ base_url }}/admin/account/performance/chart",
+      "body": {},
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ access_token }}"
+      },
+      "parameters": [
+        {
+          "name": "start_date",
+          "value": "{{ start_date }}",
+          "description": "Start date (inclusive)"
+        },
+        {
+          "name": "end_date",
+          "value": "{{ end_date }}",
+          "description": "End date (inclusive)"
+        },
+        {
+          "name": "law_firm_id",
+          "value": "{{ law_firm_id }}",
+          "description": "Law firm ID"
+        }
+      ],
+      "metaSortKey": 100
+    },
+    {
+      "_id": "req_perf_funnels",
+      "_type": "request",
+      "parentId": "fld_performance",
+      "name": "Performance Funnels",
+      "description": "Return performance metrics for each funnel belonging to a law firm.",
+      "method": "GET",
+      "url": "{{ base_url }}/admin/account/performance/funnels",
+      "body": {},
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ access_token }}"
+      },
+      "parameters": [
+        {
+          "name": "start_date",
+          "value": "{{ start_date }}",
+          "description": "Start date (inclusive)"
+        },
+        {
+          "name": "end_date",
+          "value": "{{ end_date }}",
+          "description": "End date (inclusive)"
+        },
+        {
+          "name": "law_firm_id",
+          "value": "{{ law_firm_id }}",
+          "description": "Law firm ID"
+        }
+      ],
+      "metaSortKey": 200
+    },
+
+    {
+      "_id": "fld_website",
+      "_type": "request_group",
+      "parentId": "wrk_lawbrokr_legacy",
+      "name": "Admin - Website",
+      "description": "Law firm website monitoring endpoints.",
+      "metaSortKey": 500
+    },
+    {
+      "_id": "req_website_status",
+      "_type": "request",
+      "parentId": "fld_website",
+      "name": "Website Status",
+      "description": "Return website health and monitoring metrics for a law firm.",
+      "method": "GET",
+      "url": "{{ base_url }}/admin/account/website",
+      "body": {},
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ access_token }}"
+      },
+      "parameters": [
+        {
+          "name": "law_firm_id",
+          "value": "{{ law_firm_id }}",
+          "description": "Law firm ID"
+        }
+      ],
+      "metaSortKey": 100
+    },
+    {
+      "_id": "req_website_links",
+      "_type": "request",
+      "parentId": "fld_website",
+      "name": "Website Links",
+      "description": "Return all lawbrokr links found on the customer website.",
+      "method": "GET",
+      "url": "{{ base_url }}/admin/account/website/links",
+      "body": {},
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ access_token }}"
+      },
+      "parameters": [
+        {
+          "name": "law_firm_id",
+          "value": "{{ law_firm_id }}",
+          "description": "Law firm ID"
+        }
+      ],
+      "metaSortKey": 200
+    },
+
+    {
+      "_id": "fld_usage",
+      "_type": "request_group",
+      "parentId": "wrk_lawbrokr_legacy",
+      "name": "Admin - Usage",
+      "description": "Law firm usage and engagement endpoints.",
+      "metaSortKey": 600
+    },
+    {
+      "_id": "req_usage",
+      "_type": "request",
+      "parentId": "fld_usage",
+      "name": "Account Usage",
+      "description": "Return usage overview and onboarding status for a law firm.",
+      "method": "GET",
+      "url": "{{ base_url }}/admin/account/usage",
+      "body": {},
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ access_token }}"
+      },
+      "parameters": [
+        {
+          "name": "law_firm_id",
+          "value": "{{ law_firm_id }}",
+          "description": "Law firm ID"
+        }
+      ],
+      "metaSortKey": 100
+    },
+    {
+      "_id": "req_usage_users",
+      "_type": "request",
+      "parentId": "fld_usage",
+      "name": "Usage Users",
+      "description": "Return users with engagement and notification details for a law firm.",
+      "method": "GET",
+      "url": "{{ base_url }}/admin/account/usage/users",
+      "body": {},
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ access_token }}"
+      },
+      "parameters": [
+        {
+          "name": "law_firm_id",
+          "value": "{{ law_firm_id }}",
+          "description": "Law firm ID"
+        }
+      ],
+      "metaSortKey": 200
+    },
+    {
+      "_id": "req_usage_details",
+      "_type": "request",
+      "parentId": "fld_usage",
+      "name": "Usage Details",
+      "description": "Return detailed usage breakdown across all platform features for a law firm.",
+      "method": "GET",
+      "url": "{{ base_url }}/admin/account/usage/details",
+      "body": {},
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ access_token }}"
+      },
+      "parameters": [
+        {
+          "name": "start_date",
+          "value": "{{ start_date }}",
+          "description": "Start date (inclusive)"
+        },
+        {
+          "name": "end_date",
+          "value": "{{ end_date }}",
+          "description": "End date (inclusive)"
+        },
+        {
+          "name": "law_firm_id",
+          "value": "{{ law_firm_id }}",
+          "description": "Law firm ID"
+        }
+      ],
+      "metaSortKey": 300
+    }
+  ]
+}
