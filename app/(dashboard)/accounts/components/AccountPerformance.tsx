@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 import { useDateRange } from "@/lib/useDateRange";
+import { ErrorState } from "@/components/ui/error-state/ErrorState";
 import {
   SkeletonMetricCard,
   SkeletonChart,
@@ -76,6 +77,7 @@ export function AccountPerformance({ lawFirmId }: AccountPerformanceProps) {
   const [chartData, setChartData] = useState<LeadsChartData | null>(null);
   const [comparison, setComparison] = useState<ComparisonChart | null>(null);
   const [funnels, setFunnels] = useState<FunnelsResponse | null>(null);
+  const [errorStatus, setErrorStatus] = useState<number | null>(null);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(DEFAULT_pageSize);
 
@@ -84,9 +86,14 @@ export function AccountPerformance({ lawFirmId }: AccountPerformanceProps) {
     setChartData(null);
     setComparison(null);
     setFunnels(null);
+    setErrorStatus(null);
     if (!user) return;
     let cancelled = false;
     const qs = dateQuery ? `&${dateQuery}` : "";
+    const onError = (err: unknown) => {
+      if (cancelled) return;
+      setErrorStatus(err instanceof ApiError ? err.status : 0);
+    };
 
     api<AnalyticsSummary>(
       `admin/analytics/summary?law_firm_id=${lawFirmId}${qs}`,
@@ -95,7 +102,7 @@ export function AccountPerformance({ lawFirmId }: AccountPerformanceProps) {
       .then((data) => {
         if (!cancelled) setSummary(data);
       })
-      .catch(() => {});
+      .catch(onError);
 
     api<LeadsChartData>(
       `admin/analytics/chart/leads?law_firm_id=${lawFirmId}${qs}`,
@@ -104,7 +111,7 @@ export function AccountPerformance({ lawFirmId }: AccountPerformanceProps) {
       .then((data) => {
         if (!cancelled) setChartData(data);
       })
-      .catch(() => {});
+      .catch(onError);
 
     api<ComparisonChart>(
       `admin/account/performance/chart?law_firm_id=${lawFirmId}${qs}`,
@@ -113,7 +120,7 @@ export function AccountPerformance({ lawFirmId }: AccountPerformanceProps) {
       .then((data) => {
         if (!cancelled) setComparison(data);
       })
-      .catch(() => {});
+      .catch(onError);
 
     api<FunnelsResponse>(
       `admin/account/performance/funnels?law_firm_id=${lawFirmId}${qs}`,
@@ -122,7 +129,7 @@ export function AccountPerformance({ lawFirmId }: AccountPerformanceProps) {
       .then((data) => {
         if (!cancelled) setFunnels(data);
       })
-      .catch(() => {});
+      .catch(onError);
 
     return () => {
       cancelled = true;
@@ -130,6 +137,8 @@ export function AccountPerformance({ lawFirmId }: AccountPerformanceProps) {
   }, [user, getAccessToken, lawFirmId, dateQuery]);
 
   const { showSkeleton, fading } = useSkeletonTransition(!summary);
+
+  if (errorStatus !== null) return <ErrorState status={errorStatus} />;
 
   if (showSkeleton || !summary)
     return (

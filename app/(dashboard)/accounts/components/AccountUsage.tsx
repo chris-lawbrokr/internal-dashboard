@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 import { useDateRange } from "@/lib/useDateRange";
+import { ErrorState } from "@/components/ui/error-state/ErrorState";
 import { SkeletonChecklist, SkeletonStatusCard, SkeletonValueCard, SkeletonTable } from "@/components/ui/skeleton/Skeleton";
 import { useSkeletonTransition } from "@/components/ui/skeleton/SkeletonTransition";
 import { Card } from "@/components/ui/card";
@@ -194,40 +195,48 @@ export function AccountUsage({ lawFirmId }: AccountUsageProps) {
   const [usage, setUsage] = useState<UsageSummary | null>(null);
   const [users, setUsers] = useState<UsageUser[]>([]);
   const [details, setDetails] = useState<UsageDetails | null>(null);
+  const [errorStatus, setErrorStatus] = useState<number | null>(null);
 
   useEffect(() => {
     setUsage(null);
     setUsers([]);
     setDetails(null);
+    setErrorStatus(null);
     if (!user) return;
     let cancelled = false;
     const qs = dateQuery ? `&${dateQuery}` : "";
+    const onError = (err: unknown) => {
+      if (cancelled) return;
+      setErrorStatus(err instanceof ApiError ? err.status : 0);
+    };
 
     api<UsageSummary>(
       `admin/account/usage?law_firm_id=${lawFirmId}`,
       getAccessToken,
     )
       .then((data) => { if (!cancelled) setUsage(data); })
-      .catch(() => {});
+      .catch(onError);
 
     api<{ data: UsageUser[] }>(
       `admin/account/usage/users?law_firm_id=${lawFirmId}`,
       getAccessToken,
     )
       .then((data) => { if (!cancelled) setUsers(data.data); })
-      .catch(() => {});
+      .catch(onError);
 
     api<UsageDetails>(
       `admin/account/usage/details?law_firm_id=${lawFirmId}${qs}`,
       getAccessToken,
     )
       .then((data) => { if (!cancelled) setDetails(data); })
-      .catch(() => {});
+      .catch(onError);
 
     return () => { cancelled = true; };
   }, [user, getAccessToken, lawFirmId, dateQuery]);
 
   const { showSkeleton, fading } = useSkeletonTransition(!usage);
+
+  if (errorStatus !== null) return <ErrorState status={errorStatus} />;
 
   if (showSkeleton || !usage)
     return (

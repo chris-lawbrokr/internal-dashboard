@@ -59,7 +59,7 @@ The browser calls the backend API directly using `credentials: "include"` for CO
 2. Browser POSTs to `{API_BASE_URL}/auth/login` with `credentials: "include"`
 3. Backend returns a JWT access token and user info, and sets an httpOnly `refresh_token` cookie
 4. AuthProvider stores the access token in a `useRef` (in-memory) and user info in React state
-5. Client-side `session` and `session_user` cookies are set for middleware route protection and page-reload persistence
+5. Client-side `session` and `session_user` cookies are set for proxy route protection and page-reload persistence
 6. A refresh is scheduled based on the JWT `exp` claim (default: 60s before expiry)
 7. On refresh failure, retries 3 times at 10s intervals before forcing logout
 
@@ -67,7 +67,7 @@ The browser calls the backend API directly using `credentials: "include"` for CO
 
 | File                 | Purpose                                                |
 | -------------------- | ------------------------------------------------------ |
-| `middleware.ts`      | Route protection — redirects to `/login` if no session |
+| `proxy.ts`           | Route protection — redirects to `/login` if no session |
 | `lib/auth.tsx`       | `AuthProvider` context, `useAuth` hook, all auth logic |
 | `lib/api.ts`         | Fetch wrapper — adds Bearer token and `credentials`    |
 | `app/login/page.tsx` | Login form                                             |

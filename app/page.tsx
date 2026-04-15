@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 import { useDateRange } from "@/lib/useDateRange";
+import { ErrorState } from "@/components/ui/error-state/ErrorState";
 
 import { MetricCard } from "@/app/components/MetricCard";
 import { PageHeader } from "@/components/ui/page-header/PageHeader";
@@ -44,28 +45,27 @@ export default function Home() {
   const [data, setData] = useState<AnalyticsSummary | null>(null);
   const [chartData, setChartData] = useState<LeadsChartData | null>(null);
   const [accounts, setAccounts] = useState<Account[] | null>(null);
+  const [errorStatus, setErrorStatus] = useState<number | null>(null);
 
   useEffect(() => {
     setData(null);
     setChartData(null);
     setAccounts(null);
+    setErrorStatus(null);
     if (!user) return;
     const qs = dateQuery ? `?${dateQuery}` : "";
+    const onError = (err: unknown) => {
+      setErrorStatus(err instanceof ApiError ? err.status : 0);
+    };
     api<AnalyticsSummary>(`admin/analytics/summary${qs}`, getAccessToken)
       .then(setData)
-      .catch((err: unknown) => {
-        console.error("Failed to load summary:", err);
-      });
+      .catch(onError);
     api<LeadsChartData>(`admin/analytics/chart/leads${qs}`, getAccessToken)
       .then(setChartData)
-      .catch((err: unknown) => {
-        console.error("Failed to load chart:", err);
-      });
+      .catch(onError);
     api<AccountsResponse>(`admin/accounts?${dateQuery}`, getAccessToken)
       .then((res) => setAccounts(res.data))
-      .catch((err: unknown) => {
-        console.error("Failed to load accounts:", err);
-      });
+      .catch(onError);
   }, [user, getAccessToken, dateQuery]);
 
   const loading = !data || !accounts;
@@ -78,7 +78,9 @@ export default function Home() {
       </div>
       <div className="m-4 mt-0 overflow-y-scroll">
         <div>
-          {showSkeleton || !data || !accounts ? (
+          {errorStatus !== null ? (
+            <ErrorState status={errorStatus} />
+          ) : showSkeleton || !data || !accounts ? (
             <div
               className={`overflow-clip flex-1 flex flex-col gap-4${fading ? " skeleton-fade-out" : ""}`}
             >

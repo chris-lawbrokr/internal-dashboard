@@ -2,8 +2,9 @@
 
 import { use, useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 import { PageHeader } from "@/components/ui/page-header/PageHeader";
+import { ErrorState } from "@/components/ui/error-state/ErrorState";
 import { Tabs, useTabSearchParam } from "@/components/ui/tabs/Tabs";
 import type { Tab } from "@/components/ui/tabs/Tabs";
 import { AccountOverview } from "../components/AccountOverview";
@@ -27,19 +28,32 @@ export default function AccountPage({
   const { user, getAccessToken } = useAuth();
   const [activeTab, setActiveTab] = useTabSearchParam(accountTabs);
   const [firmName, setFirmName] = useState<string | null>(null);
+  const [errorStatus, setErrorStatus] = useState<number | null>(null);
 
   useEffect(() => {
     if (!user) return;
     let cancelled = false;
+    setErrorStatus(null);
     api<{ name: string }>(`admin/account?law_firm_id=${id}`, getAccessToken)
       .then((data) => {
         if (!cancelled) setFirmName(data.name);
       })
-      .catch(() => {});
+      .catch((err: unknown) => {
+        if (cancelled) return;
+        setErrorStatus(err instanceof ApiError ? err.status : 0);
+      });
     return () => {
       cancelled = true;
     };
   }, [user, getAccessToken, id]);
+
+  if (errorStatus !== null) {
+    return (
+      <div className="w-full h-full flex flex-col">
+        <ErrorState status={errorStatus} />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-full flex flex-col">

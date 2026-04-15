@@ -4,6 +4,19 @@
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.lawbrokr.ca/v1/legacy";
 
+// Thrown by api() so callers can branch on HTTP status (404, 403, 5xx, etc.).
+// status === 0 means a network-level failure (offline, DNS, CORS, TLS).
+export class ApiError extends Error {
+  constructor(
+    public readonly status: number,
+    message: string,
+    public readonly body?: string,
+  ) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
+
 let refreshHandler: (() => Promise<string | null>) | null = null;
 let inflightRefresh: Promise<string | null> | null = null;
 
@@ -91,18 +104,18 @@ export async function api<T>(
   try {
     res = await doFetch(path, token, options);
   } catch {
-    throw new Error(`Network error on ${method} /${path}`);
+    throw new ApiError(0, `Network error on ${method} /${path}`);
   }
 
   // 401 handling
   // catch 401 and attempt silent token refresh via deduplicated handler
   if (res.status === 401) {
     if (!refreshHandler) {
-      throw new Error("Session expired — no refresh handler");
+      throw new ApiError(401, "Session expired — no refresh handler");
     }
     const newToken = await deduplicatedRefresh();
     if (!newToken) {
-      throw new Error("Session expired — refresh failed");
+      throw new ApiError(401, "Session expired — refresh failed");
     }
     res = await doFetch(path, newToken, options);
   }
@@ -110,7 +123,7 @@ export async function api<T>(
   // Error handling
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    throw new Error(`API error ${String(res.status)}: ${body}`);
+    throw new ApiError(res.status, `API error ${String(res.status)}`, body);
   }
   return res.json() as Promise<T>;
 }

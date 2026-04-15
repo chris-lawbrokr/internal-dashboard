@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 import { useDateRange } from "@/lib/useDateRange";
+import { ErrorState } from "@/components/ui/error-state/ErrorState";
 import {
   SkeletonGauge,
   SkeletonTable,
@@ -91,6 +92,7 @@ export function AccountOverview({
   const { dateQuery } = useDateRange();
   const [account, setAccount] = useState<AccountDetail | null>(null);
   const [users, setUsers] = useState<AccountUser[] | null>(null);
+  const [errorStatus, setErrorStatus] = useState<number | null>(null);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(DEFAULT_pageSize);
@@ -100,9 +102,14 @@ export function AccountOverview({
   useEffect(() => {
     setAccount(null);
     setUsers(null);
+    setErrorStatus(null);
     if (!user) return;
     let cancelled = false;
     const qs = dateQuery ? `&${dateQuery}` : "";
+    const onError = (err: unknown) => {
+      if (cancelled) return;
+      setErrorStatus(err instanceof ApiError ? err.status : 0);
+    };
 
     api<AccountDetail>(
       `admin/account?law_firm_id=${lawFirmId}${qs}`,
@@ -111,7 +118,7 @@ export function AccountOverview({
       .then((data) => {
         if (!cancelled) setAccount(data);
       })
-      .catch(() => {});
+      .catch(onError);
 
     api<AccountUsersResponse>(
       `admin/account/users?law_firm_id=${lawFirmId}${qs}`,
@@ -120,7 +127,7 @@ export function AccountOverview({
       .then((data) => {
         if (!cancelled) setUsers(data.data);
       })
-      .catch(() => {});
+      .catch(onError);
 
     return () => {
       cancelled = true;
@@ -128,6 +135,8 @@ export function AccountOverview({
   }, [user, getAccessToken, lawFirmId, dateQuery]);
 
   const { showSkeleton, fading } = useSkeletonTransition(!account || !users);
+
+  if (errorStatus !== null) return <ErrorState status={errorStatus} />;
 
   if (showSkeleton || !account || !users)
     return (

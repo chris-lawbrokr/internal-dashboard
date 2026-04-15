@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 import { useDateRange } from "@/lib/useDateRange";
+import { ErrorState } from "@/components/ui/error-state/ErrorState";
 import {
   SkeletonStatusCard,
   SkeletonValueCard,
@@ -72,15 +73,21 @@ export function AccountWebsite({ lawFirmId }: AccountWebsiteProps) {
   const { dateQuery } = useDateRange();
   const [status, setStatus] = useState<WebsiteStatus | null>(null);
   const [links, setLinks] = useState<WebsiteLinksResponse | null>(null);
+  const [errorStatus, setErrorStatus] = useState<number | null>(null);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(DEFAULT_pageSize);
 
   useEffect(() => {
     setStatus(null);
     setLinks(null);
+    setErrorStatus(null);
     if (!user) return;
     let cancelled = false;
     const qs = dateQuery ? `&${dateQuery}` : "";
+    const onError = (err: unknown) => {
+      if (cancelled) return;
+      setErrorStatus(err instanceof ApiError ? err.status : 0);
+    };
 
     api<WebsiteStatus>(
       `admin/account/website?law_firm_id=${lawFirmId}${qs}`,
@@ -89,7 +96,7 @@ export function AccountWebsite({ lawFirmId }: AccountWebsiteProps) {
       .then((data) => {
         if (!cancelled) setStatus(data);
       })
-      .catch(() => {});
+      .catch(onError);
 
     api<WebsiteLinksResponse>(
       `admin/account/website/links?law_firm_id=${lawFirmId}${qs}`,
@@ -98,7 +105,7 @@ export function AccountWebsite({ lawFirmId }: AccountWebsiteProps) {
       .then((data) => {
         if (!cancelled) setLinks(data);
       })
-      .catch(() => {});
+      .catch(onError);
 
     return () => {
       cancelled = true;
@@ -106,6 +113,8 @@ export function AccountWebsite({ lawFirmId }: AccountWebsiteProps) {
   }, [user, getAccessToken, lawFirmId, dateQuery]);
 
   const { showSkeleton, fading } = useSkeletonTransition(!status);
+
+  if (errorStatus !== null) return <ErrorState status={errorStatus} />;
 
   if (showSkeleton || !status)
     return (

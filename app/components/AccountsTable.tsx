@@ -3,8 +3,9 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 import { useDateRange } from "@/lib/useDateRange";
+import { ErrorState } from "@/components/ui/error-state/ErrorState";
 import {
   Table,
   TableHeader,
@@ -142,6 +143,7 @@ export function AccountsTable({
   const [internalAccounts, setInternalAccounts] = useState<Account[] | null>(
     null,
   );
+  const [errorStatus, setErrorStatus] = useState<number | null>(null);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(defaultPageSize);
@@ -174,7 +176,10 @@ export function AccountsTable({
   const managed = externalAccounts === undefined;
 
   useEffect(() => {
-    if (managed) setInternalAccounts(null);
+    if (managed) {
+      setInternalAccounts(null);
+      setErrorStatus(null);
+    }
     if (!managed || !user) return;
     let cancelled = false;
     api<AccountsResponse>(`admin/accounts?${dateQuery}`, getAccessToken)
@@ -182,7 +187,8 @@ export function AccountsTable({
         if (!cancelled) setInternalAccounts(data.data);
       })
       .catch((err: unknown) => {
-        console.error("Failed to fetch accounts:", err);
+        if (cancelled) return;
+        setErrorStatus(err instanceof ApiError ? err.status : 0);
       });
     return () => {
       cancelled = true;
@@ -203,6 +209,9 @@ export function AccountsTable({
   }, [filterOpen]);
 
   const { showSkeleton, fading } = useSkeletonTransition(accounts === null);
+
+  if (managed && errorStatus !== null)
+    return <ErrorState status={errorStatus} />;
 
   if (showSkeleton || accounts === null)
     return (

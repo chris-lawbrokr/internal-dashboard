@@ -80,18 +80,29 @@ export function useAuth() {
 }
 
 // Helpers
-// Decode the JWT payload
-function getJwtExpiry(token: string): number {
-  const base64 = token.split(".")[1]?.replace(/-/g, "+").replace(/_/g, "/");
-  if (!base64) throw new Error("Invalid JWT");
-  return JSON.parse(atob(base64)).exp;
+// Decode the JWT payload. Returns null if the token is malformed so callers
+// can treat it as "expired" and trigger an immediate refresh.
+function getJwtExpiry(token: string): number | null {
+  try {
+    const base64 = token.split(".")[1]?.replace(/-/g, "+").replace(/_/g, "/");
+    if (!base64) return null;
+    const exp = JSON.parse(atob(base64))?.exp;
+    return typeof exp === "number" ? exp : null;
+  } catch {
+    return null;
+  }
 }
 
-// Write a cookie visible to all paths
+// Write a cookie visible to all paths. Adds Secure on HTTPS so the cookie
+// isn't sent over plaintext; omitted on http://localhost so dev still works.
 function setCookie(name: string, value: string, days: number) {
+  const secure =
+    typeof window !== "undefined" && window.location.protocol === "https:"
+      ? "; Secure"
+      : "";
   document.cookie = `${name}=${encodeURIComponent(value)}; path=/; expires=${new Date(
     Date.now() + days * 864e5,
-  ).toUTCString()}; SameSite=Lax`;
+  ).toUTCString()}; SameSite=Lax${secure}`;
 }
 
 function getCookie(name: string): string | null {
@@ -193,13 +204,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const scheduleRefresh = useCallback((token: string) => {
     clearTimer(refreshTimerRef); // cancel any previously scheduled refresh
 
-    let delay = 0;
-    try {
-      // delay = (token expiry in ms) - (safety buffer) - (current time)
-      delay = getJwtExpiry(token) * 1000 - REFRESH_BUFFER_MS - Date.now();
-    } catch {
-      // If can't be decoded trigger immediate refresh
-    }
+    const exp = getJwtExpiry(token);
+    // If the token can't be decoded, refresh immediately (delay = 0).
+    const delay = exp ? exp * 1000 - REFRESH_BUFFER_MS - Date.now() : 0;
 
     if (delay <= 0) {
       // Token expired refresh immediately
@@ -295,12 +302,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           doRefreshRef.current();
           return;
         }
-        try {
-          const expiresIn = getJwtExpiry(token) * 1000 - Date.now();
-          if (expiresIn < REFRESH_BUFFER_MS) {
-            doRefreshRef.current();
-          }
-        } catch {
+        const exp = getJwtExpiry(token);
+        if (!exp || exp * 1000 - Date.now() < REFRESH_BUFFER_MS) {
           doRefreshRef.current();
         }
       }
